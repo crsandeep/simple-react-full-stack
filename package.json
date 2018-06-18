@@ -1,8 +1,7 @@
 {
   "name": "simple-react-full-stack",
   "version": "1.0.0",
-  "description":
-    "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
   "scripts": {
     "start": "node src/server/index.js",
@@ -21,6 +20,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",

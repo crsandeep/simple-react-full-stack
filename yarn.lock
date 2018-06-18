@@ -578,7 +578,7 @@ babel-plugin-transform-class-constructor-call@^6.24.1:
 
 babel-plugin-transform-class-properties@^6.24.1:
   version "6.24.1"
-  resolved "https://registry.npmjs.org/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
   dependencies:
     babel-helper-function-name "^6.24.1"
     babel-plugin-syntax-class-properties "^6.8.0"
