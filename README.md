@@ -6,21 +6,21 @@
 This is a boilerplate to build a full stack web application using React, Node.js, Express and Webpack. It is also configured with webpack-dev-server, eslint, prettier and babel.
 
 - [simple-react-full-stack](#simple-react-full-stack)
-    - [Introduction](#introduction)
-        - [Development mode](#development-mode)
-        - [Production mode](#production-mode)
-    - [Quick Start](#quick-start)
-    - [Documentation](#documentation)
-        - [Folder Structure](#folder-structure)
-        - [Babel](#babel)
-        - [ESLint](#eslint)
-        - [Webpack](#webpack)
-        - [Webpack dev server](#webpack-dev-server)
-        - [Nodemon](#nodemon)
-        - [Express](#express)
-        - [Concurrently](#concurrently)
-        - [VSCode + ESLint + Prettier](#vscode-eslint-prettier)
-            - [Installation guide](#installation-guide)
+  - [Introduction](#introduction)
+    - [Development mode](#development-mode)
+    - [Production mode](#production-mode)
+  - [Quick Start](#quick-start)
+  - [Documentation](#documentation)
+    - [Folder Structure](#folder-structure)
+    - [Babel](#babel)
+    - [ESLint](#eslint)
+    - [Webpack](#webpack)
+    - [Webpack dev server](#webpack-dev-server)
+    - [Nodemon](#nodemon)
+    - [Express](#express)
+    - [Concurrently](#concurrently)
+    - [VSCode + ESLint + Prettier](#vscode--eslint--prettier)
+      - [Installation guide](#installation-guide)
 
 ## Introduction
 
@@ -132,6 +132,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: "url-loader?limit=100000"
       }
     ]
   },
@@ -154,7 +158,7 @@ module.exports = {
 
 1.  **entry:** Here the application starts executing and webpack starts bundling
 2.  **output path and filename:** the target directory and the filename for the bundled output
-3.  **module loaders:** Module loaders are transformations that are applied on the source code of a module. We pass all the js file through [babel-loader](https://github.com/babel/babel-loader) to transform JSX to Javascript. CSS files are passed through [css-loaders](https://github.com/webpack-contrib/css-loader) and [style-loaders](https://github.com/webpack-contrib/style-loader) to load and bundle CSS files.
+3.  **module loaders:** Module loaders are transformations that are applied on the source code of a module. We pass all the js file through [babel-loader](https://github.com/babel/babel-loader) to transform JSX to Javascript. CSS files are passed through [css-loaders](https://github.com/webpack-contrib/css-loader) and [style-loaders](https://github.com/webpack-contrib/style-loader) to load and bundle CSS files. Fonts and images are loaded through url-loader.
 4.  **Dev Server:** Configurations for the webpack-dev-server which will be described in coming section.
 5.  **plugins:** [clean-webpack-plugin](https://github.com/johnagan/clean-webpack-plugin) is a webpack plugin to remove the build folder(s) before building. [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin) simplifies creation of HTML files to serve your webpack bundles. It loads the template (public/index.html) and injects the output bundle.
 
