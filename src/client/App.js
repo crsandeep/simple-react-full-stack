@@ -1,6 +1,18 @@
 import React, { Component } from "react";
+import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import "./app.css";
-import ReactImage from "./react.png";
+
+const Home = () => (
+  <div>
+    <h2>Home</h2>
+  </div>
+);
+
+const About = () => (
+  <div>
+    <h2>About</h2>
+  </div>
+);
 
 export default class App extends Component {
   constructor(props) {
@@ -16,14 +28,29 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.username ? (
-          <h1>Hello {this.state.username}</h1>
-        ) : (
-          <h1>Loading.. please wait!</h1>
-        )}
-        <img src={ReactImage} alt="react" />
-      </div>
+      <Router>
+        <div>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
+            </li>
+          </ul>
+          <div>
+            {this.state.username ? (
+              <h1>Hello {this.state.username}</h1>
+            ) : (
+              <h1>Loading.. please wait!</h1>
+            )}
+          </div>
+          <hr />
+
+          <Route exact path="/" component={Home} />
+          <Route path="/about" component={About} />
+        </div>
+      </Router>
     );
   }
 }
