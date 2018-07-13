@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Route, Link, HashRouter as Router } from "react-router-dom";
 import "./app.css";
 
 const Home = () => (
