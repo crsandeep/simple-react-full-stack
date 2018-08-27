@@ -24,7 +24,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
-    "concurrently": "^3.5.1",
+    "concurrently": "^4.0.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.0.0",
     "eslint-config-airbnb": "^17.0.0",
