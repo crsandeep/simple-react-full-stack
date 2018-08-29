@@ -3,10 +3,7 @@ import './app.css';
 import ReactImage from './react.png';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { username: null };
-  }
+  state = { username: null };
 
   componentDidMount() {
     fetch('/api/getUsername')
