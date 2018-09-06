@@ -17,7 +17,7 @@ export default class App extends Component {
     return (
       <div>
         {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
+        <h2>Enter username in the search to read his tweets</h2>
         <TwitterSearch />
       </div>
     );
