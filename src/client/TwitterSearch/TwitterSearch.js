@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 
 export default class App extends Component {
-  state = { username: null };
+  state = { user: 'ninja', tweets: [] };
 
   componentDidMount() {
-    fetch('/api/getUsername')
+    fetch('/api/getTweets/ninja')
       .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+      .then(tweets => this.setState({
+        tweets
+      }));
   }
 
   render() {
-    const { username } = this.state;
+    const { user, tweets } = this.state;
     return (
       <div>
-        {
-          username
-            ? <h1>{`Hello ${username}`}</h1>
-            : <h1>Loading.. please wait!</h1>
-        }
+        <h1>{user}</h1>
+        { tweets && tweets.map(tweet => <p>{tweet}</p>) }
       </div>
     );
   }
