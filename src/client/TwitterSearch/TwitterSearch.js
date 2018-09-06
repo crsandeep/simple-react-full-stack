@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import styles from './app.css';
-import ReactImage from './react.png';
-import TwitterSearch from './TwitterSearch/TwitterSearch';
 
 export default class App extends Component {
   state = { username: null };
@@ -15,10 +12,12 @@ export default class App extends Component {
   render() {
     const { username } = this.state;
     return (
-      <div className={styles.test}>
-        {username ? <h1 className={styles.test}>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
-        <TwitterSearch />
+      <div>
+        {
+          username
+            ? <h1>{`Hello ${username}`}</h1>
+            : <h1>Loading.. please wait!</h1>
+        }
       </div>
     );
   }

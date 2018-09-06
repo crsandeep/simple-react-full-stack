@@ -6,3 +6,8 @@ body {
   text-align: center;
   margin: auto;
 }
+
+.test {
+    color: red;
+    background-color: green;
+}
