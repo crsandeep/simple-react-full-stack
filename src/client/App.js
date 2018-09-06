@@ -15,8 +15,8 @@ export default class App extends Component {
   render() {
     const { username } = this.state;
     return (
-      <div className={styles.test}>
-        {username ? <h1 className={styles.test}>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
+      <div>
+        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
         <img src={ReactImage} alt="react" />
         <TwitterSearch />
       </div>
