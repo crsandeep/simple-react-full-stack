@@ -7,11 +7,14 @@ const client = new Twitter({
   consumer_key: consumerApiKey,
   consumer_secret: consumerApiSecretKey,
   access_token_key: consumerAccessToken,
-  access_token_secret: consumerAccessTokenSecret
+  access_token_secret: consumerAccessTokenSecret,
+  base: 'rest',
 });
 
-const getTweets = (user) => {
+
+const getTimeLine = (user) => {
   const params = { screen_name: user };
+  client.options.base = 'stream';
   return new Promise((resolve, reject) => {
     client.get('statuses/user_timeline', params, (error, tweets, response) => {
       if (!error) {
@@ -23,4 +26,17 @@ const getTweets = (user) => {
   });
 };
 
-module.exports = getTweets;
+const getTweets = (search) => {
+  const params = { q: search };
+  return new Promise((resolve, reject) => {
+    client.get('search/tweets', params, (error, tweets, response) => {
+      if (!error) {
+        resolve(tweets);
+      } else {
+        reject(error);
+      }
+    });
+  });
+};
+
+module.exports = { getTweets, getTimeLine };
