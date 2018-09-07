@@ -15,7 +15,8 @@
   "dependencies": {
     "express": "^4.16.3",
     "react": "^16.3.1",
-    "react-dom": "^16.3.1"
+    "react-dom": "^16.3.1",
+    "twitter": "1.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
