@@ -14,6 +14,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
+	include: path.join(__dirname, '/src/client'),
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
