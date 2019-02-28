@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2"
