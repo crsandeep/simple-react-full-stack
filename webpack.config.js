@@ -5,7 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const outputDirectory = 'dist';
 
 module.exports = {
-  entry: './src/client/index.js',
+  entry: ['babel-polyfill', './src/client/index.js'],
   output: {
     path: path.join(__dirname, outputDirectory),
     filename: 'bundle.js'
@@ -14,7 +14,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-	include: path.join(__dirname, '/src/client'),
+      	include: path.join(__dirname, '/src/client'),
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
@@ -29,6 +29,9 @@ module.exports = {
         loader: 'url-loader?limit=100000'
       }
     ]
+  },
+  resolve: {
+    extensions: ['*', '.js', '.jsx']
   },
   devServer: {
     port: 3000,
