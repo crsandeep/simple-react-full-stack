@@ -1,23 +1,30 @@
 import React, { Component } from 'react';
 import './app.css';
 import ReactImage from './react.png';
+import InstrCtrPnl from './components/InstrumentsControllerPanel.js';
+import BodiesCtrPnl from './components/BodiesControllerPanel.js';
+import BodyComponent from './components/BodyComponent.js';
+import InstrCmp from './components/InstrumentComponent.js';
+import MstSoundComponent from './components/MasterSoundComponent.js'
+import Monitor from './components/MonitorComponent.js'
 
-export default class App extends Component {
-  state = { username: null };
 
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
-  }
+class App extends Component {
 
   render() {
-    const { username } = this.state;
     return (
       <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
+      <MstSoundComponent />
+      <InstrCtrPnl />
+      <InstrCmp />
+      <BodiesCtrPnl />
+      <div>
+      <Monitor />
+      <BodyComponent />
+      </div>
       </div>
     );
   }
 }
+
+export default App;
