@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- BootStrap and JQuery -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- To be Removed when playing with Npm -->
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+
+
+    <title>Osmosi</title>
+
+</head>
+
+
+
+<body>
+
+    <div id="root">
+
+      <!-- Header -->
+
+    </div>
+
+</body>
+
+
+
+</html>
+
+
+
+
+
+<script type="text/babel">
+
+
+
+class App extends React.Component {
+
+
+
+  constructor(props) {
+
+    super(props);
+
+    this.handleMouseMov = this.handleMouseMov.bind(this);
+
+    this.state = {clientX: 0 , clientY: 0};
+
+  }
+
+
+
+  handleMouseMov(cX , cY) {
+
+    console.log('To Main App with: ', cX, cY);
+
+    this.setState({clientX: cX , clientY: cY});
+
+    // this.setState({clientY: '5'});
+
+  }
+
+
+
+  //Passoing the mouse coordinate as props to MonitorOut
+
+  render() {
+
+    //const clientX = this.state.clientX;
+
+    //const clientY = this.state.clientY;
+
+    return (
+
+      <div>
+
+      <h1>heksssssllo</h1>
+
+      <MonitorIn onHandleMouseChange={this.handleMouseMov} />
+
+      <MonitorOut clientX = {this.state.clientX} clientY = {this.state.clientY} />
+
+      </div>
+
+    );
+
+  }
+
+}
+
+
+
+//MonitorComponent.js
+
+class MonitorIn extends React.Component {
+
+
+
+  constructor(props) {
+
+    super(props);
+
+    this.state = {clientX: 0 , clientY: 0};
+
+    this.handleChange = this.handleChange.bind(this);
+
+  }
+
+
+
+  //Method triggered by the mouse movement,
+
+  // assigning to itself a method that will handle the mouse movement while rendered in its parent <App /> above
+
+  handleChange(e){
+
+    console.log(
+
+    'From Mouse Move on Monitor 1 with',
+
+    e.clientX, e.clientY
+
+    );
+
+    this.props.onHandleMouseChange(e.clientX , e.clientY)
+
+  }
+
+
+
+  render() {
+
+    return <canvas class="border ml-1" ref="canvas" id="bodyCanvas" width="512" height="424" onMouseMove={this.handleChange}></canvas>
+
+  }
+
+}
+
+
+
+
+
+//MonitorComponent.js
+
+class MonitorOut extends React.Component {
+
+
+
+  constructor(props) {
+
+    super(props);
+
+    //this.state = {clientX: 0 , clientY: 0};
+
+    this.clientX = props.clientX;
+
+    this.clientY = props.clientY;
+
+    }
+
+
+
+
+
+  //Everytime is rendered will call the draw funtion
+
+  componentDidUpdate() {
+
+    console.log('ok');
+
+    this.draw();
+
+
+
+  }
+
+
+
+  draw(){
+
+    console.log('drawing');
+
+    var canvas = document.getElementById('bodyCanvas2');
+
+    var ctx = canvas.getContext('2d');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#ff0000';
+
+    ctx.fillRect(this.props.clientX, this.props.clientY, 10, 10);
+
+  }
+
+
+
+  render() {
+
+    console.log('To The Monitor Out: ', this.props.clientX, this.props.clientY);
+
+  //var canvas = document.getElementById('bodyCanvas2');
+
+    //this.ctx = canvas.getContext('2d');
+
+    // this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // this.ctx.fillStyle = '#ff0000';
+
+    // this.ctx.fillRect(this.clientX * 512, this.clientY * 424, 10, 10);
+
+    //const clientX = this.props.clientX;
+
+    //const clientY = this.props.clientY;
+
+    return <canvas class="border ml-1" ref="canvas" id="bodyCanvas2" width="512" height="424"></canvas>
+
+  }
+
+}
+
+
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+</script>
