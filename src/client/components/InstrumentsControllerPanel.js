@@ -2,11 +2,17 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+InstrCtrPnl
 
 
 class InstrCtrPnl extends Component {
+
+  constructor(props){
+      super(props)
+  }
+
   render() {
-    return <div> Instruments Controller Panel </div>
+    return <div>hello</div>
     }
 }
 

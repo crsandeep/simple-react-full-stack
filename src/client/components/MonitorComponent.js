@@ -37,7 +37,7 @@ class Monitor extends Component {
   }
 
   render() {
-    return <canvas class="border ml-1" ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
+    return <canvas className={"border"} ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
     }
 }
 

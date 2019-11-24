@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './app.css';
+import Switches from './commons/switch.js'
 import ReactImage from './react.png';
+import Menu from './components/MenuHeaderComponent.js';
 import InstrCtrPnl from './components/InstrumentsControllerPanel.js';
 import BodiesCtrPnl from './components/BodiesControllerPanel.js';
 import BodyComponent from './components/BodyComponent.js';
@@ -34,13 +36,30 @@ class App extends Component {
             //console.log(body[0].bodyIndex);
           //  console.log(body[0].joints);
             this.setState({bodies:data[newIndex], index: newIndex})
-        }, 0.015);
+        }, 70);
     }
 
   render() {
     return (
-      <div>
-      <Monitor bodies={this.state.bodies} />
+      <div className="container-fluid">
+      	<div className="row">
+      		<div className={"col-md-12 bg-secondary"}>
+            <h1 className={"text-white"}>Osmosi</h1>
+          </div>
+      	</div>
+      	<div className={"row"}>
+      		<div className="col-md-6">
+            <ul className={"list-group border-0"}>
+              <li className={"list-group-item border-0"}><InstrCmp name='All Body' /></li>
+              <li className={"list-group-item border-0"}><InstrCmp name="Hands" /></li>
+              <li className={"list-group-item border-0"}><InstrCmp name="Spine" /></li>
+              <li className={"list-group-item border-0"}><InstrCmp name="Feet" /></li>
+            </ul>
+          </div>
+      		<div className={"col-md-6"}>
+            <Monitor bodies={this.state.bodies} />
+          </div>
+        </div>
       </div>
     );
   }
