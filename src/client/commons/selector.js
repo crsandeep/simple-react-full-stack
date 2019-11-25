@@ -48,9 +48,10 @@ export default function NativeSelects() {
           }}
         >
           <option value="" />
-          <option value={10}>Synth</option>
-          <option value={20}>Piano</option>
-          <option value={30}>Water</option>
+          <option value={'Synth1'}>Synth1</option>
+          <option value={'Synth2'}>Synth2</option>
+          <option value={'Piano'}>Piano</option>
+          <option value={'Water'}>Water</option>
         </Select>
       </FormControl>
     </div>

@@ -12,12 +12,12 @@ class Monitor extends Component {
   }
 
   componentDidUpdate() {
-    console.log('Welcome in Monitor Component');
+    //console.log('Welcome in Monitor Component');
     if(this.props.bodies !=undefined){
-    console.log('body: ', + this.props.bodies[0].bodyIndex);
-    console.log('all jpoints ', this.props.bodies[0].joints);
+    //console.log('body: ', + this.props.bodies[0].bodyIndex);
+    //console.log('all jpoints ', this.props.bodies[0].joints);
     var joit7 = this.props.bodies[0].joints[7];
-    console.log('x coord: ', joit7.x);
+    //console.log('x coord: ', joit7.x);
     this.draw(this.props.bodies[0]);
    }
   }
