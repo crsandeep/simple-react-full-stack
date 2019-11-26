@@ -20,7 +20,6 @@ function Kinect() {
   console.log('hello');
 }
 
-
 // Define the name of the instruments  based on their link to the body's parts
 var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
 
@@ -39,6 +38,33 @@ function channel (name) {
 }
   return instrument;
 };
+
+// function bodyParam (bodyIndex) {
+//   var value = {
+//   'BodyIndex': bodyIndex,
+//   'BodyCx': 0,
+//   'BodyCy': 0,
+//   'HandsCx':0,
+//   'HandsCy':0,
+//   'SpineCx':0,
+//   'SpineCy':0,
+//   'FeetCx':0,
+//   'FeetCy':0
+//   }
+//   return value;
+// };
+
+var bodyParam = {
+'BodyIndex': '',
+'BodyCx': 0,
+'BodyCy': 0,
+'HandsCx':0,
+'HandsCy':0,
+'SpineCx':0,
+'SpineCy':0,
+'FeetCx':0,
+'FeetCy':0
+}
 
 // Define all the instrument registered. I shold programattically define the orchestra?(i.e. based on the instrumentName)
 var  orchestra = {Body: channel(instrumentName[0]),Hands: channel(instrumentName[1]),Feet: channel(instrumentName[2]),Spine: channel(instrumentName[3])};
@@ -83,14 +109,24 @@ class App extends Component {
     //this.soundBox.playSoundGuitar();
   }
 
+  componentDidUpdate (prevProps, prevState, snapshot){
+    if(prevState.bodies[0] != undefined){
+      bodyParam.BodyCx = prevState.bodies[0].cx;
+      bodyParam.BodyCy = prevState.bodies[0].cx;
+      // this.setState({bodyParam:bd});
+      console.log('CenterX: ', prevState.bodies[0].cx);
+      console.log('Openess:', prevState.bodies[0].handsOpenes);
+    }
+  }
+
   componentDidMount() {
-        setInterval(() => {
-            var newIndex = this.state.index + 1;
-            var body = data[newIndex];
-            //console.log(body[0].bodyIndex);
-          //  console.log(body[0].joints);
-            this.setState({bodies:data[newIndex], index: newIndex})
-        }, 70);
+      setInterval(() => {
+          var newIndex = this.state.index + 1;
+          var body = data[newIndex];
+          //console.log(body[0].bodyIndex);
+        //  console.log(body[0].joints);
+          this.setState({bodies:data[newIndex], index: newIndex})
+      }, 70);
     }
 
   render() {

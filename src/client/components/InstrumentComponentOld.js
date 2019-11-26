@@ -23,7 +23,7 @@ import DiscreteSlider from '../commons/volumeSelector.js'
 
 import MstSoundComponent from './MasterSoundComponent.js';
 
-//var mss= new MstSoundComponent();
+var mss= new MstSoundComponent();
 
 class InstrCmp extends Component {
 
@@ -96,6 +96,11 @@ class InstrCmp extends Component {
                   <li className={"list-group-item border-0"}>
                     <div onMouseUp={this.onChangeVolume} name={this.name} className={"col-md-12"}>
                       <DiscreteSlider />
+                    </div>
+                  </li>
+                  <li className={"list-group-item border-0"}>
+                    <div onMouseUp={this.onChangeVolume} name={this.name} className={"col-md-12"}>
+                      <MstSoundComponent instrument = {this.instrument} />
                     </div>
                   </li>
                 </ul>
