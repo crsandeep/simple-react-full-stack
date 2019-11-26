@@ -7,7 +7,6 @@ import InstrCtrPnl from './components/InstrumentsControllerPanel.js';
 import BodiesCtrPnl from './components/BodiesControllerPanel.js';
 import BodyComponent from './components/BodyComponent.js';
 import InstrCmp from './components/InstrumentComponent.js';
-import MstSoundComponent from './components/MasterSoundComponent.js';
 import Monitor from './components/MonitorComponent.js';
 import data from './lmac1.json';
 
@@ -15,8 +14,7 @@ import data from './lmac1.json';
 //const json = require('./jse.json');
 
 var index = 0;
-
-var mss= new MstSoundComponent();
+//var mss= new MstSoundComponent();
 
 function Kinect() {
   console.log('hello');
@@ -28,10 +26,10 @@ var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
 
 // Each instruments defines is own 'sound' channel
 
-function channel (nm) {
+function channel (name) {
   var instrument = {
-  'Name' : '',
-  'Switch': false,
+  'Name' : name,
+  'Switch': true,
   'Type' : 'Piano',
   'Mode' : 'Single',
   'Scale': 'Major',
@@ -56,8 +54,6 @@ class App extends Component {
     //this.props.instruments = orchestra;
     this.onHandleMouse = this.onHandleMouse.bind(this);
     this.onHandleSelect = this.onHandleSelect.bind(this);
-
-    this.soundBox = new MstSoundComponent();
   }
 
   //This is done for the slide volume comps which onchange event is not working!!
@@ -84,7 +80,7 @@ class App extends Component {
       " of the " + e.changeType +
       " with Value: ", e.changeValue
     )
-    this.soundBox.playSoundGuitar();
+    //this.soundBox.playSoundGuitar();
   }
 
   componentDidMount() {
@@ -108,10 +104,10 @@ class App extends Component {
       	<div className={"row"}>
       		<div className="col-md-6">
             <ul className={"list-group border-0"}>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name='Body' /></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Hands" /></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Spine" /></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Feet" /></li>
+              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name='Body' instrument = {orchestra['Body']} /></li>
+              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Hands" instrument = {orchestra['Hands']}/></li>
+              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Spine" instrument = {orchestra['Spine']}/></li>
+              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Feet" instrument = {orchestra['Feet']}/></li>
             </ul>
           </div>
       		<div className={"col-md-6"}>

@@ -21,38 +21,55 @@ import NoteSelector from '../commons/noteSelector.js'
 import DiscreteSlider from '../commons/volumeSelector.js'
 
 
+import MstSoundComponent from './MasterSoundComponent.js';
+
+
 
 class InstrCmp extends Component {
 
   constructor(props){
       super(props);
+      this.instrument = this.props.instrument;
+      this.state = {instrument: this.instrument};
       this.name = this.props.name;
-      //this.onChangeCommitted = this.onChangeCommitted.bind(this);
+      this.onChangeVolume = this.onChangeVolume.bind(this);
+      this.onChangeSwitch = this.onChangeSwitch.bind(this);
+      this.onChangeInstrument = this.onChangeInstrument.bind(this);
+      this.onChangeNote = this.onChangeNote.bind(this);
+  }
+
+  componentDidMount(){
+    console.log('Rendering Instruments')
   }
 
   onChangeVolume (e) {
-    e.changeSource = e.currentTarget.name
-    e.changeType = 'Volume';
-    e.changeValue = e.target.innerText;
+    // e.changeSource = e.currentTarget.name
+    // e.changeType = 'Volume';
+    // e.changeValue = e.target.innerText;
+    this.instrument['Volume'] = e.target.innerText;
+    this.setState({instrument:this.instrument});
   }
 
   onChangeSwitch (e) {
-    e.changeSource = e.currentTarget.name
-    e.changeType = 'Switch';
-    e.changeValue = e.target.checked;
+    // e.changeSource = e.currentTarget.name
+    // e.changeType = 'Switch';
+    // e.changeValue = e.target.checked;
+    this.instrument['Switch'] = e.target.checked;
   }
 
   onChangeInstrument (e) {
     //console.log(e.target.value);
-    e.changeSource = e.currentTarget.name
-    e.changeType = 'Instrument';
-    e.changeValue = e.target.value;
+    // e.changeSource = e.currentTarget.name
+    // e.changeType = 'Instrument';
+    // e.changeValue = e.target.value;
+    this.instrument['Type'] = e.target.value;
   }
 
   onChangeNote (e) {
-    e.changeSource = e.currentTarget.name
-    e.changeType = 'Note';
-    e.changeValue = e.target.value;
+    // e.changeSource = e.currentTarget.name
+    // e.changeType = 'Note';
+    // e.changeValue = e.target.value;
+    this.instrument['Note'] = e.target.value;
   }
 
 
@@ -77,6 +94,11 @@ class InstrCmp extends Component {
                   <li className={"list-group-item border-0"}>
                     <div onMouseUp={this.onChangeVolume} name={this.name} className={"col-md-12"}>
                       <DiscreteSlider />
+                    </div>
+                  </li>
+                  <li className={"list-group-item border-0"}>
+                    <div onMouseUp={this.onChangeVolume} name={this.name} className={"col-md-12"}>
+                      <MstSoundComponent instrument = {this.instrument} />
                     </div>
                   </li>
                 </ul>

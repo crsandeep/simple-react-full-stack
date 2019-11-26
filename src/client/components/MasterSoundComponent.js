@@ -10,21 +10,26 @@ import ReactDOM from 'react-dom';
 
 class MstSoundComponent extends Component {
   constructor(props){
-      super(props)
+      super(props);
+      this.instrument = this.props.instrument;
+      this.state = {instrument: this.instrument};
+      this.audioContext = new AudioContext();
+      this.audioContext.resume();
       this.setGuitar();
+      this.playGuitar()
   }
 
-  play () {
-    console.log('Playing');
+  componentDidMount(){
+    this.playGuitar();
   }
 
-  playSoundGuitar () {
+  playGuitar () {
     var myinstance = createjs.Sound.play("c3");
   }
 
   setGuitar (){
-    this.instrument = 'guitar'
-    var assetsPath = "./src/client/audio/guitar/";
+    //this.instrument = 'guitar'
+    var assetsPath = "../src/client/audio/guitar/";
     //scale: ['C','D','E','G','A'],  //majorPentatonic
     var sounds =[
         {src:"c3_mf_rr3.wav", id:"c3"},
@@ -47,7 +52,19 @@ class MstSoundComponent extends Component {
     createjs.Sound.addEventListener("fileload", function(event) {
       //vm.readyToPlayGuitar(event)
     }); // add an event listener for when load is completed
-    createjs.Sound.registerSounds(sounds, assetsPath);  // regier sound, which preloads by default
+    createjs.Sound.registerSounds(sounds, assetsPath);
+    createjs.Sound.play("c3"); // regier sound, which preloads by default
+  }
+
+  render(){
+    return(
+      <div>
+      <span><b>Instrument:</b> {this.state.instrument['Type']}  </span>
+      <span><b>with volume:</b> {this.state.instrument['Volume']}  </span>
+      <span><b>and note:</b> {this.state.instrument['Note']} </span>
+      <span><b>in state:</b>{this.state.instrument['Switch'].toString()} </span>
+      </div>
+    )
   }
 }
 
