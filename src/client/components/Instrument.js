@@ -31,22 +31,22 @@ class Instrument extends Component {
 
   // Triggered by the volume selector
   onChangeVolumeHandler(e,value){
-    this.props.onChangeVolumeHandler(value);
+    this.props.onChangeVolume(value);
   }
 
   // Triggered by the note selector
   onChangeNoteHandler(e){
-    this.props.onChangeNoteHandler(e.target.value);
+    this.props.onChangeNote(e.target.value);
   }
 
   // Triggered by the instrument selector
   onChangeInstrumentHandler(e){
-    this.props.onChangeInstrumentHandler(e.target.value);
+    this.props.onChangeInstrument(e.target.value);
   }
 
   // Triggered by the Switch on/of selector
   onOnOffHandler(e){
-    this.props.onOnOffHandler(e.target.checked);
+    this.props.onOnOff(e.target.checked);
   }
 
 

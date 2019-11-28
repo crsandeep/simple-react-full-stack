@@ -70,10 +70,10 @@ class InstrumentsPanel extends Component {
   renderInstrument(i){
     return(
       <Instrument
-        onOnOffHandler ={(value)=>this.onOnOffHandler(i,value)}
-        onChangeInstrumentHandler={(value) => this.onChangeInstrumentHandler(i,value)}
-        onChangeNoteHandler={(value)=>this.onChangeNoteHandler(i,value)}
-        onChangeCommitted={(value)=>this.onChangeCommittedHandler(i,value)}
+        onOnOff={(value)=>this.onOnOffHandler(i,value)}
+        onChangeInstrument={(value) => this.onChangeInstrumentHandler(i,value)}
+        onChangeNote={(value)=>this.onChangeNoteHandler(i,value)}
+        onChangeVolume={(value)=>this.onChangeVolumeHandler(i,value)}
         instrument={this.state.instruments[i]}
       />
     );

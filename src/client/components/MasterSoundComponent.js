@@ -10,15 +10,21 @@ import ReactDOM from 'react-dom';
 
 class MstSoundComponent extends Component {
   constructor(props){
-      super(props)
+      super(props);
       this.setGuitar();
+      this.state = {instruments:this.props.instruments,};
   }
 
-  play () {
-    console.log('Playing');
-  }
+  componentDidMount() {
+      this.playSoundGuitar();
+    }
+
+  // play () {
+  //   console.log('Playing');
+  // }
 
   playSoundGuitar () {
+    this.props.audioContext.resume();
     var myinstance = createjs.Sound.play("c3");
   }
 
@@ -45,9 +51,17 @@ class MstSoundComponent extends Component {
     ];
     createjs.Sound.alternateExtensions = ["wav"];	// add other extensions to try loading if the src file extension is not supported
     createjs.Sound.addEventListener("fileload", function(event) {
-      //vm.readyToPlayGuitar(event)
+      var instance = createjs.Sound.play("c3");
     }); // add an event listener for when load is completed
     createjs.Sound.registerSounds(sounds, assetsPath);  // regier sound, which preloads by default
+  }
+
+  render() {
+    return(
+      <div>
+        SoundBox with {this.state.instruments[0].type}
+      </div>
+    )
   }
 }
 
