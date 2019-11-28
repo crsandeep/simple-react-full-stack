@@ -3,7 +3,7 @@ import './app.css';
 import Switches from './commons/switch.js'
 import ReactImage from './react.png';
 import Menu from './components/MenuHeaderComponent.js';
-import InstrCtrPnl from './components/InstrumentsControllerPanel.js';
+import InstrumentsPanel from './components/InstrumentsPanel.js';
 import BodiesCtrPnl from './components/BodiesControllerPanel.js';
 import BodyComponent from './components/BodyComponent.js';
 import InstrCmp from './components/InstrumentComponent.js';
@@ -39,6 +39,22 @@ function channel (name) {
   return instrument;
 };
 
+function Channel (name) {
+  this.name = name;
+  this.on = false;
+  this.type = 'Piano';
+  this.mode = 'Single';
+  this.scale = 'Major';
+  this.note = 'C';
+  this.pitch = '3'
+  this.volume = '5';
+  this.sensitivity = '1';
+};
+
+var body = new Channel('Body');
+var hands = new Channel('Hands');
+
+
 // function bodyParam (bodyIndex) {
 //   var value = {
 //   'BodyIndex': bodyIndex,
@@ -66,67 +82,21 @@ var bodyParam = {
 'FeetCy':0
 }
 
-// Define all the instrument registered. I shold programattically define the orchestra?(i.e. based on the instrumentName)
-var  orchestra = {Body: channel(instrumentName[0]),Hands: channel(instrumentName[1]),Feet: channel(instrumentName[2]),Spine: channel(instrumentName[3])};
-
-
 
 class App extends Component {
-
-  constructor(props) {
-
+    constructor(props) {
     super(props);
-    this.state = {bodies:[], index:1, instruments:orchestra};
-    //this.props.instruments = orchestra;
-    this.onHandleMouse = this.onHandleMouse.bind(this);
-    this.onHandleSelect = this.onHandleSelect.bind(this);
-  }
-
-  //This is done for the slide volume comps which onchange event is not working!!
-  onHandleMouse (e) {
-    if(e.changeType != 'Volume'){
-      return;
-    };
-    orchestra[e.currentTarget.firstChild.id].Volume = e.changeValue;
-    // console.log(
-    //   "Change Mouse from: ", e.currentTarget.firstChild.id,
-    //   " of the " + e.changeType +
-    //   " with Value: ", e.changeValue
-    // )
-  }
-
-  //Event handler for all but the volume slide
-  onHandleSelect (e) {
-    if(e.changeType === 'Volume'){
-      return;
-    }
-    orchestra[e.currentTarget.firstChild.id][e.changeType] = e.changeValue;
-    console.log(
-      "Change Selection from: ", e.currentTarget.firstChild.id,
-      " of the " + e.changeType +
-      " with Value: ", e.changeValue
-    )
-    //this.soundBox.playSoundGuitar();
-  }
-
-  componentDidUpdate (prevProps, prevState, snapshot){
-    if(prevState.bodies[0] != undefined){
-      bodyParam.BodyCx = prevState.bodies[0].cx;
-      bodyParam.BodyCy = prevState.bodies[0].cx;
-      // this.setState({bodyParam:bd});
-      console.log('CenterX: ', prevState.bodies[0].cx);
-      console.log('Openess:', prevState.bodies[0].handsOpenes);
-    }
+    this.state = {bodies:[], index:1, instruments:[body,hands],}
   }
 
   componentDidMount() {
-      setInterval(() => {
-          var newIndex = this.state.index + 1;
-          var body = data[newIndex];
-          //console.log(body[0].bodyIndex);
-        //  console.log(body[0].joints);
-          this.setState({bodies:data[newIndex], index: newIndex})
-      }, 70);
+      // setInterval(() => {
+      //     var newIndex = this.state.index + 1;
+      //     var body = data[newIndex];
+      //     //console.log(body[0].bodyIndex);
+      //   //  console.log(body[0].joints);
+      //     this.setState({bodies:data[newIndex], index: newIndex})
+      // }, 70);
     }
 
   render() {
@@ -138,14 +108,7 @@ class App extends Component {
           </div>
       	</div>
       	<div className={"row"}>
-      		<div className="col-md-6">
-            <ul className={"list-group border-0"}>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name='Body' instrument = {orchestra['Body']} /></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Hands" instrument = {orchestra['Hands']}/></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Spine" instrument = {orchestra['Spine']}/></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Feet" instrument = {orchestra['Feet']}/></li>
-            </ul>
-          </div>
+      		<InstrumentsPanel instruments={this.state.instruments}/>
       		<div className={"col-md-6"}>
             <Monitor bodies={this.state.bodies} />
           </div>

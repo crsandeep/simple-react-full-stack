@@ -39,7 +39,11 @@ function valueLabelFormat(value) {
   return marks.findIndex(mark => mark.value === value) + 1;
 }
 
-export default function DiscreteSlider() {
+function changeHandler(){
+  alert('');
+}
+
+export default function DiscreteSlider(props) {
   const classes = useStyles();
 
   return (
@@ -49,6 +53,7 @@ export default function DiscreteSlider() {
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider"
         valueLabelDisplay="auto"
+        onChangeCommitted={props.onChangeCommitted()}
         step={10}
         marks
         min={10}
