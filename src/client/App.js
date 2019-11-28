@@ -46,7 +46,7 @@ function Channel (name) {
 
 var body = new Channel('Body');
 var hands = new Channel('Hands');
-
+var feet = new Channel('Feet');
 
 // function bodyParam (bodyIndex) {
 //   var value = {
@@ -86,7 +86,7 @@ class App extends Component {
     this.audioContext = new AudioContext();
     //this.setGuitar();
     this.bodyParam = new bodyParam();
-    this.state = {bodies:[], index:1, instruments:[body,hands], bodyParam:this.bodyParam}
+    this.state = {bodies:[], index:1, instruments:[body,hands,feet], bodyParam:this.bodyParam}
   }
 
   componentDidMount() {

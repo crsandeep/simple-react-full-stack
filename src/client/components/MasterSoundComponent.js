@@ -15,7 +15,7 @@ class MstSoundComponent extends Component {
       this.state = {instruments:this.props.instruments,};
   }
 
-  componentDidMount() {
+  componentDidUpdate(){
       this.playSoundGuitar();
     }
 
@@ -58,7 +58,7 @@ class MstSoundComponent extends Component {
 
   render() {
     return(
-      <div>
+      <div onClick={()=> this.playSoundGuitar()  }>
         SoundBox with {this.state.instruments[0].type}
       </div>
     )
