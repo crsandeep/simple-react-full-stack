@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function NativeSelects() {
+export default function InstrumentSelector(props) {
   const classes = useStyles();
   const [state, setState] = React.useState({
     instrument: '',
@@ -40,8 +40,8 @@ export default function NativeSelects() {
         <InputLabel htmlFor="instrument-native-simple">Instrument</InputLabel>
         <Select
           native
-          value={state.instrument}
-          onChange={handleChange('instrument')}
+          value={props.value}
+          onChange={props.onChange()}
           inputProps={{
             name: 'instrument',
             id: 'instrument-native-simple',

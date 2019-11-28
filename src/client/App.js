@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 import './app.css';
-import Switches from './commons/switch.js'
 import ReactImage from './react.png';
-import Menu from './components/MenuHeaderComponent.js';
 import InstrumentsPanel from './components/InstrumentsPanel.js';
-import BodiesCtrPnl from './components/BodiesControllerPanel.js';
-import BodyComponent from './components/BodyComponent.js';
-import InstrCmp from './components/InstrumentComponent.js';
 import Monitor from './components/MonitorComponent.js';
 import data from './lmac1.json';
-
-
-//const json = require('./jse.json');
 
 var index = 0;
 //var mss= new MstSoundComponent();
@@ -27,14 +19,14 @@ var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
 
 function channel (name) {
   var instrument = {
-  'Name' : name,
-  'Switch': true,
-  'Type' : 'Piano',
-  'Mode' : 'Single',
-  'Scale': 'Major',
-  'Note' : 'C',
-  'Volume' : 5,
-  'Sensistivy' : 10
+  'name' : name,
+  'switch': true,
+  'type' : 'Piano',
+  'mode' : 'Single',
+  'scale': 'Major',
+  'note' : 'C',
+  'volume' : 5,
+  'sensistivy' : 10
 }
   return instrument;
 };
@@ -47,8 +39,8 @@ function Channel (name) {
   this.scale = 'Major';
   this.note = 'C';
   this.pitch = '3'
-  this.volume = '5';
-  this.sensitivity = '1';
+  this.volume = 5;
+  this.sensitivity = 1;
 };
 
 var body = new Channel('Body');
@@ -90,13 +82,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-      // setInterval(() => {
-      //     var newIndex = this.state.index + 1;
-      //     var body = data[newIndex];
-      //     //console.log(body[0].bodyIndex);
-      //   //  console.log(body[0].joints);
-      //     this.setState({bodies:data[newIndex], index: newIndex})
-      // }, 70);
+      setInterval(() => {
+          var newIndex = this.state.index + 1;
+          var body = data[newIndex];
+          //console.log(body[0].bodyIndex);
+        //  console.log(body[0].joints);
+          this.setState({bodies:data[newIndex], index: newIndex})
+      }, 70);
     }
 
   render() {

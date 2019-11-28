@@ -15,134 +15,77 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import Switches from '../commons/switch.js'
-import NativeSelects from '../commons/selector.js'
+import OnOff from '../commons/switch.js'
+import InstrumentSelector from '../commons/instrumentSelector.js'
 import NoteSelector from '../commons/noteSelector.js'
 import DiscreteSlider from '../commons/volumeSelector.js'
 
-class InstrumentOld extends Component {
-
+class Instrument extends Component {
   constructor(props){
       super(props);
-      this.instrument = this.props.instrument;
-  }
-
-  componentDidMount(){
-    console.log('Rendering Instruments')
-  }
-
-  onChangeVolume (e) {
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Volume';
-    // e.changeValue = e.target.innerText;
-    this.instrument.volume = e.target.innerText;
-    this.props.handleChange();
-  }
-
-  onChangeSwitch (e) {
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Switch';
-    // e.changeValue = e.target.checked;
-    this.instrument['Switch'] = e.target.checked;
-  }
-
-  onChangeInstrument (e) {
-    //console.log(e.target.value);
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Instrument';
-    // e.changeValue = e.target.value;
-    this.instrument['Type'] = e.target.value;
-  }
-
-  onChangeNote (e) {
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Note';
-    // e.changeValue = e.target.value;
-    this.instrument['Note'] = e.target.value;
-  }
-
-
-  render() {
-    return (
-						<div id={this.instrument.name} className={"col-12"}>
-                <ul className={"list-group border-0"}>
-                  <li className={"list-group-item bg-secondary text-white"}>{this.instrument.name}</li>
-                  <li className={"list-group-item border-0"}>
-                    <div className={"row"}>
-                      <div onChange={this.onChangeSwitch} name={this.name} className={"col-md-2"}>
-                        <Switches/>
-                      </div>
-                      <div onChange={this.onChangeInstrument} name={this.name} className={"col-md-5"}>
-                        <NativeSelects />
-                      </div>
-                      <div  onChange={this.onChangeNote} name={this.name} className={"col-md-5"}>
-                        <NoteSelector />
-                      </div>
-                    </div>
-                  </li>
-                  <li className={"list-group-item border-0"}>
-                    <div onMouseUp={this.onChangeVolume} name={this.name} className={"col-md-12"}>
-                      <DiscreteSlider />
-                    </div>
-                  </li>
-                </ul>
-            </div>
-      )
+      this.onChangeVolumeHandler = this.onChangeVolumeHandler.bind(this);
+      this.onChangeNoteHandler = this.onChangeNoteHandler.bind(this);
+      this.onChangeInstrumentHandler = this.onChangeInstrumentHandler.bind(this);
+      this.onOnOffHandler = this.onOnOffHandler.bind(this);
     }
-}
 
-
-class Instrument01 extends Component {
-  constructor(props){
-      super(props);
-      this.instruments = this.props.instrument;
+  // Triggered by the volume selector
+  onChangeVolumeHandler(e,value){
+    this.props.onChangeVolumeHandler(value);
   }
 
-
-  volumeHandler (event,value) {
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Volume';
-    // e.changeValue = e.target.innerText;
-    //this.instrument.volume =  value;
-    // this.props.handleChange();
-    console.log('Volume set to:', value);
+  // Triggered by the note selector
+  onChangeNoteHandler(e){
+    this.props.onChangeNoteHandler(e.target.value);
   }
 
+  // Triggered by the instrument selector
+  onChangeInstrumentHandler(e){
+    this.props.onChangeInstrumentHandler(e.target.value);
+  }
+
+  // Triggered by the Switch on/of selector
+  onOnOffHandler(e){
+    this.props.onOnOffHandler(e.target.checked);
+  }
 
 
   render() {
     return (
-      <div>
-        <DiscreteSlider onChangeCommitted={() =>this.volumeHandler}/>
-      </div>
-      )
-    }
-}
-
-class InstrumentWorking extends Component {
-  constructor(props){
-      super(props);
-      this.instrument = this.props.instrument;
-      this.volumeHandler = this.volumeHandler.bind(this);
-  }
-
-
-  volumeHandler (event,value) {
-    // e.changeSource = e.currentTarget.name
-    // e.changeType = 'Volume';
-    // e.changeValue = e.target.innerText;
-    this.instrument.volume =  value;
-    // this.props.handleChange();
-    console.log('Volume set to:', value);
-    //this.props.volumeHandler();
-  }
-
-
-
-  render() {
-    return (
-      <div>
-        <DiscreteSlider onChangeCommitted={() =>this.volumeHandler}/>
+      <div className={"col-12"}>
+          <ul className={"list-group border-0"}>
+            <li className={"list-group-item bg-secondary text-white"}>{this.props.instrument.name}</li>
+            <li className={"list-group-item border-0"}>
+              <div className={"row"}>
+                <div className={"col-md-2"}>
+                  <OnOff
+                    onChange={()=> this.onOnOffHandler}
+                    value={this.props.instrument.switch}
+                  />
+                </div>
+                <div className={"col-md-5"}>
+                  <InstrumentSelector
+                    onChange={()=> this.onChangeInstrumentHandler}
+                    value={this.props.instrument.type}
+                  />
+                </div>
+                <div className={"col-md-5"}>
+                  <NoteSelector
+                    onChange={()=>this.onChangeNoteHandler}
+                    value={this.props.instrument.note}
+                  />
+                </div>
+              </div>
+            </li>
+            <li className={"list-group-item border-0"}>
+              <div className={"col-md-12"}>
+                <DiscreteSlider
+                  onChangeCommitted={()=>this.onChangeVolumeHandler}
+                  value={this.props.instrument.volume}
+                />
+              </div>
+            </li>
+          </ul>
       </div>
       )
     }

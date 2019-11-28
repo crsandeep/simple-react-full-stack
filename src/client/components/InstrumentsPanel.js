@@ -8,17 +8,75 @@ class InstrumentsPanel extends Component {
 
   constructor(props){
       super(props);
-      this.instruments = this.props.instruments;
+      this.state = {instruments:this.props.instruments};
+  }
+
+  // Triggered by the change of volume
+  onChangeVolumeHandler (i,value) {
+    const instruments = this.state.instruments.slice();
+    const instrument = instruments[i];
+    if(instrument.volume != value){
+      instrument.volume = value;
+      instruments[i] = instrument;
+      this.setState({instruments:instruments});
+    }
+    console.log('******Instrument Panel **********');
+    console.log('Volume of:', i);
+    console.log('Set With Value:', value);
+  }
+
+  // Triggered by the change of // NOTE:
+  onChangeNoteHandler (i,value) {
+    const instruments = this.state.instruments.slice();
+    const instrument = instruments[i];
+    if(instrument.note != value){
+      instrument.note = value;
+      instruments[i] = instrument;
+      this.setState({instruments:instruments});
+    }
+    console.log('******Instrument Panel **********');
+    console.log('Note of:', i);
+    console.log('Set With Value:', value);
+  }
+
+  // Triggered by the change of instrument type
+  onChangeInstrumentHandler (i,value) {
+    const instruments = this.state.instruments.slice();
+    const instrument = instruments[i];
+    if(instrument.type != value){
+      instrument.type = value;
+      instruments[i] = instrument;
+      this.setState({instruments:instruments});
+    }
+    console.log('******Instrument Panel **********');
+    console.log('Instrument type of:', i);
+    console.log('Set to:', value);
+  }
+
+  // Triggered by the switch on/off
+  onOnOffHandler (i, value) {
+    const instruments = this.state.instruments.slice();
+    const instrument = instruments[i];
+    if(instrument.switch != value){
+      instrument.switch = value;
+      instruments[i] = instrument;
+      this.setState({instruments:instruments});
+    }
+    console.log('******Instrument Panel **********');
+    console.log('Instrument Switch of:', i);
+    console.log('Set to:', value);
   }
 
   renderInstrument(i){
     return(
-      <Instrument instrument={this.instruments[i]}/>
+      <Instrument
+        onOnOffHandler ={(value)=>this.onOnOffHandler(i,value)}
+        onChangeInstrumentHandler={(value) => this.onChangeInstrumentHandler(i,value)}
+        onChangeNoteHandler={(value)=>this.onChangeNoteHandler(i,value)}
+        onChangeCommitted={(value)=>this.onChangeCommittedHandler(i,value)}
+        instrument={this.state.instruments[i]}
+      />
     );
-  }
-
-  handleChange(i){
-    console.log('with:', i);
   }
 
   render() {

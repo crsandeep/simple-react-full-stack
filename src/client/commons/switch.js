@@ -1,7 +1,7 @@
 import React from 'react';
 import Switch from '@material-ui/core/Switch';
 
-export default function Switches() {
+export default function OnOff(props) {
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -14,8 +14,8 @@ export default function Switches() {
   return (
     <div className={"mt-3"}>
       <Switch
-        checked={state.checkedA}
-        onChange={handleChange('checkedA')}
+        checked={props.value}
+        onChange={props.onChange()}
         value="checkedA"
         inputProps={{ 'aria-label': 'primary checkbox' }}/>
     </div>

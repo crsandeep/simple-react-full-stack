@@ -49,15 +49,16 @@ export default function DiscreteSlider(props) {
   return (
     <div className={classes.root}>
       <Slider
-        defaultValue={30}
+        value = {props.value}
+        defaultValue={5}
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider"
         valueLabelDisplay="auto"
         onChangeCommitted={props.onChangeCommitted()}
-        step={10}
+        step={2}
         marks
-        min={10}
-        max={110}
+        min={0}
+        max={10}
       />
       </div>
   );
