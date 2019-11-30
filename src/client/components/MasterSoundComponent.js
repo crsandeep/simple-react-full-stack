@@ -1,12 +1,8 @@
-// Contain
-// - Volume On/Off
-// - Sound On/Off
-// - Track On/Off
-
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 var water_drop = {
+  name:'Water Drop',
   instance: null,
   source: [
       {src:"01-C0.wav", id:"c0"},
@@ -37,6 +33,7 @@ var water_drop = {
 }
 
 var classic_guitar = {
+  name:'Classic Guitar',
   instance: null,
   source: [
       {src:"c3_mf_rr3.wav", id:"c3"},
@@ -74,11 +71,13 @@ class MstSoundComponent extends Component {
       //this.classic_Guitar = new Classic_Guitar();
       //this.water_Drop = new Water_Drop();
       this.state = {instruments:this.props.instruments,};
+      this.spy=null;
   }
 
   //Try to play each Body instrument
   // TO DO: Make an abstract foreach() instead
   componentDidUpdate (){
+      this.logBodyParam();
       this.playCenterBody(this.props.instruments[0]);
       this.playHands(this.props.instruments[1]);
       this.playFeet(this.props.instruments[2]);
@@ -123,6 +122,7 @@ class MstSoundComponent extends Component {
     }
   }
 
+ //What if note is array of notes so that I can iterate on it?
   generateNote (chn, instrument, bodyParam){
     var note = null;
     if (instrument.mode == this.props.instrumentModeList.random ){
@@ -135,7 +135,8 @@ class MstSoundComponent extends Component {
           return note;
           break;
         case this.props.instrumentChannelName.hands:
-          note = this.generateHandsNote(chn, instrument, bodyParam);
+          //As soon as you have the array of notes generate also the one for the hands
+          note = this.generateWRightristeNote(chn, instrument, bodyParam);
           return note;
           break;
         case this.props.instrumentChannelName.feet:
@@ -146,15 +147,49 @@ class MstSoundComponent extends Component {
     }
   }
 
+  generateWRightristeNote(channel, instrument, bp){
+    var note = null;
+    var x1 = bp.cx;
+    var x2 = bp.wrx;
+    var y1 = bp.cy;
+    var y2 = bp.wry;
+    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+    var norm_d = Math.round(d/channel.notes.length);
+    //console.log('Distance from Center of Right Hands:' , d);
+    //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
+    if(norm_d<channel.notes.length){
+      note = channel.notes[norm_d];
+    } else {
+      note = channel.notes[channel.notes.length-1];
+    }
+    //console.log('Playing Note:' , note);
+    return note;
+  }
+
   generateBodyNote (channel, instrument, bodyParam){
       var note = null;
+      var param = bodyParam.hlx/10;
+      this.spy = Math.round(param);
       note = channel.notes[0];
       return note;
   }
 
-  generateHandsNote (channel, instrument, bodyParam){
+  generateRightHandsNote (channel, instrument, bp){
       var note = null;
-      note = channel.notes[0];
+      var x1 = bp.wrx;
+      var x2 = bp.hrx;
+      var y1 = bp.wry;
+      var y2 = bp.hry;
+      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+      var norm_d = Math.round(d/10);
+      //console.log('Distance from Center of Right Hands:' , d);
+      //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
+      if(norm_d<channel.notes.length){
+        note = channel.notes[norm_d];
+      } else {
+        note = channel.notes[channel.notes.length-1];
+      }
+      //console.log('Playing Note:' , note);
       return note;
   }
 
@@ -165,13 +200,28 @@ class MstSoundComponent extends Component {
   }
 
   generateSound (instrument, note){
-    var myinstance = createjs.Sound.play(note);
-    myinstance.volume = instrument.volume;
+    if( instrument.lastPlayedNote != note ) {
+      console.log('Playing Note:' , note);
+      var myinstance = createjs.Sound.play(note);
+      myinstance.volume = instrument.volume;
+       instrument.lastPlayedNote = note;
+      return
+    } else {
+      return;
+    }
+  }
+
+  logBodyParam(){
+    var bp = this.props.bodyParam;
+    // console.log('Body Center x: ' + bp.cx + ' Body Center y ' +  bp.cy);
+    // console.log('Hand Left x: ' + bp.hlx + ' Hand Left y ' +  bp.hly);
+    // console.log('Hand Right x: ' + bp.hrx + ' Hand Right   y ' +  bp.hry);
   }
 
   render() {
     return(
       <div>
+      {this.spy};
       </div>
     )
   }

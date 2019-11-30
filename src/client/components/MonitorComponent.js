@@ -33,6 +33,11 @@ function bodyParam () {
 this.BodyIndex= '';
 this.cx= 0;
 this.cy= 0;
+this.wrx=0;   //Wrist right
+this.wry=0;   //Wrist left
+this.wlx=0;   //Wrist right
+this.wlx=0;   //Wrist right
+this.wl=0;
 this.hlx=0;   //left hand x
 this.hly=0    //right habd y
 this.hrx=0;   //left hand x
@@ -101,6 +106,27 @@ class Monitor extends Component {
     ctx.fill();
     //ctx.fillRect(bodyParam.cx/20,bodyParam.cy/20, 20, 20);
 
+    // To be turn on and off with future swithces
+    if(true){
+      var x1 = bodyParam.cx;
+      var x2 = bodyParam.wrx;
+      var y1 = bodyParam.cy;
+      var y2 = bodyParam.wry;
+      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+      ctx.beginPath();
+      ctx.arc(bodyParam.cx,bodyParam.cy, d, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      var x1 = bodyParam.cx;
+      var x2 = bodyParam.wlx;
+      var y1 = bodyParam.cy;
+      var y2 = bodyParam.wly;
+      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+      ctx.beginPath();
+      ctx.arc(bodyParam.cx,bodyParam.cy, d, 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+
     this.props.newBodyParam(bodyParam);
   }
 
@@ -128,6 +154,8 @@ class Monitor extends Component {
     break;
     // WRIST LEFT
     case 6:
+    bodyParam.wlx = joint.x;
+    bodyParam.wly = joint.y
     break;
     // HAND LEFT
     case 7:
@@ -142,6 +170,8 @@ class Monitor extends Component {
     break;
     // WRIST RIGHT
     case 10:
+    bodyParam.wrx = joint.x;
+    bodyParam.wry = joint.y
     break;
     // HAND RIGHT
     case 11:

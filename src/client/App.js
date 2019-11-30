@@ -43,8 +43,9 @@ function Channel (name) {
   this.mode = 'Single';
   this.scale = 'Major';
   this.note = 'C';
+  this.lastPlayedNote= null;
   this.pitch = '3'
-  this.volume = 0.5;
+  this.volume = 0;
   this.mode = instrumentModeList.random;
   this.sensitivity = 1;
 };
@@ -52,21 +53,6 @@ function Channel (name) {
 var body = new Channel(instrumentChannelName.body);
 var hands = new Channel(instrumentChannelName.hands);
 var feet = new Channel(instrumentChannelName.feet);
-
-// function bodyParam (bodyIndex) {
-//   var value = {
-//   'BodyIndex': bodyIndex,
-//   'BodyCx': 0,
-//   'BodyCy': 0,
-//   'HandsCx':0,
-//   'HandsCy':0,
-//   'SpineCx':0,
-//   'SpineCy':0,
-//   'FeetCx':0,
-//   'FeetCy':0
-//   }
-//   return value;
-// };
 
 function bodyParam () {
 this.BodyIndex= '';
@@ -98,14 +84,11 @@ class App extends Component {
       setInterval(() => {
           var newIndex = this.state.index + 1;
           var body = data[newIndex];
-          //console.log(body[0].bodyIndex);
-        //  console.log(body[0].joints);
           this.setState({bodies:data[newIndex], index: newIndex})
-      }, 300);
+      }, 150);
     }
 
     newBodyParamHandler(bodyParam){
-      //console.log(bodyParam.cx);
       this.bodyParam= bodyParam;
     }
 
@@ -142,21 +125,3 @@ class App extends Component {
 }
 
 export default App;
-
-
-
-// -----------
-
-class SoundBox extends Component {
-    constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return(
-      <div>
-        SoundBox
-      </div>
-    )
-  }
-}
