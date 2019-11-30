@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -16,41 +16,31 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function InstrumentSelector(props) {
+export default function ModeSelector(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    instrument: '',
-    name: 'hai',
-  });
+  const [note, setNote] = React.useState('');
 
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
 
-
-  const handleChange = name => event => {
-    setState({
-      ...state,
-      [name]: event.target.value,
-    });
+  const handleChange = event => {
+    setNote(event.target.value);
   };
 
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="instrument-native-simple">Instrument</InputLabel>
+        <InputLabel id="demo-simple-select-label">Mode</InputLabel>
         <Select
-          native
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={props.value}
           onChange={props.onChange()}
-          inputProps={{
-            name: 'instrument',
-            id: 'instrument-native-simple',
-          }}
         >
-          <option value={'Classic Guitar'}>Classic Guitar</option>
-          <option value={'Water Drop'}>Water Drop</option>
+          <MenuItem value={'Random'}>Random</MenuItem>
+          <MenuItem value={'Scale'}>Scale</MenuItem>
         </Select>
       </FormControl>
-    </div>
-  );
-}
+      </div>
+    )
+  }

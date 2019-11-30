@@ -12,7 +12,8 @@ class InstrumentsPanel extends Component {
   }
 
   // Triggered by the change of volume
-  onChangeVolumeHandler (i,value) {
+  onChangeVolumeHandler (i,v) {
+    var value = v/10;
     const instruments = this.state.instruments.slice();
     const instrument = instruments[i];
     if(instrument.volume != value){
@@ -39,6 +40,19 @@ class InstrumentsPanel extends Component {
     console.log('Set With Value:', value);
   }
 
+  onChangeModeHandler (i,value) {
+    const instruments = this.state.instruments.slice();
+    const instrument = instruments[i];
+    if(instrument.mode != value){
+      instrument.mode = value;
+      instruments[i] = instrument;
+      this.setState({instruments:instruments});
+    }
+    console.log('******Instrument Panel **********');
+    console.log('Mode of:', i);
+    console.log('Set With Value:', value);
+  }
+
   // Triggered by the change of instrument type
   onChangeInstrumentHandler (i,value) {
     const instruments = this.state.instruments.slice();
@@ -57,13 +71,13 @@ class InstrumentsPanel extends Component {
   onOnOffHandler (i, value) {
     const instruments = this.state.instruments.slice();
     const instrument = instruments[i];
-    if(instrument.switch != value){
-      instrument.switch = value;
+    if(instrument.on != value){
+      instrument.on = value;
       instruments[i] = instrument;
       this.setState({instruments:instruments});
     }
     console.log('******Instrument Panel **********');
-    console.log('Instrument Switch of:', i);
+    console.log('Instrument On of:', i);
     console.log('Set to:', value);
   }
 
@@ -73,8 +87,10 @@ class InstrumentsPanel extends Component {
         onOnOff={(value)=>this.onOnOffHandler(i,value)}
         onChangeInstrument={(value) => this.onChangeInstrumentHandler(i,value)}
         onChangeNote={(value)=>this.onChangeNoteHandler(i,value)}
+        onChangeMode={(value)=>this.onChangeModeHandler(i,value)}
         onChangeVolume={(value)=>this.onChangeVolumeHandler(i,value)}
         instrument={this.state.instruments[i]}
+        instrumentTypeList = {this.props.instrumentTypeList}
       />
     );
   }

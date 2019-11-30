@@ -18,35 +18,40 @@ var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
 
 // Each instruments defines is own 'sound' channel
 
-function channel (name) {
-  var instrument = {
-  'name' : name,
-  'switch': true,
-  'type' : 'Piano',
-  'mode' : 'Single',
-  'scale': 'Major',
-  'note' : 'C',
-  'volume' : 5,
-  'sensistivy' : 10
-}
-  return instrument;
-};
+// function channel (name) {
+//   var instrument = {
+//   'name' : name,
+//   'switch': true,
+//   'type' : 'Piano',
+//   'mode' : 'Single',
+//   'scale': 'Major',
+//   'note' : 'C',
+//   'volume' : 0.5,
+//   'sensistivy' : 10
+// }
+//   return instrument;
+// };
+
+const instrumentTypeList = {classic_guitar:'Classic Guitar', water_drop:'Water Drop'};
+const instrumentModeList = {random:'Random', scale:'Scale'};
+const instrumentChannelName ={body:'Body', hands:'Hands', feet: 'Feet'};
 
 function Channel (name) {
   this.name = name;
   this.on = false;
-  this.type = 'Piano';
+  this.type = instrumentTypeList.classic_guitar;
   this.mode = 'Single';
   this.scale = 'Major';
   this.note = 'C';
   this.pitch = '3'
-  this.volume = 5;
+  this.volume = 0.5;
+  this.mode = instrumentModeList.random;
   this.sensitivity = 1;
 };
 
-var body = new Channel('Body');
-var hands = new Channel('Hands');
-var feet = new Channel('Feet');
+var body = new Channel(instrumentChannelName.body);
+var hands = new Channel(instrumentChannelName.hands);
+var feet = new Channel(instrumentChannelName.feet);
 
 // function bodyParam (bodyIndex) {
 //   var value = {
@@ -96,40 +101,13 @@ class App extends Component {
           //console.log(body[0].bodyIndex);
         //  console.log(body[0].joints);
           this.setState({bodies:data[newIndex], index: newIndex})
-      }, 70);
+      }, 300);
     }
 
     newBodyParamHandler(bodyParam){
       //console.log(bodyParam.cx);
       this.bodyParam= bodyParam;
     }
-
-    // setGuitar (){
-    //   var assetsPath = "src/client/audio/guitar/";
-    //   //scale: ['C','D','E','G','A'],  //majorPentatonic
-    //   var sounds =[
-    //       {src:"c3_mf_rr3.wav", id:"c3"},
-    //       {src:"c3_mf_rr3.wav", id:"d3"},
-    //       {src:"eb3_mf_rr3.wav", id:"e3"},
-    //       {src:"gb3_mf_rr3.wav", id:"g3"},
-    //       {src:"a3_mf_rr3.wav", id:"a3"},
-    //       {src:"c4_mf_rr3.wav", id:"c4"},
-    //       {src:"c4_mf_rr3.wav", id:"d4"},
-    //       {src:"eb4_mf_rr3.wav", id:"e4"},
-    //       {src:"gb4_mf_rr3.wav", id:"g4"},
-    //       {src:"a4_mf_rr3.wav", id:"a4"},
-    //       {src:"c5_mf_rr3.wav", id:"c5"},
-    //       {src:"eb5_mf_rr3.wav", id:"d5"},
-    //       {src:"eb5_mf_rr3.wav", id:"e5"},
-    //       {src:"gb5_mf_rr3.wav", id:"g5"},
-    //       {src:"a5_mf_rr3.wav", id:"a5"},
-    //   ];
-    //   createjs.Sound.alternateExtensions = ["wav"];	// add other extensions to try loading if the src file extension is not supported
-    //   createjs.Sound.addEventListener("fileload", function(event) {
-    //     var instance = createjs.Sound.play("c3");
-    //   }); // add an event listener for when load is completed
-    //   createjs.Sound.registerSounds(sounds, assetsPath);  // regier sound, which preloads by default
-    // }
 
   render() {
     return (
@@ -138,6 +116,9 @@ class App extends Component {
           audioContext = {this.audioContext}
           instruments = {this.state.instruments}
           bodyParam = {this.bodyParam}
+          instrumentTypeList={instrumentTypeList}
+          instrumentModeList={instrumentModeList}
+          instrumentChannelName={instrumentChannelName}
         />
       	<div className="row">
       		<div className={"col-md-12 bg-secondary"}>
@@ -145,7 +126,7 @@ class App extends Component {
           </div>
       	</div>
       	<div className={"row"}>
-      		<InstrumentsPanel instruments={this.state.instruments}/>
+      		<InstrumentsPanel instruments={this.state.instruments} instrumentTypeList={instrumentTypeList}/>
       		<div className={"col-md-6"}>
             <Monitor
               newBodyParameter={(value)=>newBodyParameterHandle(value)}
