@@ -37,8 +37,8 @@ export default function ModeSelector(props) {
           value={props.value}
           onChange={props.onChange()}
         >
-          <MenuItem value={'Random'}>Random</MenuItem>
           <MenuItem value={'Scale'}>Scale</MenuItem>
+          <MenuItem value={'Random'}>Random</MenuItem>
         </Select>
       </FormControl>
       </div>

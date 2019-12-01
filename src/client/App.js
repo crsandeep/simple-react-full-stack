@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './app.css';
 import ReactImage from './react.png';
 import InstrumentsPanel from './components/InstrumentsPanel.js';
+import InstrumentsSettingPanel from './components/InstrumentsSettingPanel.js';
 import MstSoundComponent from './components/MasterSoundComponent.js';
 import Monitor from './components/MonitorComponent.js';
 import data from './lmac1.json';
@@ -9,55 +10,30 @@ import data from './lmac1.json';
 var index = 0;
 //var mss= new MstSoundComponent();
 
-function Kinect() {
-  console.log('hello');
-}
-
-// Define the name of the instruments  based on their link to the body's parts
-var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
-
-// Each instruments defines is own 'sound' channel
-
-// function channel (name) {
-//   var instrument = {
-//   'name' : name,
-//   'switch': true,
-//   'type' : 'Piano',
-//   'mode' : 'Single',
-//   'scale': 'Major',
-//   'note' : 'C',
-//   'volume' : 0.5,
-//   'sensistivy' : 10
+// function Kinect() {
+//   console.log('hello');
 // }
-//   return instrument;
-// };
 
+var setting1 = [
+  {"name":"Body","on":true,"type":"Classic Guitar","lastPlayedNote":["a5"],"volume":0.2,"mode":"Scale"},
+  {"name":"Hands","on":true,"type":"Water Drop","lastPlayedNote":["db0","db0"],"volume":0.2,"mode":"Scale"},
+  {"name":"Feet","on":true,"type":"Classic Guitar","lastPlayedNote":["g3"],"volume":0.2,"mode":"Scale"}
+]
+
+const instrumentName =['Body', 'Hands', 'Feet', 'Spine']; // Define the name of the instruments  based on their link to the body's parts
 const instrumentTypeList = {classic_guitar:'Classic Guitar', water_drop:'Water Drop'};
 const instrumentModeList = {random:'Random', scale:'Scale'};
 const instrumentChannelName ={body:'Body', hands:'Hands', feet: 'Feet'};
-
-function Channel (name) {
-  this.name = name;
-  this.on = false;
-  this.type = instrumentTypeList.classic_guitar;
-  this.mode = 'Single';
-  this.scale = 'Major';
-  this.note = 'C';
-  this.lastPlayedNote= null;
-  this.pitch = '3'
-  this.volume = 0;
-  this.mode = instrumentModeList.random;
-  this.sensitivity = 1;
-};
-
-var body = new Channel(instrumentChannelName.body);
-var hands = new Channel(instrumentChannelName.hands);
-var feet = new Channel(instrumentChannelName.feet);
 
 function bodyParam () {
 this.BodyIndex= '';
 this.cx= 0;
 this.cy= 0;
+this.wrx=0;   //Wrist right
+this.wry=0;   //Wrist left
+this.wlx=0;   //Wrist right
+this.wlx=0;   //Wrist right
+this.wl=0;
 this.hlx=0;   //left hand x
 this.hly=0    //right habd y
 this.hrx=0;   //left hand x
@@ -68,8 +44,24 @@ this.Scx=0;
 this.Scy=0;
 this.Fcx=0;
 this.Fcy=0
+this.ankLx=0; //left ankle x
+this.ankLy=0; //left ankle y
+this.ankRx=0; //right ankle x
+this.ankRy=0; //right ankle y
 }
 
+function Channel (name) {
+  this.name = name;
+  this.on = true;
+  this.type = instrumentTypeList.classic_guitar;
+  this.lastPlayedNote= [];
+  this.volume = 0.2;
+  this.mode = instrumentModeList.scale;
+};
+
+var body = new Channel(instrumentChannelName.body);
+var hands = new Channel(instrumentChannelName.hands);
+var feet = new Channel(instrumentChannelName.feet);
 
 class App extends Component {
     constructor(props) {
@@ -88,9 +80,18 @@ class App extends Component {
       }, 150);
     }
 
-    newBodyParamHandler(bodyParam){
-      this.bodyParam= bodyParam;
-    }
+  //Create a JSON file to capture the instrument settings and store somewhere
+  onSaveSettingsHandler(){
+    console.log('Should save this settings: ', JSON.stringify(this.state.instruments))
+  }
+
+  onLoadSettingsHandler(){
+    this.setState({instruments:setting1});
+  }
+
+  newBodyParamHandler(bodyParam){
+    this.bodyParam= bodyParam;
+  }
 
   render() {
     return (
@@ -109,12 +110,19 @@ class App extends Component {
           </div>
       	</div>
       	<div className={"row"}>
+          <div className={"col-md-4 mt-2"}>
       		<InstrumentsPanel instruments={this.state.instruments} instrumentTypeList={instrumentTypeList}/>
-      		<div className={"col-md-6"}>
+          </div>
+          <div className={"col-md-2 mt-2"}>
+            <InstrumentsSettingPanel
+              onSaveSettings={()=>this.onSaveSettingsHandler()}
+              onLoadSettings={()=>this.onLoadSettingsHandler()}/>
+          </div>
+      		<div className={"col-md-6 mt-5"}>
             <Monitor
               newBodyParameter={(value)=>newBodyParameterHandle(value)}
               bodies={this.state.bodies}
-              bodyParam = {this.state.bodyParam}
+              instruments ={this.state.instruments}
               newBodyParam = {(value)=> this.newBodyParamHandler(value)}
             />
           </div>

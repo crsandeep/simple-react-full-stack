@@ -48,6 +48,10 @@ this.Scx=0;
 this.Scy=0;
 this.Fcx=0;
 this.Fcy=0
+this.ankLx=0; //left ankle x
+this.ankLy=0; //left ankle y
+this.ankRx=0; //right ankle x
+this.ankRy=0; //right ankle y
 }
 
 class Monitor extends Component {
@@ -186,6 +190,8 @@ class Monitor extends Component {
     break;
     // ANKLE LEFT
     case 14:
+    bodyParam.ankLx = joint.x;
+    bodyParam.ankLy = joint.y
     break;
     // FOOT LEFT
     case 15:
@@ -198,6 +204,8 @@ class Monitor extends Component {
     break;
     // ANKLE RIGHT
     case 18:
+    bodyParam.ankRx = joint.x;
+    bodyParam.ankRy = joint.y
     break;
     // FOOT RIGHT
     case 19:

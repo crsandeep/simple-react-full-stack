@@ -65,7 +65,7 @@ water_drop.sounds = createjs.Sound.registerSounds(water_drop.source, water_drop.
 classic_guitar.sounds = createjs.Sound.registerSounds(classic_guitar.source, classic_guitar.assetsPath);
 
 
-class MstSoundComponent extends Component {
+class SoundSource extends Component {
   constructor(props){
       super(props);
       //this.classic_Guitar = new Classic_Guitar();
@@ -77,142 +77,145 @@ class MstSoundComponent extends Component {
   //Try to play each Body instrument
   // TO DO: Make an abstract foreach() instead
   componentDidUpdate (){
-      this.playInstrument(this.props.instruments[0]);
-      this.playInstrument(this.props.instruments[1]);
-      this.playInstrument(this.props.instruments[2]);
+      this.logBodyParam();
+      this.playCenterBody(this.props.instruments[0]);
+      this.playHands(this.props.instruments[1]);
+      this.playFeet(this.props.instruments[2]);
     }
 
   // If Body Instrument is Off or with no volume don't play
   // Else set the channel and then use it
-  playInstrument (instrument){
+  playCenterBody (instrument){
     if (!instrument.on) return;
     if (instrument.volume == 0) return;
-    var sounds = this.getSounds(instrument.type);
-    var note = this.generateNote(sounds, instrument, this.props.bodyParam);
+    var channel = this.getInstrument(instrument.type);
+    var note = this.generateNote(channel, instrument, this.props.bodyParam);
     this.generateSound(instrument, note);
   }
 
-  //Provide the sounds sample based on the type defined by the Body Instrument
-  // the sample are variable defined above. Should be a better way.....
+  playHands (instrument){
+    if (!instrument.on) return;
+    if (instrument.volume == 0 ) return;
+    var channel = this.getInstrument(instrument.type);
+    var note = this.generateNote(channel, instrument, this.props.bodyParam);
+    this.generateSound(instrument, note);
+  }
+
+  playFeet (instrument){
+    if (!instrument.on) return;
+    if (instrument.volume == 0 ) return;
+    var channel = this.getInstrument(instrument.type);
+    var note = this.generateNote(channel, instrument, this.props.bodyParam);
+    this.generateSound(instrument, note);
+  }
+
+  //Provide the instrument type to the Body Instrument
   //MUST DO: Select the type automatically by its defintion
-  getSounds (type){
+  getInstrument (type){
     switch (type) {
       case this.props.instrumentTypeList.classic_guitar:
-      return classic_guitar;
-      break;
+        return classic_guitar;
+        break;
       case this.props.instrumentTypeList.water_drop:
-      return water_drop;
-      break;
+        return water_drop;
+        break;
     }
   }
 
-  //Generates random notes or redirect to the right instrument sounds generator
-  generateNote (sounds, instrument, bodyParam){
-    var note = [];
+ //What if note is array of notes so that I can iterate on it?
+  generateNote (chn, instrument, bodyParam){
+    var note = null;
     if (instrument.mode == this.props.instrumentModeList.random ){
-      note.push(sounds.notes[Math.floor(Math.random()*sounds.notes.length)]);
+      note = chn.notes[Math.floor(Math.random()*chn.notes.length)];
       return note;
     } else {
       switch (instrument.name){
         case this.props.instrumentChannelName.body:
-        note = this.generateCenterBodyNote(sounds, instrument, bodyParam);
-        return note;
-        break;
+          note = this.generateBodyNote(chn, instrument, bodyParam);
+          return note;
+          break;
         case this.props.instrumentChannelName.hands:
-        //As soon as you have the array of notes generate also the one for the hands
-        note = this.generateWristeNote(sounds, instrument, bodyParam);
-        return note;
-        break;
+          //As soon as you have the array of notes generate also the one for the hands
+          note = this.generateWRightristeNote(chn, instrument, bodyParam);
+          return note;
+          break;
         case this.props.instrumentChannelName.feet:
-        note = this.generateFeetNote(sounds, instrument, bodyParam);
-        return note;
-        break;
+          note = this.generateFeetNote(chn, instrument, bodyParam);
+          return note;
+          break;
       }
     }
   }
 
-
-  generateFeetNote (sounds, instrument, bp) {
-    var note = [];
-    var arx = bp.ankRx;
-    var ary = bp.ankRy;
-    var alx = bp.ankLx;
-    var aly = bp.ankLy;
-    var d = Math.sqrt((arx-alx)*(arx-alx)+(ary-aly)*(ary-aly));
-    var norm_d = Math.round(d/sounds.notes.length);
-    //console.log('Distance from Center of Right Hands:' , d);
-    //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
-    if(norm_d<sounds.notes.length){
-      note.push(sounds.notes[norm_d]);
-      } else {
-        note.push((sounds.notes[(sounds.notes.length)-1]));
-    }
-    return note;
-  }
-
-  generateWristeNote(sounds, instrument, bp){
-    //Right Wrist
-    var note = [];
+  generateWRightristeNote(channel, instrument, bp){
+    var note = null;
     var x1 = bp.cx;
     var x2 = bp.wrx;
     var y1 = bp.cy;
     var y2 = bp.wry;
     var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
-    var norm_d = Math.round(d/sounds.notes.length);
+    var norm_d = Math.round(d/channel.notes.length);
     //console.log('Distance from Center of Right Hands:' , d);
     //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
-    if(norm_d<sounds.notes.length){
-      note.push(sounds.notes[norm_d]);
+    if(norm_d<channel.notes.length){
+      note = channel.notes[norm_d];
     } else {
-      note.push((sounds.notes[(sounds.notes.length)-1]));
-    }
-
-    //Left Wrist
-    var x1 = bp.cx;
-    var x2 = bp.wlx;
-    var y1 = bp.cy;
-    var y2 = bp.wly;
-    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
-    var norm_d = Math.round(d/sounds.notes.length);
-    //console.log('Distance from Center of Right Hands:' , d);
-    //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
-    if(norm_d<sounds.notes.length){
-      note.push(sounds.notes[norm_d]);
-    } else {
-      note.push((sounds.notes.length)-1);
+      note = channel.notes[channel.notes.length-1];
     }
     //console.log('Playing Note:' , note);
     return note;
   }
 
-  generateCenterBodyNote (sounds, instrument, bodyParam){
-    var bp = bodyParam;
-    var note = [];
-    var cx = bp.cx;
-    var norm_cx = Math.round(cx/sounds.notes.length);
-    //console.log('Distance from Center of Right Hands:' , d);
-    //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
-    if(norm_cx<sounds.notes.length){
-      note.push(sounds.notes[norm_cx]);
-      } else {
-        note.push((sounds.notes[(sounds.notes.length)-1]));
-    }
-    return note;
+  generateBodyNote (channel, instrument, bodyParam){
+      var note = null;
+      var param = bodyParam.hlx/10;
+      this.spy = Math.round(param);
+      note = channel.notes[0];
+      return note;
   }
 
-  //All instruemts at the end plays here!!
+  generateRightHandsNote (channel, instrument, bp){
+      var note = null;
+      var x1 = bp.wrx;
+      var x2 = bp.hrx;
+      var y1 = bp.wry;
+      var y2 = bp.hry;
+      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
+      var norm_d = Math.round(d/10);
+      //console.log('Distance from Center of Right Hands:' , d);
+      //console.log('Distance from Center of Right Hands:' , Math.round(d/10));
+      if(norm_d<channel.notes.length){
+        note = channel.notes[norm_d];
+      } else {
+        note = channel.notes[channel.notes.length-1];
+      }
+      //console.log('Playing Note:' , note);
+      return note;
+  }
+
+  generateFeetNote (channel, instrument, bodyParaml){
+      var note = null;
+      note = channel.notes[0];
+      return note;
+  }
+
   generateSound (instrument, note){
-    console.log('Playing: ' + note.length + ' notes');
-    if (JSON.stringify(note) !=JSON.stringify(instrument.lastPlayedNote)) {
-      note.forEach( function (n,index){
-        console.log('Playing Note:' , n);
-        var myinstance = createjs.Sound.play(n);
-        myinstance.volume = instrument.volume;
-      })
-      instrument.lastPlayedNote = note;
+    if( instrument.lastPlayedNote != note ) {
+      console.log('Playing Note:' , note);
+      var myinstance = createjs.Sound.play(note);
+      myinstance.volume = instrument.volume;
+       instrument.lastPlayedNote = note;
+      return
     } else {
       return;
     }
+  }
+
+  logBodyParam(){
+    var bp = this.props.bodyParam;
+    // console.log('Body Center x: ' + bp.cx + ' Body Center y ' +  bp.cy);
+    // console.log('Hand Left x: ' + bp.hlx + ' Hand Left y ' +  bp.hly);
+    // console.log('Hand Right x: ' + bp.hrx + ' Hand Right   y ' +  bp.hry);
   }
 
   render() {
@@ -224,4 +227,4 @@ class MstSoundComponent extends Component {
   }
 }
 
-export default MstSoundComponent;
+export default SoundSource;
