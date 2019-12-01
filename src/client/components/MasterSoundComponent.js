@@ -75,21 +75,22 @@ class MstSoundComponent extends Component {
   }
 
   //Try to play each Body instrument
-  // TO DO: Make an abstract foreach() instead
   componentDidUpdate (){
-      this.playInstrument(this.props.instruments[0]);
-      this.playInstrument(this.props.instruments[1]);
-      this.playInstrument(this.props.instruments[2]);
+      var i = 0;
+      for (i=0; i<this.props.instruments.length-1; ++i) {
+        this.prepInstrument(this.props.instruments[i]);
+      }
     }
+
 
   // If Body Instrument is Off or with no volume don't play
   // Else set the channel and then use it
-  playInstrument (instrument){
+  prepInstrument (instrument){
     if (!instrument.on) return;
     if (instrument.volume == 0) return;
     var sounds = this.getSounds(instrument.type);
-    var note = this.generateNote(sounds, instrument, this.props.bodyParam);
-    this.generateSound(instrument, note);
+    var note = this.getNote(sounds, instrument, this.props.bodyParam);
+    this.playInstrument(instrument, note);
   }
 
   //Provide the sounds sample based on the type defined by the Body Instrument
@@ -107,7 +108,7 @@ class MstSoundComponent extends Component {
   }
 
   //Generates random notes or redirect to the right instrument sounds generator
-  generateNote (sounds, instrument, bodyParam){
+  getNote (sounds, instrument, bodyParam){
     var note = [];
     if (instrument.mode == this.props.instrumentModeList.random ){
       note.push(sounds.notes[Math.floor(Math.random()*sounds.notes.length)]);
@@ -130,7 +131,6 @@ class MstSoundComponent extends Component {
       }
     }
   }
-
 
   generateFeetNote (sounds, instrument, bp) {
     var note = [];
@@ -201,11 +201,11 @@ class MstSoundComponent extends Component {
   }
 
   //All instruemts at the end plays here!!
-  generateSound (instrument, note){
-    console.log('Playing: ' + note.length + ' notes');
+  playInstrument (instrument, note){
+    //console.log('Playing: ' + note.length + ' notes');
     if (JSON.stringify(note) !=JSON.stringify(instrument.lastPlayedNote)) {
       note.forEach( function (n,index){
-        console.log('Playing Note:' , n);
+        //console.log('Playing Note:' , n);
         var myinstance = createjs.Sound.play(n);
         myinstance.volume = instrument.volume;
       })
