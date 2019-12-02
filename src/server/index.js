@@ -2,20 +2,59 @@ const express = require('express');
 const cors = require('cors');
 const os = require('os');
 
-const app = express();
-app.use(cors());
+// const app = express();
+// app.use(cors());
 
-var server = require('http').createServer(app);
-    io = require('socket.io').listen(server);
-    Kinect2 = require('kinect2');
-    kinect = new Kinect2();
+//
+// var server = require('http').Server(app);
+//
+//
+// var io = require('socket.io')(server);
+// server.listen(8080);
 
-io.origins((origin, callback) => {
-  if (origin !== 'localhost:3000') {
-      return callback('origin not allowed', false);
-  }
-  callback(null, true);
+
+var app = require('express')();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
+
+http.listen(8080, function(){
+  console.log('listening on *:8080');
+});
+
+
+// WARNING: app.listen(80) will NOT work here!
+
+// app.get('/', function (req, res) {
+//   res.sendFile(__dirname + '/index.html');
+// });
+
+// io.on('connection', function (socket) {
+//     console.log(data);
+// });
+
+
+//
+// var server = require('http').createServer(app);
+
+
+
+    //Kinect2 = require('kinect2');
+    //kinect = new Kinect2();
+
+// io.origins((origin, callback) => {
+//   if (origin !== 'localhost:3000') {
+//       return callback('origin not allowed', false);
+//   }
+//   callback(null, true);
+// });
 
 // var server = require('http').createServer(app);
 //     io = require('socket.io')(server, {
@@ -36,26 +75,34 @@ io.origins((origin, callback) => {
 //Allow Cross Domain Requests
 //io.set('transports', ['websocket']);
 
-io.on('connection', function (socket){
-  console.log('socket.io connection estlabished');
-  socket.broadcast.emit('message', {topic: 'new_connection', message: 'user'});
-})
 
-if(kinect.open()){
-  kinect.on('bodyFrame', sendFrame);
 
-  function sendFrame(bodyFrame){
-      console.log('Kinect is Lve!!')
-      io.emit('bodyFrame', bodyFrame);
-  }
-
-  kinect.openBodyReader();
-}
+// if(kinect.open()){
+//   kinect.on('bodyFrame', sendFrame);
+//
+//   function sendFrame(bodyFrame){
+//       console.log('Kinect is Lve!!')
+//       io.emit('bodyFrame', bodyFrame);
+//   }
+//
+//   kinect.openBodyReader();
+// }
 
 
 
 
 app.use(express.static('dist'));
-app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
-app.listen(process.env.PORT || 8080, () => console.log(`Lstening ons port ${process.env.PORT || 8080}!`));
+app.use( (req, res, next) => {
+   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); //The ionic server
+   res.header("Access-Control-Allow-Credentials", "true");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   next();
+});
+
+//app.listen(process.env.PORT || 8080, () => console.log(`Lstening ons port ${process.env.PORT || 8080}!`));
+
+// io.on('connection', function (socket){
+//   console.log('socket.io connection estlabished');
+//   socket.broadcast.emit('message', {topic: 'new_connection', message: 'user'});
+// })

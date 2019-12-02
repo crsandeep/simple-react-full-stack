@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './app.css';
-import ReactImage from './react.png';
 import io from 'socket.io-client';
 import InstrumentsPanel from './components/InstrumentsPanel.js';
 import InstrumentsSettingPanel from './components/InstrumentsSettingPanel.js';
 import MstSoundComponent from './components/MasterSoundComponent.js';
 import Monitor from './components/MonitorComponent.js';
 import data from './lmac1.json';
+
+var index = 0;
+
 
 var connectionOptions ={
   "force new connection" : true,
@@ -16,23 +18,14 @@ var connectionOptions ={
 
 var socketio_url = "http://localhost:8080" ;
 
-var socket = io.connect(socketio_url, connectionOptions);
+var socket = io.connect(socketio_url);
 
 socket.on('connect', function(){
-  console.log('Socket.io Client connected. Count_Connections=', count_connectoins);
-  if(count_connections>=0) $rootScope.$broadcast('socket.io:all', 'refresh');
-  count_connections = count_connections +1;
+  console.log('Socket.io Client connected');
 })
 
 
-var kinectConnected = false;
-socket.on('bodyFrame', function(bodyFrame){
-  console.log('Getting Kinect BodyFrame event in Client');
-  kinectConnected = true;
-  //vm.bodies = bodyFrame.bodies;
-});
 
-var index = 0;
 //var mss= new MstSoundComponent();
 
 // function Kinect() {
@@ -91,7 +84,6 @@ var feet = new Channel(instrumentChannelName.feet);
 class App extends Component {
     constructor(props) {
     super(props);
-    console.log("Loading App...")
     this.audioContext = new AudioContext();
     //this.setGuitar();
     this.bodyParam = new bodyParam();
