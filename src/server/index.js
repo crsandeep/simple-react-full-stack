@@ -1,20 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const os = require('os');
-
-// const app = express();
-// app.use(cors());
-
-//
-// var server = require('http').Server(app);
-//
-//
-// var io = require('socket.io')(server);
-// server.listen(8080);
-
+const Kinect2 = require('kinect2');
 
 var app = require('express')();
 var http = require('http').createServer(app);
+
 var io = require('socket.io')(http);
 
 app.get('/', function(req, res){
@@ -29,64 +20,19 @@ http.listen(8080, function(){
   console.log('listening on *:8080');
 });
 
+//Setting Kinect
+kinect = new Kinect2();
 
-// WARNING: app.listen(80) will NOT work here!
+if(kinect.open()){
+  kinect.on('bodyFrame', sendFrame);
 
-// app.get('/', function (req, res) {
-//   res.sendFile(__dirname + '/index.html');
-// });
+  function sendFrame(bodyFrame){
+      console.log('Kinect is Lve!!')
+      io.emit('bodyFrame', bodyFrame);
+  }
 
-// io.on('connection', function (socket) {
-//     console.log(data);
-// });
-
-
-//
-// var server = require('http').createServer(app);
-
-
-
-    //Kinect2 = require('kinect2');
-    //kinect = new Kinect2();
-
-// io.origins((origin, callback) => {
-//   if (origin !== 'localhost:3000') {
-//       return callback('origin not allowed', false);
-//   }
-//   callback(null, true);
-// });
-
-// var server = require('http').createServer(app);
-//     io = require('socket.io')(server, {
-//     handlePreflightRequest: (req, res) => {
-//             const headers = {
-//                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
-//                 "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
-//                 "Access-Control-Allow-Credentials": true
-//             };
-//             res.writeHead(200, headers);
-//             res.end();
-//         }
-//     });
-
-//io.set('origins', '*:*');
-//io.set('origins', 'localhost:3000');
-
-//Allow Cross Domain Requests
-//io.set('transports', ['websocket']);
-
-
-
-// if(kinect.open()){
-//   kinect.on('bodyFrame', sendFrame);
-//
-//   function sendFrame(bodyFrame){
-//       console.log('Kinect is Lve!!')
-//       io.emit('bodyFrame', bodyFrame);
-//   }
-//
-//   kinect.openBodyReader();
-// }
+  kinect.openBodyReader();
+}
 
 
 

@@ -58,21 +58,31 @@ class Monitor extends Component {
 
   constructor(props){
       super(props);
+      this.body = null;
   }
 
   componentDidUpdate() {
     //console.log('Welcome in Monitor Component');
-    if(this.props.bodies !=undefined){
-    this.body = this.props.bodies[0];
-    //console.log('body: ', + this.props.bodies[0].bodyIndex);
-    //console.log('all jpoints ', this.props.bodies[0].joints);
-    var joit7 = this.props.bodies[0].joints[7];
-    //console.log('x coord: ', joit7.x);
-    this.process(this.props.bodies[0]);
-   }
+    if(this.props.demoMode && this.props.bodies !=undefined){
+        this.body = this.props.bodies[0];
+        this.processDemoBodies(this.props.bodies[0]);
+        return;
+      }
+    if(!this.props.demoMode && this.props.bodies !=undefined){
+        this.props.bodies.forEach(function(body,index){
+          if(body.tracked){
+            this.body=body;
+            this.processKinectBodies(this.body);
+        }}
+      )}
+    }
+
+  processKinectBodies(body){
+    consle.log('Lets write some cool code');
+    //Take most of code from below function agnostic and move outside to serve both knect and demoMode
   }
 
-  process(body){
+  processDemoBodies(body){
 
     //DRAW THE BODY
     var bodyParam = Object.assign({},this.props.bodyParam);

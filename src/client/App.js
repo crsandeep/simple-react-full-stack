@@ -9,28 +9,16 @@ import data from './lmac1.json';
 
 var index = 0;
 
-
-var connectionOptions ={
-  "force new connection" : true,
-  "reconnectionAttempts" : "Infinity",
-  "timeout" : 10000,
-};
-
+//Setting Socke connetion
 var socketio_url = "http://localhost:8080" ;
-
 var socket = io.connect(socketio_url);
-
-socket.on('connect', function(){
-  console.log('Socket.io Client connected');
-})
+var kinectBodies = [];
+var demoMode = true;
 
 
 
-//var mss= new MstSoundComponent();
+//TO DO: Add message handler for when Kinect stops working or socket.io disconnects
 
-// function Kinect() {
-//   console.log('hello');
-// }
 
 var setting1 = [
   {"name":"Body","on":true,"type":"Classic Guitar","lastPlayedNote":["a5"],"volume":0.2,"mode":"Scale"},
@@ -84,19 +72,39 @@ var feet = new Channel(instrumentChannelName.feet);
 class App extends Component {
     constructor(props) {
     super(props);
+
+    this.demoMode = true;
+
+    socket.on('connect', this.manageSocketConnection);
+    socket.on('bodyFrame', this.settingKinectBodies.bind(this));
+
     this.audioContext = new AudioContext();
     //this.setGuitar();
     this.bodyParam = new bodyParam();
-    this.state = {bodies:[], index:1, instruments:[body,hands,feet], bodyParam:this.bodyParam}
+    this.state = {bodies:[],kinectBodies:[],index:1, instruments:[body,hands,feet], bodyParam:this.bodyParam};
+  }
+
+  manageSocketConnection(){
+    console.log('Socket.io Client connected');
+  }
+
+  settingKinectBodies(bodyFrame){
+    var bodies = bodyFrame.bodies;
+    this.setState({kinectBodies:bodies});
+    this.demoMode = false;
   }
 
   componentDidMount() {
+    if(demoMode == true){
       setInterval(() => {
-          var newIndex = this.state.index + 1;
-          var body = data[newIndex];
-          this.setState({bodies:data[newIndex], index: newIndex})
+        var newIndex = this.state.index + 1;
+        var body = data[newIndex];
+        this.setState({bodies:data[newIndex], index: newIndex})
       }, 150);
+    } else {
+      this.setState({bodies:bodies})
     }
+  }
 
   //Create a JSON file to capture the instrument settings and store somewhere
   onSaveSettingsHandler(){
@@ -109,6 +117,24 @@ class App extends Component {
 
   newBodyParamHandler(bodyParam){
     this.bodyParam= bodyParam;
+  }
+
+  renderMonitor(){
+    var bds = [];
+    if(this.demoMode){
+      bds= this.state.bodies;
+    } else{
+      bds = this.state.kinectBodies;
+    }
+    return(
+      <Monitor
+        newBodyParameter={(value)=>newBodyParameterHandle(value)}
+        demoMode = {this.demoMode}
+        bodies={bds}
+        instruments ={this.state.instruments}
+        newBodyParam = {(value)=> this.newBodyParamHandler(value)}
+      />
+    )
   }
 
   render() {
@@ -137,12 +163,7 @@ class App extends Component {
               onLoadSettings={()=>this.onLoadSettingsHandler()}/>
           </div>
       		<div className={"col-md-6 mt-5"}>
-            <Monitor
-              newBodyParameter={(value)=>newBodyParameterHandle(value)}
-              bodies={this.state.bodies}
-              instruments ={this.state.instruments}
-              newBodyParam = {(value)=> this.newBodyParamHandler(value)}
-            />
+            {this.renderMonitor()}
           </div>
         </div>
       </div>

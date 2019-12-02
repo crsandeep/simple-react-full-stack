@@ -7,7 +7,7 @@
     "build": "webpack --mode production",
     "start": "npm run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "server": "node --inspect src/server/index.js",
+    "server": "nodemon --inspect-brk src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Sandeep Raveesh",
@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.26.0",
     "cors": "2.8.5",
     "express": "^4.16.3",
+    "kinect2": "0.1.7",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "socket.io": "2.3.0"
