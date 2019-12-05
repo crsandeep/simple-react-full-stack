@@ -218,7 +218,7 @@ class MstSoundComponent extends Component {
   render() {
     return(
       <div>
-      {this.spy};
+      {this.spy}
       </div>
     )
   }

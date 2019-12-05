@@ -92,17 +92,17 @@ class App extends Component {
     var bodies = bodyFrame.bodies;
     this.setState({kinectBodies:bodies});
     this.demoMode = false;
+    this.state.index =0;
   }
 
   componentDidMount() {
-    if(demoMode == true){
+    if(this.demoMode == true){
       setInterval(() => {
         var newIndex = this.state.index + 1;
         var body = data[newIndex];
         this.setState({bodies:data[newIndex], index: newIndex})
       }, 150);
     } else {
-      this.setState({bodies:bodies})
     }
   }
 

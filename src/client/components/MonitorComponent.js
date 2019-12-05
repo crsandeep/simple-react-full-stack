@@ -24,7 +24,14 @@ import ReactDOM from 'react-dom';
 // HIP RIGHT
 // KNEE RIGHT
 // ANKLE RIGHT
-// FOOT RIGHT
+// FOOT RIGHT#
+
+///******Not Available in Demo demoMode
+// spineShoulder 	: 20,
+// handTipLeft 		: 21,
+// thumbLeft 			: 22,
+// handTipRight 		: 23,
+// thumbRight 			: 24
 
 
 //MUST DO:
@@ -52,6 +59,7 @@ this.ankLx=0; //left ankle x
 this.ankLy=0; //left ankle y
 this.ankRx=0; //right ankle x
 this.ankRy=0; //right ankle y
+//Other to implement not available in Demo mode
 }
 
 class Monitor extends Component {
@@ -59,90 +67,204 @@ class Monitor extends Component {
   constructor(props){
       super(props);
       this.body = null;
+      this.bodyParam = null;
+      this.KIsTraking = false;
   }
 
   componentDidUpdate() {
     //console.log('Welcome in Monitor Component');
     if(this.props.demoMode && this.props.bodies !=undefined){
+        this.KIsTraking = false;
         this.body = this.props.bodies[0];
         this.processDemoBodies(this.props.bodies[0]);
         return;
       }
     if(!this.props.demoMode && this.props.bodies !=undefined){
-        this.props.bodies.forEach(function(body,index){
-          if(body.tracked){
-            this.body=body;
-            this.processKinectBodies(this.body);
-        }}
-      )}
+      for (var i = 0; i < this.props.bodies.length; i++) {
+        if(this.props.bodies[i].tracked){
+          this.body = this.props.bodies[i];
+          this.KIsTraking = true;
+          this.processKinectBodies(this.body);
+          return;
+        }
+      }
     }
-
-  processKinectBodies(body){
-    consle.log('Lets write some cool code');
-    //Take most of code from below function agnostic and move outside to serve both knect and demoMode
   }
 
-  processDemoBodies(body){
-
+  processKinectBodies(body){
     //DRAW THE BODY
-    var bodyParam = Object.assign({},this.props.bodyParam);
+    this.bodyParam = Object.assign({},this.props.bodyParam);
+    this.body.cx = '0';
+    this.body.cy = '0';
+    var canvas = document.getElementById('bodyCanvas');
+    var ctx = canvas.getContext('2d');
+    var cw = canvas.width;
+    var ch = canvas.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.fillStyle = '#ff0000';
+    var i=0;
+    var tempx =0;
+    var tempy =0;
+    //Draw each joints
+    for (i =0 ; i<20; ++i) {
+      var joint= body.joints[i];
+      this.drawSimpleCircle(ctx, joint.colorX*cw, joint.colorY*ch, 5, 'red', true);
+      tempx +=joint.colorX*cw;
+      tempy +=joint.colorY*ch;
+      this.populateBodyParam(i,joint, this.bodyParam);
+    }
+    //Draw center body
+    this.bodyParam.cx =tempx/20;
+    this.bodyParam.cy =tempy/20;
+    this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, 10, 'blue', true);
+    //Draw Wrist circles
+    if(true){
+     this.drawnWistCircles(ctx, false)
+    }
+
+    this.props.newBodyParam(this.bodyParam);
+  }
+
+
+
+  processDemoBodies(body){
+    //DRAW THE BODY
+    this.bodyParam = Object.assign({},this.props.bodyParam);
     this.body.cx = '0';
     this.body.cy = '0';
     var canvas = document.getElementById('bodyCanvas');
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#ff0000';
+    //ctx.fillStyle = '#ff0000';
     var i=0;
     var tempx =0;
     var tempy =0;
+    //Draw each joints
     for (i =0 ; i<20; ++i) {
       var joint= body.joints[i];
-      ctx.beginPath();
-      ctx.arc(joint.x,joint.y, 5, 0, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fillStyle = 'red';
-      ctx.fill();
-      // ctx.fillRect(joint.x,joint.y, 10, 10);
+      this.drawSimpleCircle(ctx, joint.x, joint.y, 5, 'red', true);
       tempx +=joint.x;
       tempy +=joint.y;
-      this.populateBodyParam(i,joint, bodyParam);
+      this.populateBodyParam(i,joint, this.bodyParam);
     }
-    //bodyParam.handsOpenes = this.setOpeness(body,bodyParam.cx,this.body.cy, canvas)
-    //FILL CENTER BODY
-
-    bodyParam.cx =tempx/20;
-    bodyParam.cy =tempy/20;
-    ctx.fillStyle = '#5CACEE';
-    ctx.beginPath();
-    ctx.arc(bodyParam.cx, bodyParam.cy, 10, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fillStyle = 'blue';
-    ctx.fill();
-    //ctx.fillRect(bodyParam.cx/20,bodyParam.cy/20, 20, 20);
-
-    // To be turn on and off with future swithces
+    //Draw center body
+    this.bodyParam.cx =tempx/20;
+    this.bodyParam.cy =tempy/20;
+    this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, 10, 'blue', true);
+    //Draw Wrist circles
     if(true){
-      var x1 = bodyParam.cx;
-      var x2 = bodyParam.wrx;
-      var y1 = bodyParam.cy;
-      var y2 = bodyParam.wry;
-      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
-      ctx.beginPath();
-      ctx.arc(bodyParam.cx,bodyParam.cy, d, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      var x1 = bodyParam.cx;
-      var x2 = bodyParam.wlx;
-      var y1 = bodyParam.cy;
-      var y2 = bodyParam.wly;
-      var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1))
-      ctx.beginPath();
-      ctx.arc(bodyParam.cx,bodyParam.cy, d, 0, 2 * Math.PI);
-      ctx.stroke();
+     this.drawnWistCircles(ctx, false)
     }
 
-    this.props.newBodyParam(bodyParam);
+    this.props.newBodyParam(this.bodyParam);
   }
+
+  drawSimpleCircle(ctx, cx, cy, d, color, toFill){
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, d, 0, 2 * Math.PI);
+    ctx.stroke();
+    if (toFill) {
+      ctx.fill();
+    }
+  }
+
+  drawnWistCircles(ctx, toFill){
+    var x1 = this.bodyParam.cx;
+    var y1 = this.bodyParam.cy;
+    //Right
+    var x2 = this.bodyParam.wrx;
+    var y2 = this.bodyParam.wry;
+    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    this.drawSimpleCircle(ctx, x1, y1, d, 'blue', toFill);
+
+    //Left
+    var x2 = this.bodyParam.wlx;
+    var y2 = this.bodyParam.wly;
+    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    this.drawSimpleCircle(ctx, x1, y1, d, 'blue', toFill);
+  }
+
+  populateKinectBodyParam(i,joint,bodyParam){
+    switch(i) {
+    // SPINE BASE
+    case 0:
+    bodyParam.scx = joint.colorX;
+    bodyParam.scy = joint.colorY;
+    break;
+    // SPIN MID
+    case 1:
+    break;
+    // NECK
+    case 2:
+    break;
+    // HEAD
+    case 3:
+    break;
+    // SHOULDER LEFT
+    case 4:
+    break;
+    // ELBOW LEFT
+    case 5:
+    break;
+    // WRIST LEFT
+    case 6:
+    bodyParam.wlx = joint.colorX;
+    bodyParam.wly = joint.colorY;
+    break;
+    // HAND LEFT
+    case 7:
+    bodyParam.hlx = joint.colorX;
+    bodyParam.hly = joint.colorY;
+    break;
+    // SHOULDER RIGHT
+    case 8:
+    break;
+    // ELBOW RIGHT
+    case 9:
+    break;
+    // WRIST RIGHT
+    case 10:
+    bodyParam.wrx = joint.colorX;
+    bodyParam.wry = joint.colorY;
+    break;
+    // HAND RIGHT
+    case 11:
+    bodyParam.hrx = joint.colorX;
+    bodyParam.hry = joint.colorY;
+    break;
+    // HIP LEFT
+    case 12:
+    break;
+    // KNEE LEFT
+    case 13:
+    break;
+    // ANKLE LEFT
+    case 14:
+    bodyParam.ankLx = joint.colorX;
+    bodyParam.ankLy = joint.colorY;
+    break;
+    // FOOT LEFT
+    case 15:
+    break;
+    // HIP RIGHT
+    case 16:
+    break;
+    // KNEE RIGHT
+    case 17:
+    break;
+    // ANKLE RIGHT
+    case 18:
+    bodyParam.ankRx = joint.colorX;
+    bodyParam.ankRy = joint.colorY;
+    break;
+    // FOOT RIGHT
+    case 19:
+    break;
+
+    return;
+  }}
 
   populateBodyParam(i,joint,bodyParam){
     switch(i) {
@@ -224,20 +346,24 @@ class Monitor extends Component {
     return;
   }}
 
-
-  setOpeness(user,userCenterX,userCenterY, canvas) {
-    var leftX = user.joints[7].x*canvas.width;
-    var leftY = user.joints[7].y*canvas.height;
-    var rightX = user.joints[11].x*canvas.width;
-    var rightY = user.joints[11].y*canvas.height;
-    var leftDistance = Math.sqrt( (userCenterX-leftX)*(userCenterX-leftX) + (userCenterY-leftY)*(userCenterY-leftY));
-    var rightDistance = Math.sqrt( (userCenterX-leftX)*(userCenterX-leftX) + (userCenterY-leftY)*(userCenterY-leftY));
-    return (leftDistance + rightDistance)/2
-  }
+  // setOpeness(user,userCenterX,userCenterY, canvas) {
+  //   var leftX = user.joints[7].x*canvas.width;
+  //   var leftY = user.joints[7].y*canvas.height;
+  //   var rightX = user.joints[11].x*canvas.width;
+  //   var rightY = user.joints[11].y*canvas.height;
+  //   var leftDistance = Math.sqrt( (userCenterX-leftX)*(userCenterX-leftX) + (userCenterY-leftY)*(userCenterY-leftY));
+  //   var rightDistance = Math.sqrt( (userCenterX-leftX)*(userCenterX-leftX) + (userCenterY-leftY)*(userCenterY-leftY));
+  //   return (leftDistance + rightDistance)/2
+  // }
 
   render() {
-    return <canvas className={"border"} ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
-    }
+    return (
+      <div>
+        { this.KIsTraking}
+        <canvas className={"border"} ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
+      </div>
+    );
+  }
 }
 
 export default Monitor;
