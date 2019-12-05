@@ -1,165 +1,145 @@
 import React, { Component } from 'react';
 import './app.css';
-import Switches from './commons/switch.js'
-import ReactImage from './react.png';
-import Menu from './components/MenuHeaderComponent.js';
-import InstrCtrPnl from './components/InstrumentsControllerPanel.js';
-import BodiesCtrPnl from './components/BodiesControllerPanel.js';
-import BodyComponent from './components/BodyComponent.js';
-import InstrCmp from './components/InstrumentComponent.js';
-import Monitor from './components/MonitorComponent.js';
+import io from 'socket.io-client';
+import InstrumentsPanel from './components/InstrumentsPanel.js';
+import InstrumentsSettingPanel from './components/InstrumentsSettingPanel.js';
+import MstSoundComponent from './components/MasterSoundComponent.js';
+import ExMonitor from './components/ExMonitor.js';
 import data from './lmac1.json';
 
-
-//const json = require('./jse.json');
-
 var index = 0;
-//var mss= new MstSoundComponent();
 
-function Kinect() {
-  console.log('hello');
+//Setting Socke connetion
+var socketio_url = "http://localhost:8080" ;
+var socket = io.connect(socketio_url);
+var kinectBodies = [];
+var demoMode = true;
+
+
+
+//TO DO: Add message handler for when Kinect stops working or socket.io disconnects
+
+
+var setting1 = [
+  {"name":"Body","on":true,"type":"Classic Guitar","lastPlayedNote":["a5"],"volume":0.2,"mode":"Scale"},
+  {"name":"Hands","on":true,"type":"Water Drop","lastPlayedNote":["db0","db0"],"volume":0.2,"mode":"Scale"},
+  {"name":"Feet","on":true,"type":"Classic Guitar","lastPlayedNote":["g3"],"volume":0.2,"mode":"Scale"}
+]
+
+const instrumentName =['Body', 'Hands', 'Feet', 'Spine']; // Define the name of the instruments  based on their link to the body's parts
+const instrumentTypeList = {classic_guitar:'Classic Guitar', water_drop:'Water Drop'};
+const instrumentModeList = {random:'Random', scale:'Scale'};
+const instrumentChannelName ={body:'Body', hands:'Hands', feet: 'Feet'};
+
+function bodyParam () {
+this.BodyIndex= '';
+this.cx= 0;
+this.cy= 0;
+this.wrx=0;   //Wrist right
+this.wry=0;   //Wrist left
+this.wlx=0;   //Wrist right
+this.wlx=0;   //Wrist right
+this.wl=0;
+this.hlx=0;   //left hand x
+this.hly=0    //right habd y
+this.hrx=0;   //left hand x
+this.hry=0    //right habd y
+this.hocx=0;  //hand openess x
+this.hocy=0;  //hand openess y
+this.Scx=0;
+this.Scy=0;
+this.Fcx=0;
+this.Fcy=0
+this.ankLx=0; //left ankle x
+this.ankLy=0; //left ankle y
+this.ankRx=0; //right ankle x
+this.ankRy=0; //right ankle y
 }
 
-// Define the name of the instruments  based on their link to the body's parts
-var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
-
-// Each instruments defines is own 'sound' channel
-
-function channel (name) {
-  var instrument = {
-  'Name' : name,
-  'Switch': true,
-  'Type' : 'Piano',
-  'Mode' : 'Single',
-  'Scale': 'Major',
-  'Note' : 'C',
-  'Volume' : 5,
-  'Sensistivy' : 10
-}
-  return instrument;
+function Channel (name) {
+  this.name = name;
+  this.on = true;
+  this.type = instrumentTypeList.classic_guitar;
+  this.lastPlayedNote= [];
+  this.volume = 0.2;
+  this.mode = instrumentModeList.scale;
 };
 
-function Channel () {
-  this.name = 'setName';
-  this.on = false;
-  this.type = 'Piano';
-  this.mode = 'Single';
-  this.scale = 'Major';
-  this.note = 'C';
-  this.pitch = '3'
-  this.volume = '5';
-  this.sensitivity = '1';
-};
-
-// function bodyParam (bodyIndex) {
-//   var value = {
-//   'BodyIndex': bodyIndex,
-//   'BodyCx': 0,
-//   'BodyCy': 0,
-//   'HandsCx':0,
-//   'HandsCy':0,
-//   'SpineCx':0,
-//   'SpineCy':0,
-//   'FeetCx':0,
-//   'FeetCy':0
-//   }
-//   return value;
-// };
-
-var bodyParam = {
-'BodyIndex': '',
-'BodyCx': 0,
-'BodyCy': 0,
-'HandsCx':0,
-'HandsCy':0,
-'SpineCx':0,
-'SpineCy':0,
-'FeetCx':0,
-'FeetCy':0
-}
-
-// Define all the instrument registered. I shold programattically define the orchestra?(i.e. based on the instrumentName)
-var  orchestra = {Body: channel(instrumentName[0]),Hands: channel(instrumentName[1]),Feet: channel(instrumentName[2]),Spine: channel(instrumentName[3])};
-
-
+var body = new Channel(instrumentChannelName.body);
+var hands = new Channel(instrumentChannelName.hands);
+var feet = new Channel(instrumentChannelName.feet);
 
 class App extends Component {
-
-  constructor(props) {
-
+    constructor(props) {
     super(props);
-    this.state = {bodies:[], index:1, instruments:Array(4).fill(new Channel())};
-    //this.props.instruments = orchestra;
-    this.onHandleMouse = this.onHandleMouse.bind(this);
-    this.onHandleSelect = this.onHandleSelect.bind(this);
+
+    this.demoMode = true;
+
+    socket.on('connect', this.manageSocketConnection);
+    socket.on('bodyFrame', this.settingKinectBodies.bind(this));
+
+    this.audioContext = new AudioContext();
+    //this.setGuitar();
+    this.bodyParam = new bodyParam();
+    this.state = {kinectBodies:[],index:1, instruments:[body,hands,feet], bodyParam:this.bodyParam};
   }
 
-  //This is done for the slide volume comps which onchange event is not working!!
-  onHandleMouse (e) {
-    if(e.changeType != 'Volume'){
-      return;
-    };
-    orchestra[e.currentTarget.firstChild.id].Volume = e.changeValue;
-    // console.log(
-    //   "Change Mouse from: ", e.currentTarget.firstChild.id,
-    //   " of the " + e.changeType +
-    //   " with Value: ", e.changeValue
-    // )
+  manageSocketConnection(){
+    console.log('Socket.io Client connected');
   }
 
-  //Event handler for all but the volume slide
-  onHandleSelect (e) {
-    if(e.changeType === 'Volume'){
-      return;
-    }
-    orchestra[e.currentTarget.firstChild.id][e.changeType] = e.changeValue;
-    console.log(
-      "Change Selection from: ", e.currentTarget.firstChild.id,
-      " of the " + e.changeType +
-      " with Value: ", e.changeValue
+  settingKinectBodies(bodyFrame){
+    var bodies = bodyFrame.bodies;
+    this.setState({kinectBodies:bodies});
+    this.demoMode = false;
+    this.state.index =0;
+  }
+
+  //Create a JSON file to capture the instrument settings and store somewhere
+  onSaveSettingsHandler(){
+    console.log('Should save this settings: ', JSON.stringify(this.state.instruments))
+  }
+
+  onLoadSettingsHandler(){
+    this.setState({instruments:setting1});
+  }
+
+  newBodyParameterHandle(bodyParameter){
+    this.setState({bodyParam: bodyParameter});
+    //this.bodyParam= bodyParameter;
+  }
+
+  renderMonitor(){
+    console.log("Rendering");
+    return(
+      <ExMonitor
+        newBodyParam={(value)=>this.newBodyParameterHandle(value)}
+      />
     )
-    //this.soundBox.playSoundGuitar();
   }
-
-  componentDidUpdate (prevProps, prevState, snapshot){
-    if(prevState.bodies[0] != undefined){
-      bodyParam.BodyCx = prevState.bodies[0].cx;
-      bodyParam.BodyCy = prevState.bodies[0].cx;
-      // this.setState({bodyParam:bd});
-      console.log('CenterX: ', prevState.bodies[0].cx);
-      console.log('Openess:', prevState.bodies[0].handsOpenes);
-    }
-  }
-
-  componentDidMount() {
-      setInterval(() => {
-          var newIndex = this.state.index + 1;
-          var body = data[newIndex];
-          //console.log(body[0].bodyIndex);
-        //  console.log(body[0].joints);
-          this.setState({bodies:data[newIndex], index: newIndex})
-      }, 70);
-    }
 
   render() {
     return (
       <div className="container-fluid">
+        <MstSoundComponent
+          audioContext = {this.audioContext}
+          instruments = {this.state.instruments}
+          bodyParam = {this.state.bodyParam}
+          instrumentTypeList={instrumentTypeList}
+          instrumentModeList={instrumentModeList}
+          instrumentChannelName={instrumentChannelName}
+        />
       	<div className="row">
       		<div className={"col-md-12 bg-secondary"}>
             <h1 className={"text-white"}>Osmosi</h1>
           </div>
       	</div>
       	<div className={"row"}>
-      		<div className="col-md-6">
-            <ul className={"list-group border-0"}>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name='Body' instrument = {orchestra['Body']} /></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Hands" instrument = {orchestra['Hands']}/></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Spine" instrument = {orchestra['Spine']}/></li>
-              <li onMouseUp={this.onHandleMouse} onChange={this.onHandleSelect} className={"list-group-item border-0"}><InstrCmp name="Feet" instrument = {orchestra['Feet']}/></li>
-            </ul>
+          <div className={"col-md-6 mt-2"}>
+      		<InstrumentsPanel instruments={this.state.instruments} instrumentTypeList={instrumentTypeList}/>
           </div>
-      		<div className={"col-md-6"}>
-            <Monitor bodies={this.state.bodies} />
+          <div className={"col-md-6 mt-5"}>
+            {this.renderMonitor()}
           </div>
         </div>
       </div>

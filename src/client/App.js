@@ -154,13 +154,8 @@ class App extends Component {
           </div>
       	</div>
       	<div className={"row"}>
-          <div className={"col-md-4 mt-2"}>
+          <div className={"col-md-6 mt-2"}>
       		<InstrumentsPanel instruments={this.state.instruments} instrumentTypeList={instrumentTypeList}/>
-          </div>
-          <div className={"col-md-2 mt-2"}>
-            <InstrumentsSettingPanel
-              onSaveSettings={()=>this.onSaveSettingsHandler()}
-              onLoadSettings={()=>this.onLoadSettingsHandler()}/>
           </div>
       		<div className={"col-md-6 mt-5"}>
             {this.renderMonitor()}
