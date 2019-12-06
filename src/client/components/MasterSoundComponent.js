@@ -74,6 +74,10 @@ class MstSoundComponent extends Component {
       this.spy=null;
   }
 
+  componentDidUpdate(){
+    console.log('MAstersound Did Update');
+  }
+
   //Try to play each Body instrument
   componentDidUpdate (){
       var i = 0;

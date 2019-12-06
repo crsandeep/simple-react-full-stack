@@ -9,11 +9,7 @@ import data from './lmac1.json';
 
 var index = 0;
 
-//Setting Socke connetion
-var socketio_url = "http://localhost:8080" ;
-var socket = io.connect(socketio_url);
-var kinectBodies = [];
-var demoMode = true;
+
 
 
 
@@ -75,34 +71,19 @@ class App extends Component {
 
     this.demoMode = true;
 
-    socket.on('connect', this.manageSocketConnection);
-    socket.on('bodyFrame', this.settingKinectBodies.bind(this));
-
     this.audioContext = new AudioContext();
-    //this.setGuitar();
-    this.bodyParam = new bodyParam();
-    this.state = {kinectBodies:[],index:1, instruments:[body,hands,feet], bodyParam:this.bodyParam};
-  }
-
-  manageSocketConnection(){
-    console.log('Socket.io Client connected');
-  }
-
-  settingKinectBodies(bodyFrame){
-    var bodies = bodyFrame.bodies;
-    this.setState({kinectBodies:bodies});
-    this.demoMode = false;
-    this.state.index =0;
+    this.bodyParam = null;
+    this.state = {instruments:[body,hands,feet], bodyParam:this.bodyParam};
   }
 
   //Create a JSON file to capture the instrument settings and store somewhere
-  onSaveSettingsHandler(){
-    console.log('Should save this settings: ', JSON.stringify(this.state.instruments))
-  }
+  // onSaveSettingsHandler(){
+  //   console.log('Should save this settings: ', JSON.stringify(this.state.instruments))
+  // }
 
-  onLoadSettingsHandler(){
-    this.setState({instruments:setting1});
-  }
+  // onLoadSettingsHandler(){
+  //   this.setState({instruments:setting1});
+  // }
 
   newBodyParameterHandle(bodyParameter){
     this.setState({bodyParam: bodyParameter});

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App2';
-import ExMonitor from './components/ExMonitor';
+//import Monitor from
 
 
 function newBodyParameterHandle(value){
