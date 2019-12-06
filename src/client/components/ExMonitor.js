@@ -78,7 +78,8 @@ class ExMonitor extends Component {
       this.body = null;
       this.bodyParam = new bodyParam();
       this.demoMode = true;
-      this.loadDemo();
+      this.demo = null;
+      //this.loadDemo();
   }
 
   shouldComponentUpdate(){
@@ -91,11 +92,12 @@ class ExMonitor extends Component {
 
   settingKinectBodies(bodyFrame){
     this.demoMode = false
-    clearInterval(demo);
+  //  clearInterval(demo);
     for(var i=0; i<bodyFrame.bodies.length; ++i){
-      if (bodyFrame.bodies.traked == true){
+      if (bodyFrame.bodies[i].tracked === true){
         this.body = bodyFrame.bodies[i];
         this.processKinectBodies();
+        return;
       }
     }
   }
