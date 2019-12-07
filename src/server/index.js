@@ -1,7 +1,18 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const os = require('os');
-const Kinect2 = require('kinect2');
+//const Kinect2 = require('kinect2');
+const mongoose = require('mongoose');
+
+// const result = dotenv.config();
+//
+// if (result.error) {
+//   throw result.error
+// };
+
+//console.log(result.parsed);
 
 var app = require('express')();
 var http = require('http').createServer(app);
@@ -12,6 +23,7 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+//Socket.io section
 io.on('connection', function(socket){
   socket.on('Start Recording', function(msg){
     console.log('Start Recording at: ' + msg);
@@ -27,22 +39,21 @@ io.on('connection', function(socket){
 });
 
 http.listen(8080, function(){
-  console.log('listening on *:8080');
+  console.log('Server listening on :8080');
 });
 
-//Setting Kinect
-kinect = new Kinect2();
+// Kinect Section
+//kinect = new Kinect2();
 
-if(kinect.open()){
-  kinect.on('bodyFrame', sendFrame);
-
-  function sendFrame(bodyFrame){
-      io.emit('bodyFrame', bodyFrame);
-  }
-
-  kinect.openBodyReader();
-}
-
+// if(kinect.open()){
+//   kinect.on('bodyFrame', sendFrame);
+//
+//   function sendFrame(bodyFrame){
+//       io.emit('bodyFrame', bodyFrame);
+//   }
+//
+//   kinect.openBodyReader();
+// }
 
 
 
@@ -55,9 +66,23 @@ app.use( (req, res, next) => {
    next();
 });
 
-//app.listen(process.env.PORT || 8080, () => console.log(`Lstening ons port ${process.env.PORT || 8080}!`));
+//mongoose Section
 
-// io.on('connection', function (socket){
-//   console.log('socket.io connection estlabished');
-//   socket.broadcast.emit('message', {topic: 'new_connection', message: 'user'});
-// })
+mongoose
+.connect(process.env.DATABASE_URL, {
+useUnifiedTopology: true,
+useNewUrlParser: true,
+})
+.then(() => console.log('DB Connected at: ',process.env.DATABASE_URL ))
+.catch(err => {
+console.log('DB Connection Error: ', err.message);
+});
+
+var Schema = mongoose.Schema;
+
+var recordingSchema = new Schema({
+  title:  String,
+  start: String,
+  end: String,
+  frames: []
+});

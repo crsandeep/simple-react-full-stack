@@ -245,3 +245,11 @@ This starts a server and listens on port 8080 for connections. The app responds 
     ```
 
 Above, we have modified editor configurations. Alternatively, this can be configured at the project level by following [this article](https://medium.com/@netczuk/your-last-eslint-config-9e35bace2f99).
+
+
+## Installing MognoDB
+1. Install Homebrew
+2. brew tap mongodb/brew
+3. brew install mongodb-community@4.2
+4. brew services start mongodb-community (To start the service)
+5. ps aux | grep -v grep | grep mongod (To chekc is working)
