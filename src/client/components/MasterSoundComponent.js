@@ -70,7 +70,7 @@ class MstSoundComponent extends Component {
       super(props);
       //this.classic_Guitar = new Classic_Guitar();
       //this.water_Drop = new Water_Drop();
-      this.state = {instruments:this.props.instruments,};
+      this.state = {instruments:this.props.instruments,bodyParam:this.props.bodyParam};
       this.spy=null;
   }
 

@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
 import data from '../lmac1.json';
+import OnOff from '../commons/saveSwitch.js';
 
 //https://github.com/js6450/kinect-data
 // SPINE BASE
@@ -38,27 +39,29 @@ import data from '../lmac1.json';
 //MUST DO:
 // I have two of this. One in app. Remove this
 function bodyParam () {
-this.cx= 0;
-this.cy= 0;
-this.wrx=0;   //Wrist right
-this.wry=0;   //Wrist left
-this.wlx=0;   //Wrist right
-this.wlx=0;   //Wrist right
-this.wl=0;
-this.hlx=0;   //left hand x
-this.hly=0    //right habd y
-this.hrx=0;   //left hand x
-this.hry=0    //right habd y
-this.hocx=0;  //hand openess x
-this.hocy=0;  //hand openess y
-this.Scx=0;
-this.Scy=0;
-this.Fcx=0;
-this.Fcy=0
-this.ankLx=0; //left ankle x
-this.ankLy=0; //left ankle y
-this.ankRx=0; //right ankle x
-this.ankRy=0; //right ankle y
+this.RWrist_Center_D = 0;
+this.LWrist_Center_D = 0;
+this.cx = 0;
+this.cy = 0;
+this.wrx = 0;   //Wrist right
+this.wry = 0;   //Wrist left
+this.wlx = 0;   //Wrist right
+this.wlx = 0;   //Wrist right
+this.wl= 0;
+this.hlx = 0;   //left hand x
+this.hly = 0    //right habd y
+this.hrx = 0;   //left hand x
+this.hry = 0    //right habd y
+this.hocx = 0;  //hand openess x
+this.hocy = 0;  //hand openess y
+this.Scx = 0;
+this.Scy = 0;
+this.Fcx = 0;
+this.Fcy = 0
+this.ankLx = 0; //left ankle x
+this.ankLy = 0; //left ankle y
+this.ankRx = 0; //right ankle x
+this.ankRy = 0; //right ankle y
 //Other to implement not available in Demo mode
 }
 
@@ -75,15 +78,15 @@ class ExMonitor extends Component {
       console.log("Building ExMonitor");
       super(props);
       socket.on('bodyFrame', this.settingKinectBodies.bind(this));
+      this.onOnOffRecording = this.onOnOffRecording.bind(this);
       this.body = null;
       this.bodyParam = new bodyParam();
       this.demoMode = true;
-      this.demo = null;
+      this.demo = null;//Interval function to stop
+      this.rec = null;//Interval function to stop
+      this.recording = false; // Value of the switch
+      this.state = {recording:this.recording};
       //this.loadDemo();
-  }
-
-  shouldComponentUpdate(){
-    return false;
   }
 
   componentDidUpdate(){
@@ -92,7 +95,7 @@ class ExMonitor extends Component {
 
   settingKinectBodies(bodyFrame){
     this.demoMode = false
-  //  clearInterval(demo);
+    //clearInterval(demo);
     for(var i=0; i<bodyFrame.bodies.length; ++i){
       if (bodyFrame.bodies[i].tracked === true){
         this.body = bodyFrame.bodies[i];
@@ -114,38 +117,42 @@ class ExMonitor extends Component {
   }
 
   processKinectBodies(){
-    //DRAW THE BODY
     this.bodyParam = Object.assign({},this.props.bodyParam);
     var canvas = document.getElementById('bodyCanvas');
     var cw = canvas.width;
     var ch = canvas.height;
     this.populateKinectBodyParam2(this.body.joints,this.bodyParam,cw,ch);
-    this.props.newBodyParam(this.bodyParam); //Send this even before drawing the joints.
-    //this.body.cx = '0';
-    //this.body.cy = '0';
-    //var canvas = document.getElementById('bodyCanvas');
     var ctx = canvas.getContext('2d');
     var cw = canvas.width;
     var ch = canvas.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //ctx.fillStyle = '#ff0000';
     var i=0;
-    //var tempx =0;
-    //var tempy =0;
-    //Draw each joints
+
+    //Draw Joints
     for (i =0 ; i<20; ++i) {
       var joint= this.body.joints[i];
       this.drawSimpleCircle(ctx, joint.colorX*cw, joint.colorY*ch, 5, 'red', true);
       //tempx +=joint.colorX*cw;
       //tempy +=joint.colorY*ch;
     }
-    //Draw center body
-    //this.bodyParam.cx =tempx/20;
-    //this.bodyParam.cy =tempy/20;
-    //this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, 10, 'blue', true);
-    //Draw Wrist circles
+
+    //Calculate distance of wristels
+    var x1 = this.bodyParam.cx;
+    var y1 = this.bodyParam.cy;
+    //Left
+    var x2 = this.bodyParam.wrsRx;
+    var y2 = this.bodyParam.wrsRy;
+    //Right
+    var x3 = this.bodyParam.wrsLx;
+    var y3 = this.bodyParam.wrsLy;
+    this.bodyParam.RWrist_Center_D = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    this.bodyParam.LWrist_Center_D = Math.sqrt((x3-x1)*(x3-x1)+(y3-y1)*(y3-y1));
+    this.props.newBodyParam(this.bodyParam);
+
+    //Draw distance of wristels
     if(true){
-     this.drawnWistCircles(ctx, false)
+      this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, this.bodyParam.RWrist_Center_D, 'red', false);
+      this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, this.bodyParam.LWrist_Center_D, 'red', false);
     }
   }
 
@@ -158,19 +165,19 @@ class ExMonitor extends Component {
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //ctx.fillStyle = '#ff0000';
-    var i=0;
-    var tempx =0;
-    var tempy =0;
+    var i = 0;
+    var tempx = 0;
+    var tempy = 0;
     //Draw each joints
-    for (i =0 ; i<20; ++i) {
+    for (i = 0 ; i < 20; ++i) {
       var joint= this.body.joints[i];
       this.drawSimpleCircle(ctx, joint.x, joint.y, 5, 'red', true);
-      tempx +=joint.x;
-      tempy +=joint.y;
-      this.populateBodyParam(i,joint, this.bodyParam);
+      tempx += joint.x;
+      tempy += joint.y;
+      this.populateBodyParam(i, joint, this.bodyParam);
     }
     //Draw center body
-    this.bodyParam.cx =tempx/20;
+    this.bodyParam.cx = tempx/20;
     this.bodyParam.cy =tempy/20;
     this.drawSimpleCircle(ctx, this.bodyParam.cx, this.bodyParam.cy, 10, 'blue', true);
     //Draw Wrist circles
@@ -195,17 +202,18 @@ class ExMonitor extends Component {
   drawnWistCircles(ctx, toFill){
     var x1 = this.bodyParam.cx;
     var y1 = this.bodyParam.cy;
+
     //Right
     var x2 = this.bodyParam.wrsRx;
     var y2 = this.bodyParam.wrsRy;
-    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-    this.drawSimpleCircle(ctx, x1, y1, d, 'blue', toFill);
+    this.bodyParam.RWrist_Center_D = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    this.drawSimpleCircle(ctx, x1, y1,   this.bodyParam.RWrist_Center_D, 'blue', toFill);
 
     //Left
     var x2 = this.bodyParam.wrsLx;
     var y2 = this.bodyParam.wrsLy;
-    var d = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
-    this.drawSimpleCircle(ctx, x1, y1, d, 'blue', toFill);
+    this.bodyParam.LWrist_Center_D = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+    this.drawSimpleCircle(ctx, x1, y1,   this.bodyParam.LWrist_Center_D, 'blue', toFill);
   }
 
   populateKinectBodyParam2(joints,bodyParam,cw,ch){
@@ -304,86 +312,6 @@ class ExMonitor extends Component {
 
   }
 
-  // populateKinectBodyParam(i,joint,bodyParam){
-  //   switch(i) {
-  //   // SPINE BASE
-  //   case 0:
-  //   bodyParam.scx = joint.colorX;
-  //   bodyParam.scy = joint.colorY;
-  //   break;
-  //   // SPIN MID
-  //   case 1:
-  //   break;
-  //   // NECK
-  //   case 2:
-  //   break;
-  //   // HEAD
-  //   case 3:
-  //   break;
-  //   // SHOULDER LEFT
-  //   case 4:
-  //   break;
-  //   // ELBOW LEFT
-  //   case 5:
-  //   break;
-  //   // WRIST LEFT
-  //   case 6:
-  //   bodyParam.wlx = joint.colorX;
-  //   bodyParam.wly = joint.colorY;
-  //   break;
-  //   // HAND LEFT
-  //   case 7:
-  //   bodyParam.hlx = joint.colorX;
-  //   bodyParam.hly = joint.colorY;
-  //   break;
-  //   // SHOULDER RIGHT
-  //   case 8:
-  //   break;
-  //   // ELBOW RIGHT
-  //   case 9:
-  //   break;
-  //   // WRIST RIGHT
-  //   case 10:
-  //   bodyParam.wrx = joint.colorX;
-  //   bodyParam.wry = joint.colorY;
-  //   break;
-  //   // HAND RIGHT
-  //   case 11:
-  //   bodyParam.hrx = joint.colorX;
-  //   bodyParam.hry = joint.colorY;
-  //   break;
-  //   // HIP LEFT
-  //   case 12:
-  //   break;
-  //   // KNEE LEFT
-  //   case 13:
-  //   break;
-  //   // ANKLE LEFT
-  //   case 14:
-  //   bodyParam.ankLx = joint.colorX;
-  //   bodyParam.ankLy = joint.colorY;
-  //   break;
-  //   // FOOT LEFT
-  //   case 15:
-  //   break;
-  //   // HIP RIGHT
-  //   case 16:
-  //   break;
-  //   // KNEE RIGHT
-  //   case 17:
-  //   break;
-  //   // ANKLE RIGHT
-  //   case 18:
-  //   bodyParam.ankRx = joint.colorX;
-  //   bodyParam.ankRy = joint.colorY;
-  //   break;
-  //   // FOOT RIGHT
-  //   case 19:
-  //   break;
-  //
-  //   return;
-  // }};
-
   populateBodyParam(i,joint,bodyParam){
     switch(i) {
     // SPINE BASE
@@ -464,9 +392,55 @@ class ExMonitor extends Component {
     return;
   }}
 
+  onOnOffRecording(){
+    this.recording = !this.recording;
+    if(this.recording){
+      var currentdate = new Date();
+      var dateTime = currentdate.getDate() + "/"
+                  + (currentdate.getMonth()+1)  + "/"
+                  + currentdate.getFullYear() + " @ "
+                  + currentdate.getHours() + ":"
+                  + currentdate.getMinutes() + ":"
+                  + currentdate.getSeconds();
+      console.log('Starting Recording');
+      console.log(this.getTimeStamp());
+      if(this.body.joints != null){
+        socket.emit('Start Recording', dateTime);
+        this.rec = setInterval(() => {
+          socket.emit('New Frame', JSON.stringify(this.body.joints));
+        }, 3000);
+      }
+
+    } else {
+      console.log('Stop Recording');
+      console.log(this.getTimeStamp());
+      socket.emit('Stop Recording', this.getTimeStamp());
+    }
+    this.setState({recording: this.recording});
+  }
+
+  getTimeStamp(){
+    var currentdate = new Date();
+    var dateTime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+    return dateTime;
+  }
+
+  captureFrame(){
+    socket.io
+  }
+
   render() {
     return (
       <div>
+        <OnOff
+          onChange={()=> this.onOnOffRecording}
+          value={this.state.recording}
+        />
         <canvas className={"border"} ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
       </div>
     );

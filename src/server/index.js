@@ -13,7 +13,17 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  socket.on('Start Recording', function(msg){
+    console.log('Start Recording at: ' + msg);
+  });
+
+  socket.on('New Frame', function(msg){
+    console.log('New Frame Received: ' + msg);
+  });
+
+  socket.on('Stop Recording', function(msg){
+    console.log('Stop Recording at: ' + msg);
+  });
 });
 
 http.listen(8080, function(){
@@ -27,7 +37,6 @@ if(kinect.open()){
   kinect.on('bodyFrame', sendFrame);
 
   function sendFrame(bodyFrame){
-      console.log('Kinect is Lve!!')
       io.emit('bodyFrame', bodyFrame);
   }
 
