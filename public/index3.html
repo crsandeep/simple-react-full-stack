@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- BootStrap and JQuery -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- To be Removed when playing with Npm -->
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- material ui -->
+    <script src="https://unpkg.com/@material-ui/core@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+    <!-- Fonts to support Material Design -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <!-- Icons to support Material Design -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+    <!-- <script type="text/javascript" src=”public/lmac1.json”></script> -->
+
+    <title>Osmosi</title>
+
+</head>
+
+
+
+<body>
+
+    <div id="root">
+
+      <!-- Header -->
+
+    </div>
+
+</body>
+
+
+
+</html>
+
+
+
+
+
+<script type="text/babel">
+
+// function loadJSON(callback) {
+//
+//     var xobj = new XMLHttpRequest();
+//         xobj.overrideMimeType("application/json");
+//     xobj.open('GET', 'lmac.json', true); // Replace 'my_data' with the path to your file
+//     xobj.onreadystatechange = function () {
+//           if (xobj.readyState == 4 && xobj.status == "200") {
+//             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+//             callback(xobj.responseText);
+//           }
+//     };
+//     xobj.send(null);
+//  }
+//
+// var data= loadJSON();
+
+const {
+  colors,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+  Container,
+  makeStyles,
+  createMuiTheme,
+  Box,
+  SvgIcon,
+  Switch,
+  Link,
+  FormControl,
+  InputLabel,
+  Select,
+  Slider
+} = MaterialUI;
+
+var data;
+
+// Define the name of the instruments  based on their link to the body's parts
+var instrumentName =['Body', 'Hands', 'Feet', 'Spine'];
+
+// Each instruments defines is own 'sound' channel
+function channel1 (nm) {
+  var instrument = new Object();
+  instrument.name = nm,
+  instrument.type = 'piano',
+  instrument.mode = 'single',
+  instrument.scale= 'Major',
+  instrument.note = 'c',
+  instrument.volume = 5,
+  instrument.sensistivy = 10
+  return instrument;
+};
+
+function channel (nm) {
+  var instrument = {
+  'name' : nm,
+  'type' : 'piano',
+  'mode' : 'single',
+  'scale': 'Major',
+  'note' : 'c',
+  'volume' : 5,
+  'sensistivy' : 10
+}
+  return instrument;
+};
+
+// Define all the instrument registered. I shold programattically define the orchestra?(i.e. based on the instrumentName)
+var  orchestra = {Body: channel(instrumentName[0]),Hands: channel(instrumentName[1]),Feet: channel(instrumentName[2]),Spine: channel(instrumentName[3])};
+
+class App extends React.Component {
+
+  constructor(props) {
+
+    super(props);
+    this.state = {bodies:[], index:1, instruments:orchestra};
+    console.log(this.state.instruments.Body.name);
+  }
+
+  componentDidMount() {
+
+    if(data!= undefined){
+        setInterval(() => {
+            var newIndex = this.state.index + 1;
+            var body = data[newIndex];
+            //console.log(body[0].bodyIndex);
+          //  console.log(body[0].joints);
+            this.setState({bodies:data[newIndex], index: newIndex})
+        }, 70);
+      }
+    }
+
+
+  handleInstrVolumeChange () {
+    console.log('Volume Changed');
+  }
+
+  render() {
+    return (
+      <div className="container-fluid">
+      	<div className="row">
+      		<div className={"col-md-12 bg-secondary"}>
+            <h1 className={"text-white"}>Osmosi</h1>
+          </div>
+      	</div>
+      	<div className={"row"}>
+      		<div className="col-md-6">
+            <ul className={"list-group border-0"}>
+              <li className={"list-group-item border-0"}><InstrCmp instrument={JSON.stringify(this.state.instruments.Body)} /></li>
+              <li className={"list-group-item border-0"}><InstrCmp instrument={JSON.stringify(this.state.instruments.Hands)} /></li>
+              <li className={"list-group-item border-0"}><InstrCmp instrument={JSON.stringify(this.state.instruments.Feet)} /></li>
+              <li className={"list-group-item border-0"}><InstrCmp instrument={JSON.stringify(this.state.instruments.Spine)} /></li>
+            </ul>
+          </div>
+      		<div className={"col-md-6"}>
+            <Monitor bodies={this.state.bodies} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+};
+
+class InstrCmp extends React.Component {
+
+  constructor(props){
+      super(props);
+      this.instrument = JSON.parse(this.props.instrument);
+      console.log('Loading :', this.instrument.name);
+  }
+
+  render() {
+    return (
+						<div className={"col-12"}>
+                <ul className={"list-group border-0"}>
+                  <li className={"list-group-item bg-secondary text-white"}>{this.instrument.name}</li>
+                  <li className={"list-group-item border-0"}>
+                    <div className={"row"}>
+                      <div className={"col-md-2"}>
+                        <Switches/>
+                      </div>
+                      <div className={"col-md-5"}>
+                        <NativeSelects />
+                      </div>
+                      <div className={"col-md-5"}>
+                        <NativeSelects />
+                      </div>
+                    </div>
+                  </li>
+                  <li className={"list-group-item border-0"}><DiscreteSlider/></li>
+                </ul>
+            </div>
+      )
+    }
+};
+
+class Monitor extends React.Component {
+
+  constructor(props){
+      super(props)
+  }
+
+  componentDidUpdate() {
+    console.log('Welcome in Monitor Component');
+    if(this.props.bodies !=undefined){
+    console.log('body: ', + this.props.bodies[0].bodyIndex);
+    console.log('all jpoints ', this.props.bodies[0].joints);
+    var joit7 = this.props.bodies[0].joints[7];
+    console.log('x coord: ', joit7.x);
+    this.draw(this.props.bodies[0]);
+   }
+  }
+
+  draw(body){
+    var canvas = document.getElementById('bodyCanvas');
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ff0000';
+    var i=0;
+    for (i =0 ; i<21; ++i) {
+      var j= body.joints[i];
+      ctx.fillRect(j.x,j.y, 10, 10);
+
+    }
+
+  }
+
+  render() {
+    return <canvas className={"border"} ref="canvas" id="bodyCanvas" width="512" height="424"></canvas>
+    }
+};
+
+function Switches() {
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+  });
+
+  const handleChange = name => event => {
+    setState({ ...state, [name]: event.target.checked });
+  };
+
+  return (
+    <div className={"mt-3"}>
+      <Switch
+        checked={state.checkedA}
+        onChange={handleChange('checkedA')}
+        value="checkedA"
+        inputProps={{ 'aria-label': 'primary checkbox' }}/>
+    </div>
+  );
+};
+
+// const useStyles = makeStyles(theme => ({
+//   formControl: {
+//     margin: theme.spacing(1),
+//     minWidth: 120,
+//   },
+//   selectEmpty: {
+//     marginTop: theme.spacing(2),
+//   },
+// }));
+
+function NativeSelects() {
+  //const classes = useStyles();
+  const [state, setState] = React.useState({
+    instrument: '',
+    name: 'hai',
+  });
+
+  const inputLabel = React.useRef(null);
+  const [labelWidth, setLabelWidth] = React.useState(0);
+
+
+  const handleChange = name => event => {
+    setState({
+      ...state,
+      [name]: event.target.value,
+    });
+  };
+
+  return (
+    <div>
+      <FormControl>
+        <InputLabel htmlFor="instrument-native-simple">Instrument</InputLabel>
+        <Select
+          native
+          value={state.instrument}
+          onChange={handleChange('instrument')}
+          inputProps={{
+            name: 'instrument',
+            id: 'instrument-native-simple',
+          }}
+        >
+          <option value="" />
+          <option value={10}>Synth</option>
+          <option value={20}>Piano</option>
+          <option value={30}>Water</option>
+        </Select>
+      </FormControl>
+    </div>
+  );
+};
+
+// const useStyles = makeStyles(theme => ({
+//   root: {
+//     width: 500,
+//   },
+//   margin: {
+//     height: theme.spacing(3),
+//   },
+// }));
+
+const marks = [
+  {
+    value: 0,
+    label: '0°C',
+  },
+  {
+    value: 20,
+    label: '20°C',
+  },
+  {
+    value: 37,
+    label: '37°C',
+  },
+  {
+    value: 100,
+    label: '100°C',
+  },
+];
+
+function valuetext(value) {
+  return `${value}°C`;
+}
+
+function valueLabelFormat(value) {
+  return marks.findIndex(mark => mark.value === value) + 1;
+}
+
+function DiscreteSlider() {
+  //const classes = useStyles();
+
+  const handleChange = name => event => {
+    console.log( event.target.outerText);
+      this.props.onHandleVolumeChange(event.target.outerText)
+  };
+
+  return (
+    <div>
+      <Slider
+        defaultValue={30}
+        getAriaValueText={valuetext}
+        aria-labelledby="discrete-slider"
+        onChangeCommitted={handleChange('instrument')}
+        valueLabelDisplay="auto"
+        step={10}
+        marks
+        min={10}
+        max={110}
+      />
+      </div>
+  );
+}
+
+
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+
+
+
+</script>
