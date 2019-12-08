@@ -63,8 +63,13 @@ this.ankLy = 0; //left ankle y
 this.ankRx = 0; //right ankle x
 this.ankRy = 0; //right ankle y
 //Other to implement not available in Demo mode
-}
+};
 
+var recData = {
+  startTime:null,
+  endTime:null,
+  frame:null,
+};
 
 //Setting Socke connetion
 var socketio_url = "http://localhost:8080" ;
@@ -84,6 +89,7 @@ class ExMonitor extends Component {
       this.demoMode = true;
       this.demo = null;//Interval function to stop
       this.rec = null;//Interval function to stop
+      this.recData = recData;
       this.recording = false; // Value of the switch
       this.state = {recording:this.recording};
       this.loadDemo();
@@ -395,43 +401,62 @@ class ExMonitor extends Component {
   onOnOffRecording(){
     this.recording = !this.recording;
     if(this.recording){
-      var currentdate = new Date();
-      var dateTime = currentdate.getDate() + "/"
-                  + (currentdate.getMonth()+1)  + "/"
-                  + currentdate.getFullYear()
-                  // + " @ " +
-                  // + currentdate.getHours() + ":"
-                  // + currentdate.getMinutes() + ":"
-                  // + currentdate.getSeconds();
-      console.log('Starting Recording');
-      console.log(this.getTimeStamp());
-      if(this.body.joints != null){
-        this.rec = setInterval(() => {
-          socket.emit('New Frame', JSON.stringify(this.body.joints));
-        }, 3000);
-      }
-
+      this.startRecording();
     } else {
-      console.log('Stop Recording');
-      console.log(this.getTimeStamp());
-      socket.emit('Stop Recording', this.getTimeStamp());
+      this.stopRecording()
     }
+    // if(this.recording){
+    //   var currentdate = new Date();
+    //   var dateTime = currentdate.getDate() + "/"
+    //               + (currentdate.getMonth()+1)  + "/"
+    //               + currentdate.getFullYear()
+    //               // + " @ " +
+    //               // + currentdate.getHours() + ":"
+    //               // + currentdate.getMinutes() + ":"
+    //               // + currentdate.getSeconds();
+    //   console.log('Starting Recording');
+    //   console.log(this.getTimeStamp());
+    //   if(this.body.joints != null){
+    //     this.rec = setInterval(() => {
+    //       socket.emit('New Frame', JSON.stringify(this.body.joints));
+    //     }, 3000);
+    //   }
+    //
+    // } else {
+    //   console.log('Stop Recording');
+    //   console.log(this.getTimeStamp());
+    //   socket.emit('Stop Recording', this.getTimeStamp());
+    // }
     this.setState({recording: this.recording});
   }
 
-  getTimeStamp(){
+  startRecording(){
     var currentdate = new Date();
-    var dateTime = currentdate.getDate() + "/"
+    this.recData.startTime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/"
-                + currentdate.getFullYear() + " @ "
+                + currentdate.getFullYear()
+                + " @ " +
                 + currentdate.getHours() + ":"
                 + currentdate.getMinutes() + ":"
-                + currentdate.getSeconds();
-    return dateTime;
+               + currentdate.getSeconds();
+    socket.emit('Start Recording', this.recData);
+    console.log('Starting Recording');
+    if(this.body.joints != null){
+      this.rec = setInterval(() => {
+        this.recData.frame = JSON.stringify(this.body.joints)
+        socket.emit('New Frame', this.recData);
+      }, 3000);
+    }
   }
 
-  captureFrame(){
-    socket.io
+  stopRecording(){
+    clearInterval(this.rec);
+    var currentdate = new Date();
+    this.recData.endTime = currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+               + currentdate.getSeconds();
+    socket.emit('Stop Recording', this.recData);
+    console.log('Stop Recording');
   }
 
   render() {

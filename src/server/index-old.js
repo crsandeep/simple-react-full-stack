@@ -39,35 +39,38 @@ var Schema = mongoose.Schema;
 
 var sessionRecordingSchema = new Schema({
   title:  String,
-  endTime: String,
-  frames: [String]
+  start: String,
+  end: String,
+  frames: []
 });
+
+
+var SessionRecording = mongoose.model('SessionRecording', sessionRecordingSchema);
 
 //Socket.io section
 io.on('connection', function(socket){
 
-  var SessionRecording = mongoose.model('SessionRecording', sessionRecordingSchema);
+  var currentdate = new Date();
+  var dateTime = currentdate.getDate() + "/"
+              + (currentdate.getMonth()+1)  + "/"
+              + currentdate.getFullYear();
 
   socket.on('Start Recording', function(msg){
-    console.log('Start Recording at: ' + msg.startTime);
-    var sessionRecording = new SessionRecording({title:msg.startTime});
+    console.log('Start Recording at: ' + msg);
+    var sessionRecording = new SessionRecording({title:msg.startTime}, {frames:[]});
     sessionRecording.save();
   });
 
   socket.on('New Frame', function(msg){
     var currentSession = SessionRecording.find({ title: msg.startTime}, function(err,docs){
-      //console.log('New Frame received is: ' + docs[0]);
-      docs[0].frames.push(msg.frame);
+      console.log('CurrentSession: ' + docs[0]);
+      docs[0].frames.push(msg);
       docs[0].save();
     });
   });
 
   socket.on('Stop Recording', function(msg){
-    var currentSession = SessionRecording.find({ title: msg.startTime}, function(err,docs){
-      console.log('Stop Recording at: ' + msg.endTime);
-      docs[0].endTime = msg.endTime;
-      docs[0].save();
-    });
+    console.log('Stop Recording at: ' + msg);
   });
 });
 
