@@ -25,12 +25,24 @@ app.get('/', function(req, res){
 
 //Socket.io section
 io.on('connection', function(socket){
+
+  var currentdate = new Date();
+  var dateTime = currentdate.getDate() + "/"
+              + (currentdate.getMonth()+1)  + "/"
+              + currentdate.getFullYear();
+
   socket.on('Start Recording', function(msg){
     console.log('Start Recording at: ' + msg);
+    var sessionRecording = new SessionRecording({title:msg}, {frames:[]});
+    sessionRecording.save();
   });
 
   socket.on('New Frame', function(msg){
-    console.log('New Frame Received: ' + msg);
+    var currentSession = SessionRecording.find({ title: dateTime}, function(err,docs){
+      console.log('CurrentSession: ' + docs[0]);
+      docs[0].frames.push(msg);
+      docs[0].save();
+    });
   });
 
   socket.on('Stop Recording', function(msg){
@@ -80,9 +92,12 @@ console.log('DB Connection Error: ', err.message);
 
 var Schema = mongoose.Schema;
 
-var recordingSchema = new Schema({
+var sessionRecordingSchema = new Schema({
   title:  String,
   start: String,
   end: String,
-  frames: []
+  frames: [String]
 });
+
+
+  var SessionRecording = mongoose.model('SessionRecording', sessionRecordingSchema);

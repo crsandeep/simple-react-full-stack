@@ -86,7 +86,7 @@ class ExMonitor extends Component {
       this.rec = null;//Interval function to stop
       this.recording = false; // Value of the switch
       this.state = {recording:this.recording};
-      //this.loadDemo();
+      this.loadDemo();
   }
 
   componentDidUpdate(){
@@ -398,14 +398,14 @@ class ExMonitor extends Component {
       var currentdate = new Date();
       var dateTime = currentdate.getDate() + "/"
                   + (currentdate.getMonth()+1)  + "/"
-                  + currentdate.getFullYear() + " @ "
-                  + currentdate.getHours() + ":"
-                  + currentdate.getMinutes() + ":"
-                  + currentdate.getSeconds();
+                  + currentdate.getFullYear()
+                  // + " @ " +
+                  // + currentdate.getHours() + ":"
+                  // + currentdate.getMinutes() + ":"
+                  // + currentdate.getSeconds();
       console.log('Starting Recording');
       console.log(this.getTimeStamp());
       if(this.body.joints != null){
-        socket.emit('Start Recording', dateTime);
         this.rec = setInterval(() => {
           socket.emit('New Frame', JSON.stringify(this.body.joints));
         }, 3000);
