@@ -1,23 +1,35 @@
-import React, { Component } from 'react';
-import './app.css';
-import ReactImage from './react.png';
+import React from 'react';
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Provider } from 'react-redux'
+import { createStore,applyMiddleware} from 'redux'
+import allReducers from './reducers'
+import createSagaMiddleware from 'redux-saga'
+import rootSaga from './saga'
 
-export default class App extends Component {
-  state = { username: null };
+// import {LoginContainer,HomeContainer,GridContainer,WardobeContainer, ItemContainer, HiddenContainer} from './containers/';
+import {HeaderComp} from "./components/";
+// import FooterComp from "./components/common/FooterComp";
 
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
-  }
+//saga
+const sagaMiddleware = createSagaMiddleware()
+const store = createStore(allReducers, applyMiddleware(sagaMiddleware))
+sagaMiddleware.run(rootSaga)
 
-  render() {
-    const { username } = this.state;
-    return (
-      <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
-      </div>
-    );
-  }
+function App() {
+  let linkMap = new Map([
+    ['Home', '/home'],
+    ['Space', '/space'],
+    ['Item', '/item'],
+  ]);
+  return (
+    <Provider store={store}>
+      <Router>
+        <div>
+          <HeaderComp linkMap={linkMap}/>
+         </div>
+      </Router>
+    </Provider>
+  );
 }
+
+export default App;
