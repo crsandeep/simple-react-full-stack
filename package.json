@@ -1,7 +1,7 @@
 {
-  "name": "simple-react-full-stack",
+  "name": "mySpace",
   "version": "1.0.0",
-  "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "mySpace is a full stack web application using React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -10,8 +10,8 @@
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "Sandeep Raveesh",
-  "license": "ISC",
+  "author": "Lenno",
+  "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "express": "^4.16.3",
