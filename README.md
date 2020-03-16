@@ -40,13 +40,13 @@ yarn start (or npm start)
 
 ## Framework/library used
 
-**React-Redux**
-**Redux-Saga**
-**React-Bootstrap**
-**React-Router-Dom**
-**Material-ui**
-**Formik**
-**Yup**
-**React-Toastify**
-**React-Grid-layout**
-**Moment**
+- React-Redux
+- Redux-Saga
+- React-Bootstrap
+- React-Router-Dom
+- Material-ui
+- Formik
+- Yup
+- React-Toastify
+- React-Grid-layout
+- Moment
