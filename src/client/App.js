@@ -4,9 +4,11 @@ import { Provider } from 'react-redux'
 import { createStore,applyMiddleware} from 'redux'
 import allReducers from './reducers'
 import createSagaMiddleware from 'redux-saga'
-import rootSaga from './saga'
+import rootSaga from './sagas'
 
 // import {LoginContainer,HomeContainer,GridContainer,WardobeContainer, ItemContainer, HiddenContainer} from './containers/';
+
+import {Item} from './views/';
 import {HeaderComp} from "./components/";
 // import FooterComp from "./components/common/FooterComp";
 
@@ -26,6 +28,9 @@ function App() {
       <Router>
         <div>
           <HeaderComp linkMap={linkMap}/>
+          <Switch>
+            <Route path="/" component={Item} />
+          </Switch>
          </div>
       </Router>
     </Provider>

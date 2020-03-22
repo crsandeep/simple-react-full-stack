@@ -1,0 +1,8 @@
+
+export const OPERATION_SAVE = 'SAVE';
+export const OPERATION_UPDATE = 'UPDATE';
+export const OPERATION_DELETE = 'DELETE';
+export const OPERATION_REMOVE_IMG = 'REMOVE_IMG';
+
+export const FORM_EDIT_MODE= 'ITEM_EDIT_MODE';
+export const FORM_READONLY_MODE= 'ITEM_READONLY_MODE';

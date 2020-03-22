@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import HeaderComp from '../HeaderComp';
+import HeaderComp from '../src/client/components/HeaderComp';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 
