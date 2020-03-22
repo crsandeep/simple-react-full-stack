@@ -50,3 +50,5 @@ yarn start (or npm start)
 - React-Toastify
 - React-Grid-layout
 - Moment
+- Jest
+- Enzyme
