@@ -127,3 +127,12 @@ export function* watchDeleteItem() {
 export function* watchRemoveItemImg() {
     yield takeEvery(ActionTypes.SAGA_REMOVE_ITEM_IMG, handleRemoveItemImg);
 }
+
+export default {
+    watchGetItemList,
+    watchGetItem,
+    watchAddItem,
+    watchUpdateItem,
+    watchDeleteItem,
+    watchRemoveItemImg
+};

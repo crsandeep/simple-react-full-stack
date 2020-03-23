@@ -1,8 +1,8 @@
 import { all, fork } from 'redux-saga/effects';
-import {watchGetItemList,watchGetItem,watchAddItem,watchUpdateItem,watchDeleteItem,watchRemoveItemImg} from './itemSaga';
+import itemSaga from './itemSaga';
 
 export default function* rootSaga() {
     yield all([
-        watchGetItemList,watchGetItem,watchAddItem,watchUpdateItem,watchDeleteItem,watchRemoveItemImg   //item
+        ...Object.values(itemSaga)
     ].map(fork));
 }
