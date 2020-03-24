@@ -1,3 +1,10 @@
 {
-  "watch": ["src/server/"]
+  "watch": [
+    "src/server/",
+    ".env"
+  ],
+  "ext": "js,ts,json",
+  "ignore": [
+    "src/**/*.spec.ts"
+  ]
 }
