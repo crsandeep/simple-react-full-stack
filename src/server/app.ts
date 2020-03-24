@@ -1,9 +1,29 @@
-const express = require('express');
-const os = require('os');
+import 'reflect-metadata'; // We need this in order to use @Decorators
 
-const app = express();
+import config from './config';
+import express from 'express';
+import Logger from './loaders/logger';
+// import * as loader from './loaders';
 
-app.use(express.static('dist'));
-app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username + '12345' }));
+async function startServer() {
+    const app = express();
 
-app.listen(process.env.PORT || 8080, () => console.log(`123 Listening on port ${process.env.PORT || 8080}!`));
+    await require('./loaders').default({ expressApp: app });
+
+    app.listen(config.port, err => {
+        if (err) {        
+            Logger.error(err);
+            process.exit(1);
+            return;
+        }
+        Logger.info(`
+            ################################################
+            🛡️  Server listening on port: ${config.port} 🛡️ 
+            ################################################
+            `
+        );
+    });
+}
+
+startServer();
+  
