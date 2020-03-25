@@ -68,4 +68,48 @@ export default (app: Router) => {
     }
   );
 
+
+  route.delete(
+    '/:itemId',
+    celebrate({
+      params: Joi.object({
+        itemId: Joi.number().required(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger:winston.Logger = Container.get('logger');    
+      logger.debug('Calling deleteItem endpoint with body: %o', req.params)
+
+      try {
+        const itemId = parseInt(req.params.itemId,10);
+        const itemService = Container.get(ItemService);
+        const { result } = await itemService.deleteItem(itemId);
+        return res.status(201).json({ result });
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+  });
+
+  route.get(
+    '/space/:spaceId',
+    celebrate({
+      params: Joi.object({
+        spaceId: Joi.number().required(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger:winston.Logger = Container.get('logger');    
+      logger.debug('Calling getItemBySpaceId endpoint with body: %o', req.params)
+
+      try {
+        const spaceId = parseInt(req.params.spaceId,10);
+        const itemService = Container.get(ItemService);
+        const { result } = await itemService.getItemBySpaceId(spaceId);
+        return res.status(201).json({ result });
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+  });
 };
