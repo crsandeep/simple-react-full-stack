@@ -1,10 +1,15 @@
 import { Container } from 'typedi';
 import LoggerInstance from './logger';
 
-export default () => {
+export default ({ models }: { models: { name: string; model: any }[] }) => {
   try {
-    Container.set('logger', LoggerInstance)
+    //put all models in container for later usage
+    models.forEach(m => {
+      Container.set(m.name, m.model);
+    });
+    LoggerInstance.info('✌️ Models injected into container');
 
+    Container.set('logger', LoggerInstance)
     LoggerInstance.info('✌️ Agenda injected into container');
 
   } catch (e) {
