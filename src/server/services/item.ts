@@ -39,14 +39,15 @@ export default class ItemService {
   }
 
   
-  public async addItem(userInputDTO: IItemInputDTO): Promise<{ result: IItem}> {
+  public async addItem(itemInputDTO: IItemInputDTO): Promise<{ result: IItem}> {
     try {
-      this.logger.silly('Creating user db record');
+      this.logger.debug('add item record');
       const itemRecord = await this.itemModel.create({
-        ...userInputDTO,
+        ...itemInputDTO,
       });
 
       if (!itemRecord) {
+        this.logger.error('Fail to create item' );
         throw new Error('Item cannot be created');
       }
 
@@ -60,12 +61,74 @@ export default class ItemService {
     }
   }
 
+  public async updateItem(itemInputDTO: IItemInputDTO): Promise<{ result: IItem}> {
+    try{
+      const filter = { itemId: itemInputDTO.itemId};
+
+      this.logger.debug('update item record, itemId: %o', itemInputDTO.itemId);
+      const itemRecord = await this.itemModel.findOne(filter).select(['imgPath','reminderDtm','reminderComplete']);
+
+      if (!itemRecord) {
+        this.logger.error('Fail to find item, itemId %o ', itemInputDTO.itemId );
+        throw new Error('Item not found');
+      }
+
+      //prepare reminder completed
+      if(itemInputDTO.reminderDtm!=null){
+        //assume reminder not yet complete
+        itemInputDTO.reminderComplete = false;
+
+        //check if remind dtm has not change
+        if(itemRecord.reminderDtm!=null){
+            const oldRemind = moment(itemRecord.reminderDtm);
+            const newRemind = moment(itemInputDTO.reminderDtm);
+            if(oldRemind.diff(newRemind,'seconds',true)===0){
+                //no change
+                itemInputDTO.reminderComplete = itemInputDTO.reminderComplete;
+            }
+        }
+      }else{
+        itemInputDTO.reminderComplete = null;
+      }
+
+      const update = { 
+          name : itemInputDTO.name,
+          colorCode : itemInputDTO.colorCode,
+          imgPath : itemInputDTO.imgPath,
+          tags : itemInputDTO.tags,
+          description : itemInputDTO.description,
+          category : itemInputDTO.category,
+          reminderDtm : itemInputDTO.reminderDtm,
+          reminderComplete : itemInputDTO.reminderComplete,
+      };
+        
+        //update record
+        let updResult = await this.itemModel.findOneAndUpdate(filter, update, {
+            new: true,
+            upsert: false 
+        });
+
+        //remove images between new and old is different
+        if(updResult && itemInputDTO.imgPath!==itemRecord.imgPath){
+            this.clearUploadFile(itemRecord.imgPath);
+        }
+
+        const result: any = this.prepareOutputItem(updResult);
+
+        return {result};
+    } catch (e) {
+      this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
+      throw e;
+    }
+}
+
   public async deleteItem(itemId: number): Promise<{ result: IItem}> {
     try {
-      this.logger.debug('delete item record, %o', itemId);
+      this.logger.debug('delete item record, itemId: %o', itemId);
       const itemRecord = await this.itemModel.findOne({'itemId':itemId});
 
       if (!itemRecord) {
+        this.logger.error('Fail to find item, itemId %o ', itemId );
         throw new Error('Item not found');
       }
 
@@ -84,6 +147,42 @@ export default class ItemService {
     }
   }
 
+  public async deleteItemImage(itemId: number): Promise<{ result: boolean}> {
+    let result:boolean = false;
+    try{
+        const filter = {itemId: itemId};
+        const update = {imgPath : null};
+
+        this.logger.debug('delete item image, itemId %o', itemId);
+        const itemRecord = await this.itemModel.findOne(filter).select(['imgPath']);
+
+        if (!itemRecord) {
+          this.logger.error('Fail to find item, itemId %o ', itemId );
+          throw new Error('Item not found, %o');
+        }
+        if (itemRecord.imgPath==null) {
+          this.logger.error('Fail to find item image, itemId %o ', itemId );
+          throw new Error('Item image not found');
+        }
+
+        //update record
+        const updResult = await this.itemModel.findOneAndUpdate(filter, update, {
+            new: true,
+            upsert: false 
+        });
+
+        //remove old img 
+        if(updResult){
+          result = this.clearUploadFile(itemRecord.imgPath);
+        }
+
+        return {result};
+    } catch (e) {
+      this.logger.error('Fail to delete item image, itemId: %o, reason: %o ', itemId, e.message);
+      throw e;
+    }
+  }
+
   private prepareOutputItem(itemRecord: IItem & Document):{item: IItem} {
     if(itemRecord == null) return null;
 
@@ -97,19 +196,21 @@ export default class ItemService {
       Reflect.deleteProperty(item, '_id');
       return item;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error('Fail to prepare output item , reason: %o ', e.message);
       throw e;
     }
   }
 
-  private clearUploadFile(path:string):void{
+  private clearUploadFile(path:string):boolean{
     try {
         if(path!=null){
             fs.unlinkSync(path)
-            this.logger.debug('Itme image removed, path: %o '+ path);
+            this.logger.debug('Item image removed, path: %o '+ path);
         }
+        return true;
     } catch(err) {
         this.logger.error('Fail to delete item image file, path: %o, reason: %o ', path, err.message);
+        return false;
     }
-}
+  }
 }

@@ -15,15 +15,15 @@ export interface IItem extends mongoose.Document {
   }
   
   export interface IItemInputDTO {
-    spaceId:['spaceId'];
-    itemId:['itemId'];
-    name:['name'];
-    colorCode:['colorCode'];
-    imgPath:['imgPath'];
-    tags:['tags'];
-    description:['description'];
-    category:['category'];
-    reminderDtm: ['reminderDtm'];
-    reminderComplete: ['reminderComplete'];
+    spaceId: number;
+    itemId: number;
+    name: string;
+    colorCode: string;
+    imgPath: string;
+    tags: string;
+    description: string;
+    category: string;
+    reminderDtm: Date;
+    reminderComplete: boolean;
   }
   

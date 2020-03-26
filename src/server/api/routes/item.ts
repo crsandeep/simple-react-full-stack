@@ -24,7 +24,7 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger:winston.Logger = Container.get('logger');    
-      logger.debug('Calling getItemById endpoint with body: %o', req.params)
+      logger.debug('Calling getItemById endpoint');
 
       try {
         const itemId = parseInt(req.params.itemId,10);
@@ -55,11 +55,42 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger:winston.Logger = Container.get('logger');    
-      logger.debug('Calling Sign-In endpoint with body: %o', req.body)
+      logger.debug('Calling addItem endpoint');
 
       try {
         const itemService = Container.get(ItemService);
         const { result } = await itemService.addItem(req.body as IItemInputDTO);
+        return res.status(201).json({ result });
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+    }
+  );
+
+  route.put(
+    '/:itemId',
+    celebrate({
+      body: Joi.object({
+        spaceId: Joi.number(),
+        itemId: Joi.number().required(),
+        name: Joi.string().required(),
+        colorCode: Joi.string(),
+        imgPath: Joi.string(),
+        tags: Joi.string(),
+        description: Joi.string(),
+        category: Joi.string(),
+        reminderDtm: Joi.date(),
+        reminderComplete: Joi.boolean(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger:winston.Logger = Container.get('logger');    
+      logger.debug('Calling updateItem endpoint')
+
+      try {
+        const itemService = Container.get(ItemService);
+        const { result } = await itemService.updateItem(req.body as IItemInputDTO);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -78,12 +109,35 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger:winston.Logger = Container.get('logger');    
-      logger.debug('Calling deleteItem endpoint with body: %o', req.params)
+      logger.debug('Calling deleteItem endpoint')
 
       try {
         const itemId = parseInt(req.params.itemId,10);
         const itemService = Container.get(ItemService);
         const { result } = await itemService.deleteItem(itemId);
+        return res.status(201).json({ result });
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+  });
+
+
+  route.delete(
+    '/image/:itemId',
+    celebrate({
+      params: Joi.object({
+        itemId: Joi.number().required(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger:winston.Logger = Container.get('logger');    
+      logger.debug('Calling delete item image endpoint')
+
+      try {
+        const itemId = parseInt(req.params.itemId,10);
+        const itemService = Container.get(ItemService);
+        const { result } = await itemService.deleteItemImage(itemId);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -100,7 +154,7 @@ export default (app: Router) => {
     }),
     async (req: Request, res: Response, next: NextFunction) => {
       const logger:winston.Logger = Container.get('logger');    
-      logger.debug('Calling getItemBySpaceId endpoint with body: %o', req.params)
+      logger.debug('Calling getItemBySpaceId endpoint')
 
       try {
         const spaceId = parseInt(req.params.spaceId,10);
