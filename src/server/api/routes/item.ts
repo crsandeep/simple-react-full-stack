@@ -4,8 +4,24 @@ import ItemService from '../../services/item';
 import winston from 'winston';
 import { IItemInputDTO } from '../../interfaces/IItem';
 import { celebrate, Joi } from 'celebrate';
+import multer from 'multer';
+import config from '../../config';
+import path from 'path';
+import {v4 as uuid} from 'uuid';
 
 const route = Router();
+
+
+//multer file upload
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, config.fileUpload.tempPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, uuid() + path.extname(file.originalname))
+  }
+})
+var upload = multer({ storage: storage });
 
 export default (app: Router) => {
   app.use('/item', route);
@@ -41,16 +57,16 @@ export default (app: Router) => {
     '/',
     celebrate({
       body: Joi.object({
-        spaceId: Joi.number(),
-        itemId: Joi.number().required(),
+        spaceId: Joi.number().allow(null),
+        itemId: Joi.number().allow(null),
         name: Joi.string().required(),
         colorCode: Joi.string(),
-        imgPath: Joi.string(),
-        tags: Joi.string(),
-        description: Joi.string(),
+        imgPath: Joi.string().allow(null),
+        tags: Joi.string().allow(null),
+        description: Joi.string().allow(null),
         category: Joi.string(),
-        reminderDtm: Joi.date(),
-        reminderComplete: Joi.boolean(),
+        reminderDtm: Joi.date().allow(null),
+        reminderComplete: Joi.boolean().allow(null),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -68,20 +84,46 @@ export default (app: Router) => {
     }
   );
 
+  
+  
+  // route.put(
+  //   '/file/',   
+  //   celebrate({
+  //     body: Joi.object({
+  //       itemId: Joi.number().allow(null),
+  //     })
+  //   }),
+  //   upload.single('imgFile'),
+  //   async (req: Request, res: Response, next: NextFunction) => {
+  //     const logger:winston.Logger = Container.get('logger');    
+  //     logger.debug('Calling file endpoint');
+
+  //     let input = req.body as IItemInputDTO;
+  //     input.imgPath = req.file.path;
+  //     logger.debug('Calling file endpoint, %o',input);
+
+  //     const itemService = Container.get(ItemService);
+  //     const { result } = await itemService.addItem(req.body as IItemInputDTO);
+
+  //     return res.status(201).json({ result });
+  //   }
+  // );
+
+
   route.put(
     '/:itemId',
     celebrate({
       body: Joi.object({
-        spaceId: Joi.number(),
+        spaceId: Joi.number().allow(null),
         itemId: Joi.number().required(),
         name: Joi.string().required(),
         colorCode: Joi.string(),
-        imgPath: Joi.string(),
-        tags: Joi.string(),
-        description: Joi.string(),
+        imgPath: Joi.string().allow(null),
+        tags: Joi.string().allow(null),
+        description: Joi.string().allow(null),
         category: Joi.string(),
-        reminderDtm: Joi.date(),
-        reminderComplete: Joi.boolean(),
+        reminderDtm: Joi.date().allow(null),
+        reminderComplete: Joi.boolean().allow(null),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -166,4 +208,5 @@ export default (app: Router) => {
         return next(e);
       }
   });
+
 };

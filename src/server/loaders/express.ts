@@ -4,6 +4,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import routes from '../api';
 import config from '../config';
+import path from 'path';
+
 export default ({ app }: { app: express.Application }) => {
   app.get('/status', (req, res) => {
     res.status(200).end();
@@ -14,9 +16,14 @@ export default ({ app }: { app: express.Application }) => {
 
   app.enable('trust proxy');
   app.use(cors());
+  
+  app.use(bodyParser.json({limit: '5mb'}));
+  app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
   app.use(require('method-override')());
-  app.use(bodyParser.json());
   app.use(morgan(config.mogran.level));
+  
+  //set static path
+  app.use(express.static(path.join(__dirname, 'public')));
 
   // Load API routes
   app.use(config.api.prefix, routes());

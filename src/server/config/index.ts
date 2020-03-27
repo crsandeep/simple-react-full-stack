@@ -46,4 +46,9 @@ export default {
   api: {
     prefix: '/api',
   },
+
+  fileUpload:{
+    tempPath: process.env.FILE_UPLOAD_TEMP_PATH,
+    finalPath: process.env.FILE_UPLOAD_FINAL_PATH,
+  }
 };

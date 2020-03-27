@@ -1,5 +1,6 @@
 import { IItem } from '../interfaces/IItem';
 import mongoose from 'mongoose';
+import {MongooseAutoIncrementID} from 'mongoose-auto-increment-reworked';
 
 const Item = new mongoose.Schema(
   {
@@ -47,8 +48,9 @@ const Item = new mongoose.Schema(
 
 Item.pre<IItem>("save", function(next) {
   const user = this;
-  console.log("saving: %s (%s)", this.name, this.description)
+  console.log("Saving: %s (%s)", this.itemId, this.name)
   next()
 })
+Item.plugin(MongooseAutoIncrementID.plugin,{modelName: 'Item', field: 'itemId'})
 
 export default mongoose.model<IItem>('Item', Item);
