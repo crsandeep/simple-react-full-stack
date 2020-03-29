@@ -46,11 +46,9 @@ const Item = new mongoose.Schema(
   { timestamps: true },
 );
 
-Item.pre<IItem>("save", function(next) {
-  const user = this;
-  console.log("Saving: %s (%s)", this.itemId, this.name)
-  next()
-})
+// Item.pre<IItem>("save", function(next) {
+//   next()
+// })
 Item.plugin(MongooseAutoIncrementID.plugin,{modelName: 'Item', field: 'itemId'})
 
 export default mongoose.model<IItem>('Item', Item);

@@ -47,8 +47,20 @@ export default {
     prefix: '/api',
   },
 
+  /**
+   * Used by display
+   */
+  publicFolder: process.env.PUBLIC_FOLDER,
+  
+
+  /**
+   * upload configs
+   */
   fileUpload:{
     tempPath: process.env.FILE_UPLOAD_TEMP_PATH,
-    finalPath: process.env.FILE_UPLOAD_FINAL_PATH,
+    imgItemPath: process.env.FILE_UPLOAD_IMG_ITEM_PATH,
+    maxSize: (1024 * 1024 * parseInt(process.env.FILE_UPLOAD_MAX_SIZE,10)),  
+    fileType: ['.png','.jpg','.jpeg','gif']
   }
+
 };

@@ -10,7 +10,7 @@ export default ({ models }: { models: { name: string; model: any }[] }) => {
     LoggerInstance.info('✌️ Models injected into container');
 
     Container.set('logger', LoggerInstance)
-    LoggerInstance.info('✌️ Agenda injected into container');
+    LoggerInstance.info('✌️ Logger injected into container');
 
   } catch (e) {
     LoggerInstance.error('🔥 Error on dependency injector loader: %o', e);

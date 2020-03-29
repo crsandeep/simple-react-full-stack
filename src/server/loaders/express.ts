@@ -22,11 +22,12 @@ export default ({ app }: { app: express.Application }) => {
   app.use(require('method-override')());
   app.use(morgan(config.mogran.level));
   
-  //set static path
-  app.use(express.static(path.join(__dirname, 'public')));
 
   // Load API routes
   app.use(config.api.prefix, routes());
+
+  //set static path
+  app.use(express.static(config.publicFolder));
 
   /// catch 404 and forward to error handler
   app.use((req, res, next) => {
