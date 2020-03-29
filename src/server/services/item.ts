@@ -15,31 +15,23 @@ export default class ItemService {
     // @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
   ) { }
 
-  public async getItemBySpaceId(spaceId: number): Promise<{ result: IItem[] }> {
+  public async getItemBySpaceId(spaceId: number): Promise<{ itemRecordList: (IItem& Document)[] }> {
     const itemRecordList = await this.itemModel.find({ 'spaceId': spaceId });
-    let result: any[] = [];
-
-    if (itemRecordList != null) {
-      itemRecordList.map((item) => {
-        result.push(this.prepareOutputItem(item));
-      });
-    }
-    return { result };
+    return { itemRecordList };
   }
 
-  public async getItemById(itemId: number): Promise<{ result: IItem }> {
-    const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
-    let result: any = {};
-
-    if (itemRecord) {
-      result = this.prepareOutputItem(itemRecord);
+  public async getItemById(itemId: number): Promise<{ itemRecord: IItem & Document}> {
+    try{
+      const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
+      return { itemRecord };
+    } catch (e) {
+      this.logger.error('Fail to add item, reason: %o ', e.message);
+      throw e;
     }
-
-    return { result };
   }
 
 
-  public async addItem(itemInputDTO: IItemInputDTO): Promise<{ result: IItem }> {
+  public async addItem(itemInputDTO: IItemInputDTO): Promise<{ itemRecord: IItem & Document }> {
     try {
       this.logger.debug('add item record');
 
@@ -59,16 +51,14 @@ export default class ItemService {
       }
 
       // this.eventDispatcher.dispatch(events.user.signUp, { user: itemRecord });
-
-      const result: any = this.prepareOutputItem(itemRecord);
-      return { result };
+      return { itemRecord };
     } catch (e) {
       this.logger.error('Fail to add item, reason: %o ', e.message);
       throw e;
     }
   }
 
-  public async updateItem(itemInputDTO: IItemInputDTO): Promise<{ result: IItem }> {
+  public async updateItem(itemInputDTO: IItemInputDTO): Promise<{ updResult: IItem & Document }> {
     try {
       const filter = { itemId: itemInputDTO.itemId };
 
@@ -126,16 +116,16 @@ export default class ItemService {
         fileUtil.clearUploadFile(itemRecord.imgPath);
       }
 
-      const result: any = this.prepareOutputItem(updResult);
+      // const result: any = this.prepareOutputItem(updResult);
 
-      return { result };
+      return { updResult };
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
       throw e;
     }
   }
 
-  public async deleteItem(itemId: number): Promise<{ result: IItem }> {
+  public async deleteItem(itemId: number): Promise<{ itemRecord: IItem & Document  }> {
     try {
       this.logger.debug('delete item record, itemId: %o', itemId);
       const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
@@ -152,8 +142,8 @@ export default class ItemService {
         }
       }
 
-      const result: any = this.prepareOutputItem(itemRecord);
-      return { result };
+      // const result: any = this.prepareOutputItem(itemRecord);
+      return { itemRecord };
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemId, e.message);
       throw e;
@@ -196,21 +186,4 @@ export default class ItemService {
     }
   }
 
-  private prepareOutputItem(itemRecord: IItem & Document): { item: IItem } {
-    if (itemRecord == null) return null;
-
-    try {
-      this.logger.debug('prepare output item');
-
-      let item = itemRecord.toObject();
-      Reflect.deleteProperty(item, 'createdAt');
-      Reflect.deleteProperty(item, 'updatedAt');
-      Reflect.deleteProperty(item, '__v');
-      Reflect.deleteProperty(item, '_id');
-      return item;
-    } catch (e) {
-      this.logger.error('Fail to prepare output item , reason: %o ', e.message);
-      throw e;
-    }
-  }
 }

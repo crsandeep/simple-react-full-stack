@@ -3,9 +3,10 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import multer from 'multer';
-import { IItemInputDTO } from '../../interfaces/IItem';
+import { IItemInputDTO, IItem } from '../../interfaces/IItem';
 import ItemService from '../../services/item';
 import * as multerOptions from '../../config/multer';
+import config from '../../config';
 const route = Router();
 
 export default (app: Router) => {
@@ -33,7 +34,8 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const { result } = await itemService.getItemById(itemId);
+        const { itemRecord } = await itemService.getItemById(itemId);
+        const result = formatItem(itemRecord);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -64,7 +66,8 @@ export default (app: Router) => {
       try {
         let input:IItemInputDTO = req.body;
         input.imgPath = (req.file!=null?req.file.path:null);
-        const { result } = await itemService.addItem(input);
+        const { itemRecord } = await itemService.addItem(input);
+        const result = formatItem(itemRecord);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -97,7 +100,8 @@ export default (app: Router) => {
         let input:IItemInputDTO = req.body;
         input.itemId = parseInt(req.params.itemId);
         input.imgPath = (req.file!=null?req.file.path:null);
-        const { result } = await itemService.updateItem(input);
+        const { updResult } = await itemService.updateItem(input);
+        const result = formatItem(updResult);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -119,7 +123,8 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const { result } = await itemService.deleteItem(itemId);
+        const { itemRecord } = await itemService.deleteItem(itemId);
+        const result = formatItem(itemRecord);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -160,12 +165,64 @@ export default (app: Router) => {
 
       try {
         const spaceId = parseInt(req.params.spaceId,10);
-        const { result } = await itemService.getItemBySpaceId(spaceId);
+        const { itemRecordList } = await itemService.getItemBySpaceId(spaceId);
+        const result = formatItemList(itemRecordList);
         return res.status(201).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
       }
   });
+
+
+  function formatItemList(itemRecordList: (IItem & Document)[]): IItem[] {
+    logger.debug('format item list');
+
+    if (itemRecordList == null) {
+      let empty:any = {};
+      return empty;
+    }
+
+    try {
+      let itemList: IItem[] = [];
+      if (itemRecordList != null) {
+        itemRecordList.map((item) => {
+          itemList.push(formatItem(item));
+        });
+      }
+      return itemList;
+    } catch (e) {
+      logger.error('Fail to prepare output item list , reason: %o ', e.message);
+      throw e;
+    }
+  }
+
+  function formatItem(itemRecord: IItem & Document): IItem {
+    logger.debug('format item');
+
+    if (itemRecord == null) {
+      let empty:any = {};
+      return empty;
+    }
+
+    try {
+
+      //remove image path for display
+      if(itemRecord.imgPath!=null){
+        itemRecord.imgPath = itemRecord.imgPath.replace(config.publicFolder,'');
+        console.log(itemRecord.imgPath)
+      }
+      
+      let item = itemRecord.toObject();
+      Reflect.deleteProperty(item, 'createdAt');
+      Reflect.deleteProperty(item, 'updatedAt');
+      Reflect.deleteProperty(item, '__v');
+      Reflect.deleteProperty(item, '_id');
+      return item;
+    } catch (e) {
+      logger.error('Fail to prepare output item , reason: %o ', e.message);
+      throw e;
+    }
+  }
 
 };

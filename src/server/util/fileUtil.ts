@@ -27,7 +27,7 @@ export function moveFileToPath(tempFilePath: string, targetPath: string): string
         });
 
         logger.debug('Item image moved from %o to %o ', tempFilePath, newFilePath);
-        return newFilePath.substring(1);
+        return newFilePath;
     } catch (err) {
         logger.error('Fail to move image file, path: %o, reason: %o ', tempFilePath);
         throw err
