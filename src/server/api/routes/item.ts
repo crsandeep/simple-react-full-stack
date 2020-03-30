@@ -7,6 +7,7 @@ import { IItemInputDTO, IItem } from '../../interfaces/IItem';
 import ItemService from '../../services/item';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
+import { Document } from 'mongoose';
 const route = Router();
 
 export default (app: Router) => {
@@ -23,20 +24,29 @@ export default (app: Router) => {
   app.use('/item', route);
 
   route.get(
+    '/',
+    async (req: Request, res: Response, next: NextFunction) => {
+      logger.debug('Calling getItemById endpoint');
+
+      return res.status(200).json({ result:{itemId:1} });
+  });
+
+  route.get(
     '/:itemId',
-    celebrate({
-      params: Joi.object({
-        itemId: Joi.number().required(),
-      }),
-    }),
+    // celebrate({
+    //   params: Joi.object({
+    //     itemId: Joi.number().required(),
+    //   }),
+    // }),
     async (req: Request, res: Response, next: NextFunction) => {
       logger.debug('Calling getItemById endpoint');
 
       try {
         const itemId = parseInt(req.params.itemId,10);
         const { itemRecord } = await itemService.getItemById(itemId);
-        const result = formatItem(itemRecord);
-        return res.status(201).json({ result });
+        // const result = formatItem(itemRecord);
+        // return res.status(200).json({ result });
+        return res.status(200).json({ result:{itemId:1} });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -125,7 +135,7 @@ export default (app: Router) => {
         const itemId = parseInt(req.params.itemId,10);
         const { itemRecord } = await itemService.deleteItem(itemId);
         const result = formatItem(itemRecord);
-        return res.status(201).json({ result });
+        return res.status(200).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -146,7 +156,7 @@ export default (app: Router) => {
       try {
         const itemId = parseInt(req.params.itemId,10);
         const { result } = await itemService.deleteItemImage(itemId);
-        return res.status(201).json({ result });
+        return res.status(200).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -167,7 +177,7 @@ export default (app: Router) => {
         const spaceId = parseInt(req.params.spaceId,10);
         const { itemRecordList } = await itemService.getItemBySpaceId(spaceId);
         const result = formatItemList(itemRecordList);
-        return res.status(201).json({ result });
+        return res.status(200).json({ result });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
