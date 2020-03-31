@@ -1,6 +1,7 @@
 import { IItem } from '../interfaces/IItem';
 import mongoose from 'mongoose';
 import {MongooseAutoIncrementID} from 'mongoose-auto-increment-reworked';
+import { Container } from 'typedi';
 
 const Item = new mongoose.Schema(
   {
@@ -12,7 +13,7 @@ const Item = new mongoose.Schema(
       type: Number,
       unique: true,
       index: true,
-      required: [true, 'Please enter itemId'],
+      // required: [true, 'Please enter itemId'], //not necessary, will be auto increased by plugin
     },
     name: {
       type: String,
@@ -47,8 +48,12 @@ const Item = new mongoose.Schema(
 );
 
 // Item.pre<IItem>("save", function(next) {
-//   next()
+  // next()
 // })
-Item.plugin(MongooseAutoIncrementID.plugin,{modelName: 'Item', field: 'itemId'})
+
+;
+const AutoIncrement:any = Container.get('autoIncrement')
+Item.plugin(AutoIncrement, {inc_field: 'itemId'});
+// Item.plugin(MongooseAutoIncrementID.plugin,{modelName: 'Item', field: 'itemId', resetCount: 'reset'})
 
 export default mongoose.model<IItem>('Item', Item);

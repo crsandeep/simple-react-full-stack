@@ -53,9 +53,9 @@ export default ({ app }: { app: express.Application }) => {
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
-      errors: {
-        message: err.message,
-      },
+      isSuccess:false,
+      payload: null,
+      message: err.message
     });
   });
 };

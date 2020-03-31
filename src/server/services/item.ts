@@ -1,4 +1,4 @@
-import { Service, Inject } from 'typedi';
+import { Service, Inject, Container } from 'typedi';
 import config from '../config';
 import { IItem, IItemInputDTO } from '../interfaces/IItem';
 import { Document, Model } from 'mongoose';
@@ -6,14 +6,20 @@ import { Document, Model } from 'mongoose';
 // import events from '../subscribers/events';
 import moment from 'moment';
 import * as fileUtil from '../util/fileUtil';
+import winston from 'winston';
 
 @Service()
 export default class ItemService {
+  private logger:winston.Logger;
+  private itemModel:Model<IItem & Document>;
   constructor(
-    @Inject('itemModel') private itemModel: Model<IItem & Document>,
-    @Inject('logger') private logger,
+    // @Inject('itemModel') private itemModel: Model<IItem & Document>,
+    // @Inject('logger') privte logger:winston.Logger;
     // @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
-  ) { }
+  ) {  
+    this.logger = Container.get<winston.Logger>('logger');
+    this.itemModel = Container.get<Model<IItem & Document>>('itemModel');
+  }
 
   public async getItemBySpaceId(spaceId: number): Promise<{ itemRecordList: (IItem& Document)[] }> {
     const itemRecordList = await this.itemModel.find({ 'spaceId': spaceId });
@@ -41,6 +47,14 @@ export default class ItemService {
         itemInputDTO.imgPath = newFilePath;
       };
 
+      //set reminder complete
+      if (itemInputDTO.reminderDtm != null) {
+        //assume reminder not yet complete
+        itemInputDTO.reminderComplete = false;
+      } else {
+        itemInputDTO.reminderComplete = null;
+      }
+      
       const itemRecord = await this.itemModel.create({
         ...itemInputDTO,
       });

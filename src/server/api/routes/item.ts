@@ -33,20 +33,19 @@ export default (app: Router) => {
 
   route.get(
     '/:itemId',
-    // celebrate({
-    //   params: Joi.object({
-    //     itemId: Joi.number().required(),
-    //   }),
-    // }),
+    celebrate({
+      params: Joi.object({
+        itemId: Joi.number().required(),
+      }),
+    }),
     async (req: Request, res: Response, next: NextFunction) => {
       logger.debug('Calling getItemById endpoint');
 
       try {
         const itemId = parseInt(req.params.itemId,10);
         const { itemRecord } = await itemService.getItemById(itemId);
-        // const result = formatItem(itemRecord);
-        // return res.status(200).json({ result });
-        return res.status(200).json({ result:{itemId:1} });
+        const result = formatItem(itemRecord);
+        return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -78,7 +77,7 @@ export default (app: Router) => {
         input.imgPath = (req.file!=null?req.file.path:null);
         const { itemRecord } = await itemService.addItem(input);
         const result = formatItem(itemRecord);
-        return res.status(201).json({ result });
+        return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -112,7 +111,7 @@ export default (app: Router) => {
         input.imgPath = (req.file!=null?req.file.path:null);
         const { updResult } = await itemService.updateItem(input);
         const result = formatItem(updResult);
-        return res.status(201).json({ result });
+        return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -135,7 +134,7 @@ export default (app: Router) => {
         const itemId = parseInt(req.params.itemId,10);
         const { itemRecord } = await itemService.deleteItem(itemId);
         const result = formatItem(itemRecord);
-        return res.status(200).json({ result });
+        return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -156,7 +155,7 @@ export default (app: Router) => {
       try {
         const itemId = parseInt(req.params.itemId,10);
         const { result } = await itemService.deleteItemImage(itemId);
-        return res.status(200).json({ result });
+        return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -177,13 +176,16 @@ export default (app: Router) => {
         const spaceId = parseInt(req.params.spaceId,10);
         const { itemRecordList } = await itemService.getItemBySpaceId(spaceId);
         const result = formatItemList(itemRecordList);
-        return res.status(200).json({ result });
+        return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
       }
   });
 
+  function formatSuccess(payload:any, message:string = null):object{
+    return {isSuccess:true, payload: payload, message: message};
+  }
 
   function formatItemList(itemRecordList: (IItem & Document)[]): IItem[] {
     logger.debug('format item list');
