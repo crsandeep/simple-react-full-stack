@@ -29,20 +29,20 @@ export class Item extends React.Component {
   }
 
   handleFormSave(values) {
-    //add img into file list
-    let fileMap = new Map();
+    let fileMap = null;
+
     if(values.imgFile!=null && values.imgFile.size>0){
+      //add img into file map
+      fileMap = new Map();
       fileMap.set('imgFile',values.imgFile);
     }
 
-    //remove field from data 
-    delete values.imgFile;
-
-    //remove frontend use field
-    delete values.formMode;
-
     //add current space id
     values.spaceId = this.props.spaceId;
+
+    //clean up unecessary data fields
+    delete values.imgFile;  //to be passed by fileMap
+    delete values.formMode;
 
     if (values.itemId != null) {
       //update
@@ -73,8 +73,10 @@ export class Item extends React.Component {
   handleNew(event) {
     this.props.updateFormMode(Constants.FORM_EDIT_MODE);
   };
+  
   handleCancel(event) {
     this.props.updateFormMode(Constants.FORM_READONLY_MODE);
+    this.handleReloadList();
   };
 
 
@@ -114,9 +116,8 @@ const mapStateToProps = (state) => {
     itemId: inState.itemId,
     name: inState.name,
     colorCode: inState.colorCode,
-    imageUrl: inState.imageUrl,
     imgFile: inState.imgFile,
-    imgDisplayUrl: inState.imgDisplayUrl,
+    imgPath: inState.imgPath,
     tags: inState.tags,
     description: inState.description,
     category: inState.category,

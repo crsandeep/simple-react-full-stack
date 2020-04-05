@@ -102,11 +102,17 @@ export default class ItemService {
         itemInputDTO.reminderComplete = null;
       }
 
-      //move file to new path
+      //handle image file
       if(itemInputDTO.imgPath!=null){
+        //if new image file is uploaded
+        //move file to new path
         const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
         itemInputDTO.imgPath = newFilePath;
-      };
+      }else{
+        //no new image uploaded
+        //copy image path from existing
+        itemInputDTO.imgPath = itemRecord.imgPath;
+      }
 
       const update = {
         name: itemInputDTO.name,
@@ -129,9 +135,6 @@ export default class ItemService {
       if (updResult && itemInputDTO.imgPath !== itemRecord.imgPath) {
         fileUtil.clearUploadFile(itemRecord.imgPath);
       }
-
-      // const result: any = this.prepareOutputItem(updResult);
-
       return { updResult };
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
@@ -155,8 +158,6 @@ export default class ItemService {
           fileUtil.clearUploadFile(itemRecord.imgPath);
         }
       }
-
-      // const result: any = this.prepareOutputItem(itemRecord);
       return { itemRecord };
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemId, e.message);

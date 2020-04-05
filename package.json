@@ -95,6 +95,6 @@
     "setupFiles": [
       "<rootDir>/jest/setupTest.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "jsdom"
   }
 }

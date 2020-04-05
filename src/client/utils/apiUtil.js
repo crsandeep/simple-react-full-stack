@@ -1,7 +1,7 @@
 import axios from 'axios';
 import OperationResult from '../utils/operationResult';
 
-export const API_HOST =  'http://localhost:8080';
+export const API_HOST =  'http://localhost:8080/api';
 export const API_INVOKE_TYPE_GET = 'GET';
 export const API_INVOKE_TYPE_POST = 'POST';
 export const API_INVOKE_TYPE_PUT = 'PUT';
@@ -11,19 +11,19 @@ export const API_INVOKE_TYPE_DELETE = 'DELETE';
 export const API_ITEM_CONTEXT_PATH = '/item/';
 export const API_ITEM_FULL_PATH = API_HOST + API_ITEM_CONTEXT_PATH;
 export const API_ITEM = {
-    GET_ITEM_LIST_BY_SPACE_ID: API_ITEM_FULL_PATH + 'spaces/',
+    GET_ITEM_LIST_BY_SPACE_ID: API_ITEM_FULL_PATH + 'space/',
     GET_ITEM: API_ITEM_FULL_PATH,
     ADD_ITEM: API_ITEM_FULL_PATH,
     UPDATE_ITEM: API_ITEM_FULL_PATH,
     DELETE_ITEM: API_ITEM_FULL_PATH,
-    REMOVE_ITEM_IMG: API_ITEM_FULL_PATH + 'img/'
+    REMOVE_ITEM_IMG: API_ITEM_FULL_PATH + 'image/'
 }
 
 //space related
 export const API_SPACE_CONTEXT_PATH = '/space/';
 export const API_SPACE_FULL_PATH = API_HOST + API_SPACE_CONTEXT_PATH;
 export const API_SPACE = {
-    GET_SPACE_LIST_BY_USER_ID: API_SPACE_FULL_PATH + 'users/',
+    GET_SPACE_LIST_BY_USER_ID: API_SPACE_FULL_PATH + 'user/',
     GET_SPACE: API_SPACE_FULL_PATH,
     ADD_SPACE: API_SPACE_FULL_PATH,
     UPDATE_SPACE: API_SPACE_FULL_PATH,
@@ -35,7 +35,7 @@ export const API_SPACE = {
 export const API_REMINDER_CONTEXT_PATH = '/reminder/';
 export const API_REMINDER_FULL_PATH = API_HOST + API_REMINDER_CONTEXT_PATH;
 export const API_REMINDER = {
-    GET_REMINDER_LIST_BY_USER_ID: API_REMINDER_FULL_PATH + 'users/',
+    GET_REMINDER_LIST_BY_USER_ID: API_REMINDER_FULL_PATH + 'user/',
     UPDATE_REMINDER: API_REMINDER_FULL_PATH,
 }
 
@@ -48,12 +48,20 @@ export const invokeApi = async (invokeMethod, url, data, fileMap = null) => {
         let formData = null;
         let headerConfig = null; 
 
-        //prepare axios data and header config
         if(fileMap == null){
-            formData = {data};
+            //send as json data
+            formData = data;
         }else{
+            //send as multipart data
+            
             formData = new FormData();
-            formData.append('data',JSON.stringify(data));
+            //append all fields that is not null
+            for (let [key, value] of Object.entries(data)) {
+                //skip null value
+                if(value!=null){
+                    formData.append(key,value);
+                }
+            }
 
             //append file
             for (const [key, value] of fileMap.entries()) {

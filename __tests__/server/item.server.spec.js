@@ -304,30 +304,6 @@ describe('Update Item with Image - PUT /item with file', () => {
   });
 });
 
-describe('Delete Item Image - DELETE /item/image/:itemId', () => {
-  it('positive case', async () => {
-    //invoke api
-    const response = await request(expressApp).delete(`${apiUrl}/image/${expectPostResponse.payload.itemId}`);
-
-    //start checking
-    expect(response.statusCode).toEqual(200);
-
-    const recBody = response.body;
-
-    //check attributes
-    expect(recBody).toHaveProperty('isSuccess');
-    expect(recBody).toHaveProperty('message');
-    expect(recBody).toHaveProperty('payload');
-
-    //check values
-    expect(recBody.isSuccess).toBe(true);
-    expect(recBody.message).toBe(null);
-    expect(recBody.payload).toBe(true);
-  });
-  
-});
-
-
 describe('Delete Item - DELETE /item/:itemId', () => {
   it('positive case', async () => {
     //invoke api
@@ -348,6 +324,8 @@ describe('Delete Item - DELETE /item/:itemId', () => {
     expect(recBody.message).toBe(null);
     expect(recBody.payload).not.toBeNull();
 
+    recBody.payload.imgPath = null;
+    
     //check value is exactly match 
     expect(recBody).toEqual(expectUpdResponse);
   });
@@ -403,7 +381,6 @@ describe('Create Item with Image - POST /item with file', () => {
   });
 });
 
-
 describe('Update Item without Image - PUT /item', () => {
   it('positive case', async () => {
     //copy item id
@@ -428,8 +405,36 @@ describe('Update Item without Image - PUT /item', () => {
     expect(recBody.message).toBe(null);
     expect(recBody.payload).not.toBeNull();
 
+    //check existing image file remain exist even record is updated without new image provided
+    expect(recBody.payload.imgPath).toMatch(new RegExp('upload\/images\/item\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
+    //set imgPath to null for below full comparsion
+    recBody.payload.imgPath = null;
+    
     //check value is exactly match 
     expect(recBody).toEqual(expectUpdResponse);
   });
 });
 
+
+describe('Delete Item Image - DELETE /item/image/:itemId', () => {
+  it('positive case', async () => {
+    //invoke api
+    const response = await request(expressApp).delete(`${apiUrl}/image/${expectPostResponse.payload.itemId}`);
+
+    //start checking
+    expect(response.statusCode).toEqual(200);
+
+    const recBody = response.body;
+
+    //check attributes
+    expect(recBody).toHaveProperty('isSuccess');
+    expect(recBody).toHaveProperty('message');
+    expect(recBody).toHaveProperty('payload');
+
+    //check values
+    expect(recBody.isSuccess).toBe(true);
+    expect(recBody.message).toBe(null);
+    expect(recBody.payload).toBe(true);
+  });
+  
+});

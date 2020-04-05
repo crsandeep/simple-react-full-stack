@@ -18,9 +18,8 @@ describe('Test Reducers', () => {
       itemId: itemId,
       name: name,
       colorCode: colorCode,
-      imageUrl: null,
       imgFile: null,
-      imgDisplayUrl: null,
+      imgPath: null,
       tags: tags,
       description: description,
       category: category,
@@ -36,11 +35,10 @@ describe('Test Reducers', () => {
     itemId: null,
     name: '',
     colorCode: '',
-    imageUrl: '',
     imgFile: null,
-    imgDisplayUrl: null,
-    tags:'',
-    description: '',
+    imgPath: null,
+    tags:null,
+    description: null,
     category: '',
     reminderDtm: null
   };
@@ -117,7 +115,7 @@ describe('Test Reducers', () => {
     it('Should complete remove item image',()=>{
       expectedValues = {
         pageLoading:false,
-        imgDisplayUrl: null,
+        imgPath: null,
         imgFile: null,
         editStatus: { isSuccess: true, data: null, message:null, operation:Constants.OPERATION_REMOVE_IMG } 
       };
@@ -165,11 +163,10 @@ describe('Test Reducers', () => {
         itemId: null,
         name: '',
         colorCode: '',
-        imageUrl: '',
         imgFile: null,
-        imgDisplayUrl:null,
-        tags:'',
-        description: '',
+        imgPath:null,
+        tags:null,
+        description: null,
         category: '',
         reminderDtm: null,
       };

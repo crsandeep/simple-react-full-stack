@@ -27,13 +27,10 @@ const validateFormSchema = Yup.object().shape({
   colorCode: Yup.string()
     .required("Color is required")
     .min(1, 'Please select Color'),
-  imageUrl: Yup.string()
-    .url()
-    .trim(),
-  description: Yup.string()
+  description: Yup.string().nullable()
     .min(3, 'Description must be at least 3 characters')
     .trim(),
-  tags: Yup.string()
+  tags: Yup.string().nullable()
     .min(3, 'Tags must be at least 3 characters')
     .trim(),
   category: Yup.string()
@@ -50,8 +47,7 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
 
   return <Card key={key} bg={item.colorCode.toLowerCase()}>
     {
-      item.imgFile != null &&
-        <Card.Img variant="top" src={item.imgDisplayUrl} />
+        <Card.Img variant="top" src={item.imgPath} />
     }
     <Card.Header>
       <CardGiftcardIcon /> {' '}
@@ -178,13 +174,13 @@ function ItemComp(props){
                   <Form>
                     <Row className="justify-content-md-center">
                       <Col xs={12} md={8}>
-                        <Field name="imgDisplayUrl">
+                        <Field name="imgPath">
                           {({ field, form, meta }) => (
                             field.value != null &&
                             <div>
                               <Image src={field.value} fluid />
                               {
-                                form.values.imgFile != null && form.values.imgDisplayUrl != null &&
+                                form.values.imgPath != null &&
                                 <IconButton
                                   aria-label="delete"
                                   className='align-bottom'
@@ -241,15 +237,7 @@ function ItemComp(props){
                         </Field>
                         <ErrorMessage name="category" component="div" className="invalid-feedback" />
                       </Col>
-                    </Row>
-
-                    <Row>
-                      <Col xs={12} md={8}>
-                        <label htmlFor="imageUrl">Image URL</label>
-                        <Field name="imageUrl" type="text" placeholder="image URL" className={'form-control' + (errors.imageUrl && touched.imageUrl ? ' is-invalid' : '')} />
-                        <ErrorMessage name="imageUrl" component="div" className="invalid-feedback" />
-                      </Col>
-                      <Col xs={12} md={4}>
+                      <Col xs={12} md={3}>
                         <label htmlFor="imgFile">Image</label>
                         <Field name="imgFile">
                           {({ field, form, meta }) => (
@@ -262,7 +250,7 @@ function ItemComp(props){
                             />
                           )}
                         </Field>
-                        <ErrorMessage name="reminderDtm" component="div" className="invalid-feedback" />
+                        <ErrorMessage name="imgFile" component="div" className="invalid-feedback" />
                       </Col>
                     </Row>
                     <Row>
