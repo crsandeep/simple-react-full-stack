@@ -222,7 +222,6 @@ export default (app: Router) => {
       //remove image path for display
       if(itemRecord.imgPath!=null){
         itemRecord.imgPath = itemRecord.imgPath.replace(config.publicFolder,'');
-        console.log(itemRecord.imgPath)
       }
       
       let item = itemRecord.toObject();
