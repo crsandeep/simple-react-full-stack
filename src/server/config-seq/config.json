@@ -1,0 +1,20 @@
+{
+  "development": {
+    "username": "backend_user",
+    "password": "12345678",
+    "database": "spaceMaster",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "backend_user",
+    "password": "12345678",
+    "database": "spaceMaster-test",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres",
+    "logging": false
+  }
+}

@@ -61,6 +61,8 @@ export default {
     imgItemPath: process.env.FILE_UPLOAD_IMG_ITEM_PATH,
     maxSize: (1024 * 1024 * parseInt(process.env.FILE_UPLOAD_MAX_SIZE,10)),  
     fileType: ['.png','.jpg','.jpeg','gif']
-  }
+  },
+
+
 
 };
