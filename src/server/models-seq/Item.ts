@@ -1,8 +1,8 @@
 import {Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, ForeignKey, BelongsTo} from 'sequelize-typescript';
-import { Space } from './Space';
+import Space from './Space';
  
 @Table
-export class Item extends Model<Item> {
+export default class Item extends Model<Item> {
  
     @Index
     @AutoIncrement

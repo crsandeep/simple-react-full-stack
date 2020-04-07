@@ -8,6 +8,7 @@ import ItemService from '../../services/item';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
 import { Document } from 'mongoose';
+import Item from '../../models-seq/Item';
 const route = Router();
 
 export default (app: Router) => {
@@ -30,7 +31,7 @@ export default (app: Router) => {
 
       return res.status(200).json({ result:{itemId:1} });
   });
-
+  
   route.get(
     '/:itemId',
     celebrate({
@@ -43,8 +44,30 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const { itemRecord } = await itemService.getItemById(itemId);
-        const result = formatItem(itemRecord);
+        const itemRecord = await itemService.getItemById2(itemId);
+        const result = formatItem2(itemRecord);
+        return res.status(200).json(formatSuccess(result));
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+  });
+
+  
+  route.get(
+    '/space/:spaceId',
+    celebrate({
+      params: Joi.object({
+        spaceId: Joi.number().required(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      logger.debug('Calling getItemBySpaceId endpoint')
+
+      try {
+        const spaceId = parseInt(req.params.spaceId,10);
+        const itemRecordList = await itemService.getItemBySpaceId2(spaceId);
+        const result = formatItemList2(itemRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -75,8 +98,8 @@ export default (app: Router) => {
       try {
         let input:IItemInputDTO = req.body;
         input.imgPath = (req.file!=null?req.file.path:null);
-        const { itemRecord } = await itemService.addItem(input);
-        const result = formatItem(itemRecord);
+        const itemRecord = await itemService.addItem2(input);
+        const result = formatItem2(itemRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -109,8 +132,8 @@ export default (app: Router) => {
         let input:IItemInputDTO = req.body;
         input.itemId = parseInt(req.params.itemId);
         input.imgPath = (req.file!=null?req.file.path:null);
-        const { updResult } = await itemService.updateItem(input);
-        const result = formatItem(updResult);
+        const updResult = await itemService.updateItem2(input);
+        const result = formatItem2(updResult);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -119,7 +142,7 @@ export default (app: Router) => {
     }
   );
 
-
+  
   route.delete(
     '/:itemId',
     celebrate({
@@ -132,8 +155,8 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const { itemRecord } = await itemService.deleteItem(itemId);
-        const result = formatItem(itemRecord);
+        const itemRecord = await itemService.deleteItem2(itemId);
+        const result = formatItem2(itemRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -141,7 +164,7 @@ export default (app: Router) => {
       }
   });
 
-
+  
   route.delete(
     '/image/:itemId',
     celebrate({
@@ -154,28 +177,7 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const { result } = await itemService.deleteItemImage(itemId);
-        return res.status(200).json(formatSuccess(result));
-      } catch (e) {
-        logger.error('🔥 error: %o', e);
-        return next(e);
-      }
-  });
-
-  route.get(
-    '/space/:spaceId',
-    celebrate({
-      params: Joi.object({
-        spaceId: Joi.number().required(),
-      }),
-    }),
-    async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling getItemBySpaceId endpoint')
-
-      try {
-        const spaceId = parseInt(req.params.spaceId,10);
-        const { itemRecordList } = await itemService.getItemBySpaceId(spaceId);
-        const result = formatItemList(itemRecordList);
+        const result = await itemService.deleteItemImage2(itemId);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -187,7 +189,7 @@ export default (app: Router) => {
     return {isSuccess:true, payload: payload, message: message};
   }
 
-  function formatItemList(itemRecordList: (IItem & Document)[]): IItem[] {
+  function formatItemList2(itemRecordList: (Item)[]): Item[] {
     logger.debug('format item list');
 
     if (itemRecordList == null) {
@@ -196,10 +198,10 @@ export default (app: Router) => {
     }
 
     try {
-      let itemList: IItem[] = [];
+      let itemList: Item[] = [];
       if (itemRecordList != null) {
         itemRecordList.map((item) => {
-          itemList.push(formatItem(item));
+          itemList.push(formatItem2(item));
         });
       }
       return itemList;
@@ -209,7 +211,7 @@ export default (app: Router) => {
     }
   }
 
-  function formatItem(itemRecord: IItem & Document): IItem {
+  function formatItem2(itemRecord: Item): Item {
     logger.debug('format item');
 
     if (itemRecord == null) {
@@ -224,12 +226,9 @@ export default (app: Router) => {
         itemRecord.imgPath = itemRecord.imgPath.replace(config.publicFolder,'');
       }
       
-      let item = itemRecord.toObject();
-      Reflect.deleteProperty(item, 'createdAt');
-      Reflect.deleteProperty(item, 'updatedAt');
-      Reflect.deleteProperty(item, '__v');
-      Reflect.deleteProperty(item, '_id');
-      return item;
+      Reflect.deleteProperty(itemRecord, 'creationDate');
+      Reflect.deleteProperty(itemRecord, 'updatedOn');
+      return itemRecord;
     } catch (e) {
       logger.error('Fail to prepare output item , reason: %o ', e.message);
       throw e;

@@ -9,30 +9,33 @@ import * as fileUtil from '../util/fileUtil';
 import winston from 'winston';
 
 //test for postgresql and sequelize
-import {Item as ItemModelCont } from '../models-seq/Item'
-import {Space as SpaceModelCont } from '../models-seq/Space'
+import Item  from '../models-seq/Item'
+import Space from '../models-seq/Space'
 
 @Service()
 export default class ItemService {
   private logger:winston.Logger;
   private itemModel:Model<IItem & Document>;
-  constructor(
-    // @Inject('itemModel') private itemModel: Model<IItem & Document>,
-    // @Inject('logger') privte logger:winston.Logger;
-    // @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
-  ) {  
+  
+  constructor() {  
     this.logger = Container.get<winston.Logger>('logger');
     this.itemModel = Container.get<Model<IItem & Document>>('itemModel');
   }
 
-  public async getItemById(itemId: number): Promise<{ itemRecord: IItem & Document}> {
-    try{
-      const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
-      
-      const result = await ItemModelCont.findOne({where: {itemId: itemId}});
-      console.log('GET itemRecord '+JSON.stringify(result));
+  public async getItemBySpaceId2(spaceId: number): Promise<Item[]> {
+    const itemRecordList = await Item.findAll({
+      where:{spaceId: spaceId},
+      order: [
+        ['itemId', 'ASC'],
+      ]
+    });
+    return itemRecordList;
+  }
 
-      return {itemRecord};
+  public async getItemById2(itemId: number): Promise<Item> {
+    try{
+      const itemRecord = await Item.findOne({where: {itemId: itemId}});
+      return itemRecord;
     } catch (e) {
       this.logger.error('Fail to add item, reason: %o ', e.message);
       throw e;
@@ -40,27 +43,25 @@ export default class ItemService {
   }
 
 
-  public async addItem(itemInputDTO: IItemInputDTO): Promise<{ itemRecord: IItem & Document }> {
+  public async addItem2(itemInputDTO: IItemInputDTO): Promise<Item> {
     try {
       this.logger.debug('add item record');
 
-      // //move file to new path
-      // if(itemInputDTO.imgPath!=null){
-      //   const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
-      //   itemInputDTO.imgPath = newFilePath;
-      // };
+      //move file to new path
+      if(itemInputDTO.imgPath!=null){
+        const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
+        itemInputDTO.imgPath = newFilePath;
+      };
 
-      // //set reminder complete
-      // if (itemInputDTO.reminderDtm != null) {
-      //   //assume reminder not yet complete
-      //   itemInputDTO.reminderComplete = false;
-      // } else {
-      //   itemInputDTO.reminderComplete = null;
-      // }
+      //set reminder complete
+      if (itemInputDTO.reminderDtm != null) {
+        //assume reminder not yet complete
+        itemInputDTO.reminderComplete = false;
+      } else {
+        itemInputDTO.reminderComplete = null;
+      }
       
-      const itemRecord = await this.itemModel.create({
-        ...itemInputDTO,
-      });
+      const itemRecord = await Item.create(itemInputDTO);
 
       if (!itemRecord) {
         this.logger.error('Fail to create item');
@@ -68,105 +69,21 @@ export default class ItemService {
       }
       // this.eventDispatcher.dispatch(events.user.signUp, { user: itemRecord });
 
-      let data = {};
-      for (let [key, value] of Object.entries(itemInputDTO)) {
-        data[key] = value
-      }
-
-      // const space = await SpaceModelCont.create({
-      //   "spaceId": null,
-      //   "name": "Space 1",
-      //   "colorCode": "yellow",
-      //   "imgPath": null,
-      //   "tags": "business",
-      //   "location": "clothes"
-      // });
-      // console.log('space  '+JSON.stringify(space));
-
-      const item = await ItemModelCont.create(
-        data
-      //   {
-      //     "itemId": null,
-      //     "spaceId": 1,
-      //     "name": "item 4",
-      //     "tags": "business",
-      //     "category": "clothes",
-      //     "colorCode": "yellow",
-      //     "description": "Testing 123",
-      //     "imgPath": null,
-      //     "reminderDtm": "2020-03-27T03:17:09",
-      //     "reminderComplete": null
-      // }
-      );
-      console.log('item  '+JSON.stringify(item));
-      
-      return { itemRecord };
+      return itemRecord;
     } catch (e) {
       this.logger.error('Fail to add item, reason: %o ', e.message);
       throw e;
     }
   }
 
-
-  //--------------------------------------------------------------------
-
-  public async getItemBySpaceId(spaceId: number): Promise<{ itemRecordList: (IItem& Document)[] }> {
-    const itemRecordList = await this.itemModel.find({ 'spaceId': spaceId });
-    return { itemRecordList };
-  }
-
-  // public async getItemById(itemId: number): Promise<{ itemRecord: IItem & Document}> {
-  //   try{
-  //     const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
-  //     return { itemRecord };
-  //   } catch (e) {
-  //     this.logger.error('Fail to add item, reason: %o ', e.message);
-  //     throw e;
-  //   }
-  // }
-
-
-  // public async addItem(itemInputDTO: IItemInputDTO): Promise<{ itemRecord: IItem & Document }> {
-  //   try {
-  //     this.logger.debug('add item record');
-
-  //     //move file to new path
-  //     if(itemInputDTO.imgPath!=null){
-  //       const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
-  //       itemInputDTO.imgPath = newFilePath;
-  //     };
-
-  //     //set reminder complete
-  //     if (itemInputDTO.reminderDtm != null) {
-  //       //assume reminder not yet complete
-  //       itemInputDTO.reminderComplete = false;
-  //     } else {
-  //       itemInputDTO.reminderComplete = null;
-  //     }
-      
-  //     const itemRecord = await this.itemModel.create({
-  //       ...itemInputDTO,
-  //     });
-
-  //     if (!itemRecord) {
-  //       this.logger.error('Fail to create item');
-  //       throw new Error('Item cannot be created');
-  //     }
-
-  //     // this.eventDispatcher.dispatch(events.user.signUp, { user: itemRecord });
-  //     return { itemRecord };
-  //   } catch (e) {
-  //     this.logger.error('Fail to add item, reason: %o ', e.message);
-  //     throw e;
-  //   }
-  // }
-
-  public async updateItem(itemInputDTO: IItemInputDTO): Promise<{ updResult: IItem & Document }> {
+  public async updateItem2(itemInputDTO: IItemInputDTO): Promise<Item> {
     try {
-      const filter = { itemId: itemInputDTO.itemId };
+      const filter = {
+        where: {itemId:itemInputDTO.itemId}
+      }
 
       this.logger.debug('update item record, itemId: %o', itemInputDTO.itemId);
-      const itemRecord = await this.itemModel.findOne(filter).select(['imgPath', 'reminderDtm', 'reminderComplete']);
+      const itemRecord = await Item.findOne(filter);
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemInputDTO.itemId);
@@ -215,75 +132,96 @@ export default class ItemService {
       };
 
       //update record
-      let updResult = await this.itemModel.findOneAndUpdate(filter, update, {
-        new: true,
-        upsert: false
-      });
+      const options = {
+        where: {itemId:itemInputDTO.itemId},
+        returning: true,
+        plain: true
+      };
+
+      let updResult:any = await Item.update(update, options);
+
+      if (!updResult) {
+        this.logger.error('Fail to update item');
+        throw new Error('Item cannot be updated');
+      }
 
       //remove images between new and old is different
       if (updResult && itemInputDTO.imgPath !== itemRecord.imgPath) {
         fileUtil.clearUploadFile(itemRecord.imgPath);
       }
-      return { updResult };
+      return updResult[1];
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
       throw e;
     }
   }
 
-  public async deleteItem(itemId: number): Promise<{ itemRecord: IItem & Document  }> {
+  public async deleteItem2(itemId: number): Promise<Item> {
     try {
       this.logger.debug('delete item record, itemId: %o', itemId);
-      const itemRecord = await this.itemModel.findOne({ 'itemId': itemId });
+      const itemRecord = await Item.findOne({where: {itemId: itemId}});
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemId);
         throw new Error('Item not found');
       }
 
-      let delOper = await itemRecord.remove();
-      if (delOper.$isDeleted) {
+      const options = {
+        where: {itemId:itemId},
+        limit: 1,
+      };
+
+      
+      let delOper = await Item.destroy(options);
+
+      if (delOper) {
         if (itemRecord.imgPath != null) {
           fileUtil.clearUploadFile(itemRecord.imgPath);
         }
       }
-      return { itemRecord };
+      return itemRecord;
     } catch (e) {
       this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemId, e.message);
       throw e;
     }
   }
 
-  public async deleteItemImage(itemId: number): Promise<{ result: boolean }> {
+  
+  public async deleteItemImage2(itemId: number): Promise<boolean> {
     let result: boolean = false;
     try {
       const filter = { itemId: itemId };
       const update = { imgPath: null };
 
       this.logger.debug('delete item image, itemId %o', itemId);
-      const itemRecord = await this.itemModel.findOne(filter).select(['imgPath']);
+      const itemRecord = await Item.findOne({where: {itemId: itemId}});
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemId);
         throw new Error('Item not found, %o');
       }
+
       if (itemRecord.imgPath == null) {
         this.logger.error('Fail to find item image, itemId %o ', itemId);
         throw new Error('Item image not found');
       }
 
       //update record
-      const updResult = await this.itemModel.findOneAndUpdate(filter, update, {
-        new: true,
-        upsert: false
-      });
+      const options = {
+        where: {itemId:itemId},
+      };
 
-      //remove old img 
-      if (updResult) {
-        result = fileUtil.clearUploadFile(itemRecord.imgPath);
+      let updResult:any = await Item.update(update, options);
+
+      if (!updResult) {
+        this.logger.error('Fail to update item image to null');
+        throw new Error('Item image cannot be updated to null');
       }
 
-      return { result };
+      //remove old img 
+      result = fileUtil.clearUploadFile(itemRecord.imgPath);
+
+      return result;
     } catch (e) {
       this.logger.error('Fail to delete item image, itemId: %o, reason: %o ', itemId, e.message);
       throw e;

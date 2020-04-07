@@ -7,10 +7,7 @@ export default ({ models }: { models: { name: string; model: any }[] }) => {
     models.forEach(m => {
       Container.set(m.name, m.model);
     });
-    LoggerInstance.info('✌️ Models injected into container');
-
-    Container.set('logger', LoggerInstance)
-    LoggerInstance.info('✌️ Logger injected into container');
+    LoggerInstance.info('✌️ Mongoose Models injected into container');
 
   } catch (e) {
     LoggerInstance.error('🔥 Error on dependency injector loader: %o', e);
