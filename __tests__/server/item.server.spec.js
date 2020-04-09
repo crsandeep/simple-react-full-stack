@@ -83,9 +83,8 @@ beforeAll(async (done) => {
 
 //close the db connection
 afterAll(async () => {
-  const conn = Container.get('mongooseConn');
-  await conn.dropDatabase();
-  await conn.close();
+  // await conn.dropDatabase();
+  // await conn.close();
 });
 
 describe('Create Item without Image - POST /item', () => {

@@ -1,10 +1,10 @@
 import {Sequelize} from 'sequelize-typescript';
-import Item from '../models-seq/Item';
-import Space from '../models-seq/Space';
+import Item from '../models/Item';
+import Space from '../models/Space';
 
 let env = process.env.NODE_ENV || 'development';
 //load config from json
-let dbConfig = require('../config-seq/config.json')[env];
+let dbConfig = require('../config/sequelize-config.json')[env];
 
 const sequelize:Sequelize =  new Sequelize(dbConfig);
 

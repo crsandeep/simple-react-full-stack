@@ -19,7 +19,7 @@ export function fileTypeFilter(req, file, callback) {
     var ext = path.extname(file.originalname);
     let isValid = false;
     for(let supportType of config.fileUpload.fileType){
-        if(ext == supportType){
+        if(ext.toLowerCase() == supportType.toLowerCase()){
             isValid = true;
             break;
         }

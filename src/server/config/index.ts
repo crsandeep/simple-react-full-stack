@@ -17,11 +17,6 @@ export default {
   port: parseInt(process.env.PORT, 10),
 
   /**
-   * That long string from mlab
-   */
-  databaseURL: (process.env.RUN_MODE=='TEST'? process.env.MONGODB_URI+'-TEST': process.env.MONGODB_URI),
-
-  /**
    * Your secret sauce
    */
   jwtSecret: process.env.JWT_SECRET,

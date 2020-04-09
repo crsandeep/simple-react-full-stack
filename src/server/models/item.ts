@@ -1,59 +1,63 @@
-import { IItem } from '../interfaces/IItem';
-import mongoose from 'mongoose';
-import {MongooseAutoIncrementID} from 'mongoose-auto-increment-reworked';
-import { Container } from 'typedi';
+import {Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, ForeignKey, BelongsTo} from 'sequelize-typescript';
+import Space from './Space';
+ 
+@Table
+export default class Item extends Model<Item> {
+ 
+    @Index
+    @AutoIncrement
+    @PrimaryKey
+    @Unique
+    @Column(DataType.INTEGER)
+    itemId: number;
 
-const Item = new mongoose.Schema(
-  {
-    spaceId: {
-      type: Number,
-      //required: [true, 'Please enter space Id'],
-    },
-    itemId: {
-      type: Number,
-      unique: true,
-      index: true,
-      // required: [true, 'Please enter itemId'], //not necessary, will be auto increased by plugin
-    },
-    name: {
-      type: String,
-      required: [true, 'Please enter name'],
-    },
-    colorCode: {
-      type: String,
-      //required: [true, 'Please enter colorCode'],
-    },
-    imgPath: {
-      type: String,
-    },
-    tags: {
-      type: String,
-    },
-    description: {
-      type: String,
-      //required: [true, 'Please enter description'],
-    },
-    category: {
-      type: String,
-      //required: [true, 'Please enter category'],
-    },
-    reminderDtm: {
-      type: Date,
-    },
-    reminderComplete: {
-      type: Boolean,
-    },
-  },
-  { timestamps: true },
-);
+    @AllowNull(false)
+    @Column(DataType.TEXT)
+    name: string;
 
-// Item.pre<IItem>("save", function(next) {
-  // next()
-// })
+    @AllowNull(false)
+    @Column(DataType.TEXT)
+    colorCode: string;
 
-;
-const AutoIncrement:any = Container.get('autoIncrement')
-Item.plugin(AutoIncrement, {inc_field: 'itemId'});
-// Item.plugin(MongooseAutoIncrementID.plugin,{modelName: 'Item', field: 'itemId', resetCount: 'reset'})
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    imgPath: string;
 
-export default mongoose.model<IItem>('Item', Item);
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    tags: string;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    description: string;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    category: string;
+
+    @AllowNull(true)
+    @Column(DataType.DATE)
+    reminderDtm: Date;
+
+    @AllowNull(true)
+    @Column(DataType.BOOLEAN)
+    reminderComplete: boolean;
+    
+
+    //default timestamp
+    @CreatedAt
+    creationDate: Date;
+
+    @UpdatedAt
+    updatedOn: Date;
+
+    //relationship with other tables
+    @ForeignKey(() => Space)
+    @AllowNull(false)
+    @Column
+    spaceId: number;
+    
+    @BelongsTo(() => Space)
+    space: Space;
+    
+}

@@ -1,7 +1,6 @@
 import { Service, Inject, Container } from 'typedi';
 import config from '../config';
-import { IItem, IItemInputDTO } from '../interfaces/IItem';
-import { Document, Model } from 'mongoose';
+import ItemInputDTO from '../interfaces/ItemInputDTO';
 // import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 // import events from '../subscribers/events';
 import moment from 'moment';
@@ -9,20 +8,18 @@ import * as fileUtil from '../util/fileUtil';
 import winston from 'winston';
 
 //test for postgresql and sequelize
-import Item  from '../models-seq/Item'
-import Space from '../models-seq/Space'
+import Item  from '../models/Item'
+import Space from '../models/Space'
 
 @Service()
 export default class ItemService {
   private logger:winston.Logger;
-  private itemModel:Model<IItem & Document>;
   
   constructor() {  
     this.logger = Container.get<winston.Logger>('logger');
-    this.itemModel = Container.get<Model<IItem & Document>>('itemModel');
   }
 
-  public async getItemBySpaceId2(spaceId: number): Promise<Item[]> {
+  public async getItemBySpaceId(spaceId: number): Promise<Item[]> {
     const itemRecordList = await Item.findAll({
       where:{spaceId: spaceId},
       order: [
@@ -32,7 +29,7 @@ export default class ItemService {
     return itemRecordList;
   }
 
-  public async getItemById2(itemId: number): Promise<Item> {
+  public async getItemById(itemId: number): Promise<Item> {
     try{
       const itemRecord = await Item.findOne({where: {itemId: itemId}});
       return itemRecord;
@@ -43,7 +40,7 @@ export default class ItemService {
   }
 
 
-  public async addItem2(itemInputDTO: IItemInputDTO): Promise<Item> {
+  public async addItem(itemInputDTO: ItemInputDTO): Promise<Item> {
     try {
       this.logger.debug('add item record');
 
@@ -76,7 +73,7 @@ export default class ItemService {
     }
   }
 
-  public async updateItem2(itemInputDTO: IItemInputDTO): Promise<Item> {
+  public async updateItem(itemInputDTO: ItemInputDTO): Promise<Item> {
     try {
       const filter = {
         where: {itemId:itemInputDTO.itemId}
@@ -156,7 +153,7 @@ export default class ItemService {
     }
   }
 
-  public async deleteItem2(itemId: number): Promise<Item> {
+  public async deleteItem(itemId: number): Promise<Item> {
     try {
       this.logger.debug('delete item record, itemId: %o', itemId);
       const itemRecord = await Item.findOne({where: {itemId: itemId}});
@@ -187,7 +184,7 @@ export default class ItemService {
   }
 
   
-  public async deleteItemImage2(itemId: number): Promise<boolean> {
+  public async deleteItemImage(itemId: number): Promise<boolean> {
     let result: boolean = false;
     try {
       const filter = { itemId: itemId };

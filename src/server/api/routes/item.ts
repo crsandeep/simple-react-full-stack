@@ -3,12 +3,11 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import multer from 'multer';
-import { IItemInputDTO, IItem } from '../../interfaces/IItem';
+import ItemInputDTO  from '../../interfaces/ItemInputDTO';
 import ItemService from '../../services/item';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
-import { Document } from 'mongoose';
-import Item from '../../models-seq/Item';
+import Item from '../../models/Item';
 const route = Router();
 
 export default (app: Router) => {
@@ -44,8 +43,8 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const itemRecord = await itemService.getItemById2(itemId);
-        const result = formatItem2(itemRecord);
+        const itemRecord = await itemService.getItemById(itemId);
+        const result = formatItem(itemRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -66,8 +65,8 @@ export default (app: Router) => {
 
       try {
         const spaceId = parseInt(req.params.spaceId,10);
-        const itemRecordList = await itemService.getItemBySpaceId2(spaceId);
-        const result = formatItemList2(itemRecordList);
+        const itemRecordList = await itemService.getItemBySpaceId(spaceId);
+        const result = formatItemList(itemRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -96,10 +95,10 @@ export default (app: Router) => {
       logger.debug('Calling addItem endpoint');
 
       try {
-        let input:IItemInputDTO = req.body;
+        let input:ItemInputDTO = req.body;
         input.imgPath = (req.file!=null?req.file.path:null);
-        const itemRecord = await itemService.addItem2(input);
-        const result = formatItem2(itemRecord);
+        const itemRecord = await itemService.addItem(input);
+        const result = formatItem(itemRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -129,11 +128,11 @@ export default (app: Router) => {
       logger.debug('Calling updateItem endpoint')
 
       try {
-        let input:IItemInputDTO = req.body;
+        let input:ItemInputDTO = req.body;
         input.itemId = parseInt(req.params.itemId);
         input.imgPath = (req.file!=null?req.file.path:null);
-        const updResult = await itemService.updateItem2(input);
-        const result = formatItem2(updResult);
+        const updResult = await itemService.updateItem(input);
+        const result = formatItem(updResult);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -155,8 +154,8 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const itemRecord = await itemService.deleteItem2(itemId);
-        const result = formatItem2(itemRecord);
+        const itemRecord = await itemService.deleteItem(itemId);
+        const result = formatItem(itemRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -177,7 +176,7 @@ export default (app: Router) => {
 
       try {
         const itemId = parseInt(req.params.itemId,10);
-        const result = await itemService.deleteItemImage2(itemId);
+        const result = await itemService.deleteItemImage(itemId);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -189,7 +188,7 @@ export default (app: Router) => {
     return {isSuccess:true, payload: payload, message: message};
   }
 
-  function formatItemList2(itemRecordList: (Item)[]): Item[] {
+  function formatItemList(itemRecordList: (Item)[]): Item[] {
     logger.debug('format item list');
 
     if (itemRecordList == null) {
@@ -201,7 +200,7 @@ export default (app: Router) => {
       let itemList: Item[] = [];
       if (itemRecordList != null) {
         itemRecordList.map((item) => {
-          itemList.push(formatItem2(item));
+          itemList.push(formatItem(item));
         });
       }
       return itemList;
@@ -211,7 +210,7 @@ export default (app: Router) => {
     }
   }
 
-  function formatItem2(itemRecord: Item): Item {
+  function formatItem(itemRecord: Item): Item {
     logger.debug('format item');
 
     if (itemRecord == null) {
