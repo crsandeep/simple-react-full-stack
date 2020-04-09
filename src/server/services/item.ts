@@ -1,3 +1,4 @@
+import { Sequelize, Repository } from 'sequelize-typescript';
 import { Service, Inject, Container } from 'typedi';
 import config from '../config';
 import ItemInputDTO from '../interfaces/ItemInputDTO';
@@ -14,27 +15,33 @@ import Space from '../models/Space'
 @Service()
 export default class ItemService {
   private logger:winston.Logger;
-  
+  private itemRepo:Repository<Item>;
   constructor() {  
     this.logger = Container.get<winston.Logger>('logger');
+    this.itemRepo = Container.get<Sequelize>('sequelize').getRepository<Item>(Item);
   }
 
   public async getItemBySpaceId(spaceId: number): Promise<Item[]> {
-    const itemRecordList = await Item.findAll({
-      where:{spaceId: spaceId},
-      order: [
-        ['itemId', 'ASC'],
-      ]
-    });
-    return itemRecordList;
+    try{
+      const itemRecordList = await this.itemRepo.findAll({
+        where:{spaceId: spaceId},
+        order: [
+          ['itemId', 'ASC'],
+        ]
+      });
+      return itemRecordList;
+    } catch (e) {
+      this.logger.error('Fail to get item list, reason: %o ', e.message);
+      throw e;
+    }
   }
 
   public async getItemById(itemId: number): Promise<Item> {
     try{
-      const itemRecord = await Item.findOne({where: {itemId: itemId}});
+      const itemRecord = await this.itemRepo.findOne({where: {itemId: itemId}});
       return itemRecord;
     } catch (e) {
-      this.logger.error('Fail to add item, reason: %o ', e.message);
+      this.logger.error('Fail to get item, reason: %o ', e.message);
       throw e;
     }
   }
@@ -58,7 +65,7 @@ export default class ItemService {
         itemInputDTO.reminderComplete = null;
       }
       
-      const itemRecord = await Item.create(itemInputDTO);
+      const itemRecord = await this.itemRepo.create(itemInputDTO);
 
       if (!itemRecord) {
         this.logger.error('Fail to create item');
@@ -80,7 +87,7 @@ export default class ItemService {
       }
 
       this.logger.debug('update item record, itemId: %o', itemInputDTO.itemId);
-      const itemRecord = await Item.findOne(filter);
+      const itemRecord = await this.itemRepo.findOne(filter);
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemInputDTO.itemId);
@@ -135,7 +142,7 @@ export default class ItemService {
         plain: true
       };
 
-      let updResult:any = await Item.update(update, options);
+      let updResult:any = await this.itemRepo.update(update, options);
 
       if (!updResult) {
         this.logger.error('Fail to update item');
@@ -148,7 +155,7 @@ export default class ItemService {
       }
       return updResult[1];
     } catch (e) {
-      this.logger.error('Fail to delete item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
+      this.logger.error('Fail to update item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
       throw e;
     }
   }
@@ -156,7 +163,7 @@ export default class ItemService {
   public async deleteItem(itemId: number): Promise<Item> {
     try {
       this.logger.debug('delete item record, itemId: %o', itemId);
-      const itemRecord = await Item.findOne({where: {itemId: itemId}});
+      const itemRecord = await this.itemRepo.findOne({where: {itemId: itemId}});
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemId);
@@ -169,7 +176,7 @@ export default class ItemService {
       };
 
       
-      let delOper = await Item.destroy(options);
+      let delOper = await this.itemRepo.destroy(options);
 
       if (delOper) {
         if (itemRecord.imgPath != null) {
@@ -191,7 +198,7 @@ export default class ItemService {
       const update = { imgPath: null };
 
       this.logger.debug('delete item image, itemId %o', itemId);
-      const itemRecord = await Item.findOne({where: {itemId: itemId}});
+      const itemRecord = await this.itemRepo.findOne({where: {itemId: itemId}});
 
       if (!itemRecord) {
         this.logger.error('Fail to find item, itemId %o ', itemId);
@@ -208,7 +215,7 @@ export default class ItemService {
         where: {itemId:itemId},
       };
 
-      let updResult:any = await Item.update(update, options);
+      let updResult:any = await this.itemRepo.update(update, options);
 
       if (!updResult) {
         this.logger.error('Fail to update item image to null');

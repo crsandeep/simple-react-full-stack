@@ -54,7 +54,7 @@ export default class Item extends Model<Item> {
     //relationship with other tables
     @ForeignKey(() => Space)
     @AllowNull(false)
-    @Column
+    @Column(DataType.INTEGER)
     spaceId: number;
     
     @BelongsTo(() => Space)
