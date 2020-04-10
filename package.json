@@ -1,7 +1,7 @@
 {
-  "name": "mySpace",
+  "name": "spaceMaster",
   "version": "1.0.0",
-  "description": "mySpace is a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "SpaceMaster is a full stack web application using React, Node.js, Express and Webpack.",
   "main": "src/server/index.ts",
   "scripts": {
     "build": "webpack --mode production",
