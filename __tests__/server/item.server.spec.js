@@ -4,7 +4,6 @@ const path = require('path');
 import { Container } from 'typedi';
 
 //initial config
-process.env.RUN_MODE = 'TEST';
 process.env.LOG_LEVEL = 'emerg';
 process.env.MORGAN_LEVEL = 'tiny';
 const apiUrl = '/api/item';
@@ -74,7 +73,7 @@ function initalItemValues() {
 //loading app
 beforeAll(async (done) => {
   expressApp = await require('../../src/server/app');
-
+  
   //prepare item values
   initalItemValues();
 
@@ -83,8 +82,9 @@ beforeAll(async (done) => {
 
 //close the db connection
 afterAll(async () => {
-  // await conn.dropDatabase();
-  // await conn.close();
+  const sequelize = Container.get('sequelize');
+  // await sequelize.drop()
+  await sequelize.close();
 });
 
 describe('Create Item without Image - POST /item', () => {
@@ -434,6 +434,35 @@ describe('Delete Item Image - DELETE /item/image/:itemId', () => {
     expect(recBody.isSuccess).toBe(true);
     expect(recBody.message).toBe(null);
     expect(recBody.payload).toBe(true);
+  });
+  
+});
+
+
+describe('Delete Item - DELETE /item/:itemId', () => {
+  it('positive case', async () => {
+    //invoke api
+    const response = await request(expressApp).delete(`${apiUrl}/${expectPostResponse.payload.itemId}`);
+
+    //start checking
+    expect(response.statusCode).toEqual(200);
+
+    const recBody = response.body;
+
+    //check attributes
+    expect(recBody).toHaveProperty('isSuccess');
+    expect(recBody).toHaveProperty('message');
+    expect(recBody).toHaveProperty('payload');
+
+    //check values
+    expect(recBody.isSuccess).toBe(true);
+    expect(recBody.message).toBe(null);
+    expect(recBody.payload).not.toBeNull();
+
+    recBody.payload.imgPath = null;
+    
+    //check value is exactly match 
+    expect(recBody).toEqual(expectUpdResponse);
   });
   
 });

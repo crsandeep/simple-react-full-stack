@@ -3,7 +3,7 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import multer from 'multer';
-import ItemInputDTO  from '../../interfaces/ItemInputDTO';
+import ItemTrans  from '../../interfaces/ItemTrans';
 import ItemService from '../../services/item';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
@@ -22,14 +22,6 @@ export default (app: Router) => {
   const itemService = Container.get(ItemService);  
 
   app.use('/item', route);
-
-  route.get(
-    '/',
-    async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling getItemById endpoint');
-
-      return res.status(200).json({ result:{itemId:1} });
-  });
   
   route.get(
     '/:itemId',
@@ -42,9 +34,9 @@ export default (app: Router) => {
       logger.debug('Calling getItemById endpoint');
 
       try {
-        const itemId = parseInt(req.params.itemId,10);
-        const itemRecord = await itemService.getItemById(itemId);
-        const result = formatItem(itemRecord);
+        const itemId:number = parseInt(req.params.itemId,10);
+        const itemRecord:Item = await itemService.getItemById(itemId);
+        const result:ItemTrans = formatItem(itemRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -64,9 +56,9 @@ export default (app: Router) => {
       logger.debug('Calling getItemBySpaceId endpoint')
 
       try {
-        const spaceId = parseInt(req.params.spaceId,10);
-        const itemRecordList = await itemService.getItemBySpaceId(spaceId);
-        const result = formatItemList(itemRecordList);
+        const spaceId:number = parseInt(req.params.spaceId,10);
+        const itemRecordList:Item[] = await itemService.getItemBySpaceId(spaceId);
+        const result:ItemTrans[] = formatItemList(itemRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -95,10 +87,10 @@ export default (app: Router) => {
       logger.debug('Calling addItem endpoint');
 
       try {
-        let input:ItemInputDTO = req.body;
+        let input:ItemTrans = req.body;
         input.imgPath = (req.file!=null?req.file.path:null);
-        const itemRecord = await itemService.addItem(input);
-        const result = formatItem(itemRecord);
+        const itemRecord:Item = await itemService.addItem(input);
+        const result:ItemTrans = formatItem(itemRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -128,11 +120,11 @@ export default (app: Router) => {
       logger.debug('Calling updateItem endpoint')
 
       try {
-        let input:ItemInputDTO = req.body;
+        let input:ItemTrans = req.body;
         input.itemId = parseInt(req.params.itemId);
         input.imgPath = (req.file!=null?req.file.path:null);
-        const updResult = await itemService.updateItem(input);
-        const result = formatItem(updResult);
+        const updResult:Item = await itemService.updateItem(input);
+        const result:ItemTrans = formatItem(updResult);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -153,9 +145,9 @@ export default (app: Router) => {
       logger.debug('Calling deleteItem endpoint')
 
       try {
-        const itemId = parseInt(req.params.itemId,10);
-        const itemRecord = await itemService.deleteItem(itemId);
-        const result = formatItem(itemRecord);
+        const itemId:number = parseInt(req.params.itemId,10);
+        const itemRecord:Item = await itemService.deleteItem(itemId);
+        const result:ItemTrans = formatItem(itemRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -175,8 +167,8 @@ export default (app: Router) => {
       logger.debug('Calling delete item image endpoint')
 
       try {
-        const itemId = parseInt(req.params.itemId,10);
-        const result = await itemService.deleteItemImage(itemId);
+        const itemId:number = parseInt(req.params.itemId,10);
+        const result:boolean = await itemService.deleteItemImage(itemId);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -188,7 +180,7 @@ export default (app: Router) => {
     return {isSuccess:true, payload: payload, message: message};
   }
 
-  function formatItemList(itemRecordList: (Item)[]): Item[] {
+  function formatItemList(itemRecordList: (Item)[]): ItemTrans[] {
     logger.debug('format item list');
 
     if (itemRecordList == null) {
@@ -197,21 +189,24 @@ export default (app: Router) => {
     }
 
     try {
-      let itemList: Item[] = [];
+      let outputItemList: ItemTrans[] = [];
       if (itemRecordList != null) {
         itemRecordList.map((item) => {
-          itemList.push(formatItem(item));
+          outputItemList.push(formatItem(item));
         });
       }
-      return itemList;
+      return outputItemList;
     } catch (e) {
       logger.error('Fail to prepare output item list , reason: %o ', e.message);
       throw e;
     }
   }
 
-  function formatItem(itemRecord: Item): Item {
+  function formatItem(itemRecord: Item): ItemTrans {
     logger.debug('format item');
+    let outputItem:any = {};
+
+    const excludeAttr:string[] = ['creationDate','updatedOn'];
 
     if (itemRecord == null) {
       let empty:any = {};
@@ -219,15 +214,20 @@ export default (app: Router) => {
     }
 
     try {
-
       //remove image path for display
       if(itemRecord.imgPath!=null){
         itemRecord.imgPath = itemRecord.imgPath.replace(config.publicFolder,'');
       }
-      
-      Reflect.deleteProperty(itemRecord, 'creationDate');
-      Reflect.deleteProperty(itemRecord, 'updatedOn');
-      return itemRecord;
+
+      //copy value from db object to transmission object
+      for (let [key, value] of Object.entries(itemRecord['dataValues'])) {
+        if(excludeAttr.indexOf(key)<0){
+          //non exclude field
+          outputItem[key] = value;
+        }
+      }
+
+      return outputItem;
     } catch (e) {
       logger.error('Fail to prepare output item , reason: %o ', e.message);
       throw e;

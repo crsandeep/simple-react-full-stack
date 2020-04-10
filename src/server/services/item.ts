@@ -1,7 +1,7 @@
 import { Sequelize, Repository } from 'sequelize-typescript';
 import { Service, Inject, Container } from 'typedi';
 import config from '../config';
-import ItemInputDTO from '../interfaces/ItemInputDTO';
+import ItemTrans from '../interfaces/ItemTrans';
 // import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 // import events from '../subscribers/events';
 import moment from 'moment';
@@ -47,7 +47,7 @@ export default class ItemService {
   }
 
 
-  public async addItem(itemInputDTO: ItemInputDTO): Promise<Item> {
+  public async addItem(itemInputDTO: ItemTrans): Promise<Item> {
     try {
       this.logger.debug('add item record');
 
@@ -80,7 +80,7 @@ export default class ItemService {
     }
   }
 
-  public async updateItem(itemInputDTO: ItemInputDTO): Promise<Item> {
+  public async updateItem(itemInputDTO: ItemTrans): Promise<Item> {
     try {
       const filter = {
         where: {itemId:itemInputDTO.itemId}

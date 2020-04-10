@@ -1,5 +1,5 @@
   
-  export default interface ItemInputDTO {
+  export default interface ItemTrans {
     spaceId: number;
     itemId: number;
     name: string;
