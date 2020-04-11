@@ -54,6 +54,7 @@ export default {
   fileUpload:{
     tempPath: process.env.FILE_UPLOAD_TEMP_PATH,
     imgItemPath: process.env.FILE_UPLOAD_IMG_ITEM_PATH,
+    imgSpacePath: process.env.FILE_UPLOAD_IMG_SPACE_PATH,
     maxSize: (1024 * 1024 * parseInt(process.env.FILE_UPLOAD_MAX_SIZE,10)),  
     fileType: ['.png','.jpg','.jpeg','gif']
   },

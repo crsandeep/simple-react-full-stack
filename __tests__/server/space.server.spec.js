@@ -6,44 +6,48 @@ import { Container } from 'typedi';
 //initial config
 process.env.LOG_LEVEL = 'emerg';
 process.env.MORGAN_LEVEL = 'tiny';
-const apiUrl = '/api/item';
+const apiUrl = '/api/space';
 
 //initial app config
 let expressApp = null;
 
 //post + get
-let postItemValues = null;
+let postSpaceValues = null;
 let expectPostResponse = null;
 
 //upd
-let updItemValues = null;
+let updSpaceValues = null;
 let expectUpdResponse = null;
 
 //input and expect value setup
-//update item details HERE
+//update space details HERE
 const postImgFilePath = path.join(__dirname, 'test_image.jpg');
 const updImgFilePath = path.join(__dirname, 'test_upd_image.jpg');
 
-function initalItemValues() {
-  //post + get item values
-  postItemValues = {
-    spaceId: 1,
-    name: 'Item Name - 123',
+function initalSpaceValues() {
+  //post + get space values
+  postSpaceValues = {
+    userId: 1,
+    name: 'Space Name - 123',
     tags: 'business',
-    category: 'clothes',
     colorCode: 'yellow',
-    description: 'Item description - 123',
-    reminderDtm: '2020-03-27T01:17:09.000Z'
+    location: 'Bedroom 1',
+    sizeUnit: 1,
+    sizeDepth: 100,
+    sizeHeight: 50,
+    sizeWidth: 70
   };
 
-  //update item values
-  updItemValues = Object.assign({}, postItemValues);
-  updItemValues.name = 'Item - ABCD';
-  updItemValues.tags = 'casual';
-  updItemValues.category = 'shoes';
-  updItemValues.colorCode = 'red';
-  updItemValues.description = 'Item content - ABC';
-  updItemValues.reminderDtm = '2020-04-01T09:20:13.000Z'
+  //update space values
+  updSpaceValues = Object.assign({}, postSpaceValues);
+  updSpaceValues.name = 'Space - ABCD';
+  updSpaceValues.tags = 'casual';
+  updSpaceValues.colorCode = 'red';
+  updSpaceValues.location = 'Living Room';
+  updSpaceValues.sizeUnit = 2,
+  updSpaceValues.sizeDepth = 600,
+  updSpaceValues.sizeHeight = 10,
+  updSpaceValues.sizeWidth = 30
 
   //expect post values
   expectPostResponse = {
@@ -51,9 +55,8 @@ function initalItemValues() {
     payload: {},  //to be copy from input
     message: null
   }
-  expectPostResponse.payload =  Object.assign({}, postItemValues);
-  // delete expectPostResponse.payload.itemId;
-  expectPostResponse.payload.reminderComplete = false;
+  expectPostResponse.payload =  Object.assign({}, postSpaceValues);
+  // delete expectPostResponse.payload.spaceId;
   expectPostResponse.payload.imgPath = null;
 
   //expect update values
@@ -62,9 +65,8 @@ function initalItemValues() {
     payload: {},  //to be copy from input
     message: null
   }
-  expectUpdResponse.payload =  Object.assign({}, updItemValues);
-  delete expectUpdResponse.payload.itemId;  //to be fill in during test
-  expectUpdResponse.payload.reminderComplete = false;
+  expectUpdResponse.payload =  Object.assign({}, updSpaceValues);
+  delete expectUpdResponse.payload.spaceId;  //to be fill in during test
   expectUpdResponse.payload.imgPath = null;
 
 }
@@ -73,8 +75,8 @@ function initalItemValues() {
 beforeAll(async (done) => {
   expressApp = await require('../../src/server/app');
   
-  //prepare item values
-  initalItemValues();
+  //prepare space values
+  initalSpaceValues();
 
   done();
 });
@@ -86,7 +88,7 @@ afterAll(async () => {
   await sequelize.close();
 });
 
-describe('Create Item without Image - POST /item', () => {
+describe('Create Space without Image - POST /space', () => {
   it('missing mandatory input case', async () => {
     const submitValues = {};
     //prepare expect values
@@ -121,13 +123,13 @@ describe('Create Item without Image - POST /item', () => {
     expect(recBody.message).not.toBeNull();
 
     //check 1st detect mandatory
-    //missing spaceId
-    targetField = 'spaceId';
+    //missing userId
+    targetField = 'userId';
     expectValues.message = messageTemplate.replace('?', targetField);
     expect(recBody).toEqual(expectValues);
 
     //check other fields
-    submitValues.spaceId = defaultNumVal;
+    submitValues.userId = defaultNumVal;
 
     //missing name
     targetField = 'name';
@@ -146,20 +148,20 @@ describe('Create Item without Image - POST /item', () => {
     submitValues.colorCode = defaultStr;
 
 
-    //missing category
-    targetField = 'category';
+    //missing location
+    targetField = 'location';
     expectValues.message = messageTemplate.replace('?', targetField);
     response = await request(expressApp).post(apiUrl).send(submitValues);
     expect(response.body).toEqual(expectValues);
 
-    submitValues.category = defaultStr;
+    submitValues.location = defaultStr;
   });
 
 
   it('positive case', async () => {
 
     //invoke api
-    const response = await request(expressApp).post(apiUrl).send(postItemValues);
+    const response = await request(expressApp).post(apiUrl).send(postSpaceValues);
 
     //start checking
     expect(response.statusCode).toEqual(201);
@@ -179,11 +181,11 @@ describe('Create Item without Image - POST /item', () => {
 
     const recPayload = response.body.payload;
     //check specific
-    //check item id is integer
-    expect(Number.isNaN(recPayload.itemId)).toBe(false);
+    //check space id is integer
+    expect(Number.isNaN(recPayload.spaceId)).toBe(false);
 
-    //set itemid for other test cases
-    expectPostResponse.payload.itemId = recPayload.itemId;
+    //set spaceid for other test cases
+    expectPostResponse.payload.spaceId = recPayload.spaceId;
 
     //check general attributes
     //compare all expect value attribute with submit value
@@ -194,10 +196,10 @@ describe('Create Item without Image - POST /item', () => {
   });
 });
 
-describe('Get Item list - GET /item/space/:spaceId', () => {
-  it('get by space Id', async () => {
+describe('Get Space list - GET /space/user/:userId', () => {
+  it('get by user Id', async () => {
     //invoke api
-    const response = await request(expressApp).get(`${apiUrl}/space/${expectPostResponse.payload.spaceId}`);
+    const response = await request(expressApp).get(`${apiUrl}/user/${expectPostResponse.payload.userId}`);
 
     //start checking
     expect(response.statusCode).toEqual(200);
@@ -214,23 +216,23 @@ describe('Get Item list - GET /item/space/:spaceId', () => {
     expect(recBody.message).toBe(null);
     expect(recBody.payload).not.toBeNull();
 
-    //check at least 1 item exists
+    //check at least 1 space exists
     expect(recBody.payload.length).toBeGreaterThanOrEqual(0);
 
-    //check 1st item
-    const item = recBody.payload[0];
-    expect(item.spaceId).not.toBeNull();
-    expect(item.itemId).not.toBeNull();
-    expect(item.name).not.toBeNull();
-    expect(item.category).not.toBeNull();
+    //check 1st space
+    const space = recBody.payload[0];
+    expect(space.userId).not.toBeNull();
+    expect(space.spaceId).not.toBeNull();
+    expect(space.name).not.toBeNull();
+    expect(space.location).not.toBeNull();
   });
 });
 
 
-describe('Get Item - GET /item/:itemId', () => {
-  it('get by item Id', async () => {
+describe('Get Space - GET /space/:spaceId', () => {
+  it('get by space Id', async () => {
     //invoke api
-    const response = await request(expressApp).get(`${apiUrl}/${expectPostResponse.payload.itemId}`);
+    const response = await request(expressApp).get(`${apiUrl}/${expectPostResponse.payload.spaceId}`);
 
     //start checking
     expect(response.statusCode).toEqual(200);
@@ -247,27 +249,27 @@ describe('Get Item - GET /item/:itemId', () => {
     expect(recBody.message).toBe(null);
     expect(recBody.payload).not.toBeNull();
 
-    //check item attribute not null
-    const item = recBody.payload
-    expect(item.spaceId).not.toBeNull();
-    expect(item.itemId).not.toBeNull();
-    expect(item.name).not.toBeNull();
-    expect(item.category).not.toBeNull();
+    //check space attribute not null
+    const space = recBody.payload
+    expect(space.userId).not.toBeNull();
+    expect(space.spaceId).not.toBeNull();
+    expect(space.name).not.toBeNull();
+    expect(space.location).not.toBeNull();
 
     //check value is exactly match with post values
     expect(recBody).toEqual(expectPostResponse);
   });
 });
 
-describe('Update Item with Image - PUT /item with file', () => {
+describe('Update Space with Image - PUT /space with file', () => {
   it('positive case', async () => {
-    //copy item id
-    updItemValues.itemId = expectPostResponse.payload.itemId;
-    expectUpdResponse.payload.itemId = updItemValues.itemId;
+    //copy space id
+    updSpaceValues.spaceId = expectPostResponse.payload.spaceId;
+    expectUpdResponse.payload.spaceId = updSpaceValues.spaceId;
 
     //prepare request
-    let req = request(expressApp).put(`${apiUrl}/${updItemValues.itemId}`);
-    for (let [key, value] of Object.entries(updItemValues)) {
+    let req = request(expressApp).put(`${apiUrl}/${updSpaceValues.spaceId}`);
+    for (let [key, value] of Object.entries(updSpaceValues)) {
       req.field(key, value);
     }
     req.attach('imgFile', updImgFilePath);
@@ -291,7 +293,7 @@ describe('Update Item with Image - PUT /item with file', () => {
     expect(recBody.payload).not.toBeNull();
 
     //check file path
-    expect(recBody.payload.imgPath).toMatch(new RegExp('upload\/images\/item\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
+    expect(recBody.payload.imgPath).toMatch(new RegExp('upload\/images\/space\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
     
     //set imgPath to null for below full comparsion
     recBody.payload.imgPath = null;
@@ -302,10 +304,10 @@ describe('Update Item with Image - PUT /item with file', () => {
   });
 });
 
-describe('Delete Item - DELETE /item/:itemId', () => {
+describe('Delete Space - DELETE /space/:spaceId', () => {
   it('positive case', async () => {
     //invoke api
-    const response = await request(expressApp).delete(`${apiUrl}/${expectPostResponse.payload.itemId}`);
+    const response = await request(expressApp).delete(`${apiUrl}/${expectPostResponse.payload.spaceId}`);
 
     //start checking
     expect(response.statusCode).toEqual(200);
@@ -330,12 +332,12 @@ describe('Delete Item - DELETE /item/:itemId', () => {
   
 });
 
-describe('Create Item with Image - POST /item with file', () => {
+describe('Create Space with Image - POST /space with file', () => {
   it('positive case', async () => {
 
     //prepare request
     let req = request(expressApp).post(apiUrl);
-    for (let [key, value] of Object.entries(postItemValues)) {
+    for (let [key, value] of Object.entries(postSpaceValues)) {
       req.field(key, value);
     }
     req.attach('imgFile', postImgFilePath);
@@ -360,16 +362,16 @@ describe('Create Item with Image - POST /item with file', () => {
 
     const recPayload = response.body.payload;
     //check file upload
-    expect(recPayload.imgPath).toMatch(new RegExp('upload\/images\/item\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
+    expect(recPayload.imgPath).toMatch(new RegExp('upload\/images\/space\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
     //set imgPath to null for below full comparsion
     recPayload.imgPath = null;
     
     //check specific
-    //check item id is integer
-    expect(Number.isNaN(recPayload.itemId)).toBe(false);
+    //check space id is integer
+    expect(Number.isNaN(recPayload.spaceId)).toBe(false);
 
-    //set itemid for other test cases
-    expectPostResponse.payload.itemId = recPayload.itemId;
+    //set spaceid for other test cases
+    expectPostResponse.payload.spaceId = recPayload.spaceId;
 
     //check general attributes
     //compare all expect value attribute with submit value
@@ -379,14 +381,14 @@ describe('Create Item with Image - POST /item with file', () => {
   });
 });
 
-describe('Update Item without Image - PUT /item', () => {
+describe('Update Space without Image - PUT /space', () => {
   it('positive case', async () => {
-    //copy item id
-    updItemValues.itemId = expectPostResponse.payload.itemId;
-    expectUpdResponse.payload.itemId = updItemValues.itemId;
+    //copy space id
+    updSpaceValues.spaceId = expectPostResponse.payload.spaceId;
+    expectUpdResponse.payload.spaceId = updSpaceValues.spaceId;
 
     //invoke api
-    const response = await request(expressApp).put(`${apiUrl}/${updItemValues.itemId}`).send(updItemValues);
+    const response = await request(expressApp).put(`${apiUrl}/${updSpaceValues.spaceId}`).send(updSpaceValues);
 
     //start checking
     expect(response.statusCode).toEqual(201);
@@ -404,7 +406,7 @@ describe('Update Item without Image - PUT /item', () => {
     expect(recBody.payload).not.toBeNull();
 
     //check existing image file remain exist even record is updated without new image provided
-    expect(recBody.payload.imgPath).toMatch(new RegExp('upload\/images\/item\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
+    expect(recBody.payload.imgPath).toMatch(new RegExp('upload\/images\/space\/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}.jpg'));
     //set imgPath to null for below full comparsion
     recBody.payload.imgPath = null;
     
@@ -414,10 +416,10 @@ describe('Update Item without Image - PUT /item', () => {
 });
 
 
-describe('Delete Item Image - DELETE /item/image/:itemId', () => {
+describe('Delete Space Image - DELETE /space/image/:spaceId', () => {
   it('positive case', async () => {
     //invoke api
-    const response = await request(expressApp).delete(`${apiUrl}/image/${expectPostResponse.payload.itemId}`);
+    const response = await request(expressApp).delete(`${apiUrl}/image/${expectPostResponse.payload.spaceId}`);
 
     //start checking
     expect(response.statusCode).toEqual(200);
@@ -438,10 +440,10 @@ describe('Delete Item Image - DELETE /item/image/:itemId', () => {
 });
 
 
-describe('Delete Item - DELETE /item/:itemId', () => {
+describe('Delete Space - DELETE /space/:spaceId', () => {
   it('positive case', async () => {
     //invoke api
-    const response = await request(expressApp).delete(`${apiUrl}/${expectPostResponse.payload.itemId}`);
+    const response = await request(expressApp).delete(`${apiUrl}/${expectPostResponse.payload.spaceId}`);
 
     //start checking
     expect(response.statusCode).toEqual(200);

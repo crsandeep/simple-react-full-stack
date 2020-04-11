@@ -5,7 +5,7 @@ import sequelize from './sequelize';
 
 export default async ({ expressApp }) => {
   
-  await sequelize.sync();
+  await sequelize.sync({});
   Container.set('sequelize', sequelize)
   Logger.info('✌️ Postgresql DB loaded and connected!');
 

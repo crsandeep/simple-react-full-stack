@@ -47,25 +47,25 @@ export default class ItemService {
   }
 
 
-  public async addItem(itemInputDTO: ItemTrans): Promise<Item> {
+  public async addItem(itemTrans: ItemTrans): Promise<Item> {
     try {
       this.logger.debug('add item record');
 
       //move file to new path
-      if(itemInputDTO.imgPath!=null){
-        const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
-        itemInputDTO.imgPath = newFilePath;
+      if(itemTrans.imgPath!=null){
+        const newFilePath = fileUtil.moveFileToPath(itemTrans.imgPath, config.fileUpload.imgItemPath);
+        itemTrans.imgPath = newFilePath;
       };
 
       //set reminder complete
-      if (itemInputDTO.reminderDtm != null) {
+      if (itemTrans.reminderDtm != null) {
         //assume reminder not yet complete
-        itemInputDTO.reminderComplete = false;
+        itemTrans.reminderComplete = false;
       } else {
-        itemInputDTO.reminderComplete = null;
+        itemTrans.reminderComplete = null;
       }
       
-      const itemRecord = await this.itemRepo.create(itemInputDTO);
+      const itemRecord = await this.itemRepo.create(itemTrans);
 
       if (!itemRecord) {
         this.logger.error('Fail to create item');
@@ -80,64 +80,64 @@ export default class ItemService {
     }
   }
 
-  public async updateItem(itemInputDTO: ItemTrans): Promise<Item> {
+  public async updateItem(itemTrans: ItemTrans): Promise<Item> {
     try {
       const filter = {
-        where: {itemId:itemInputDTO.itemId}
+        where: {itemId:itemTrans.itemId}
       }
 
-      this.logger.debug('update item record, itemId: %o', itemInputDTO.itemId);
+      this.logger.debug('update item record, itemId: %o', itemTrans.itemId);
       const itemRecord = await this.itemRepo.findOne(filter);
 
       if (!itemRecord) {
-        this.logger.error('Fail to find item, itemId %o ', itemInputDTO.itemId);
+        this.logger.error('Fail to find item, itemId %o ', itemTrans.itemId);
         throw new Error('Item not found');
       }
 
       //prepare reminder completed
-      if (itemInputDTO.reminderDtm != null) {
+      if (itemTrans.reminderDtm != null) {
         //assume reminder not yet complete
-        itemInputDTO.reminderComplete = false;
+        itemTrans.reminderComplete = false;
 
         //check if remind dtm has not change
         if (itemRecord.reminderDtm != null) {
           const oldRemind = moment(itemRecord.reminderDtm);
-          const newRemind = moment(itemInputDTO.reminderDtm);
+          const newRemind = moment(itemTrans.reminderDtm);
           if (oldRemind.diff(newRemind, 'seconds', true) === 0) {
             //no change
-            itemInputDTO.reminderComplete = itemInputDTO.reminderComplete;
+            itemTrans.reminderComplete = itemTrans.reminderComplete;
           }
         }
       } else {
-        itemInputDTO.reminderComplete = null;
+        itemTrans.reminderComplete = null;
       }
 
       //handle image file
-      if(itemInputDTO.imgPath!=null){
+      if(itemTrans.imgPath!=null){
         //if new image file is uploaded
         //move file to new path
-        const newFilePath = fileUtil.moveFileToPath(itemInputDTO.imgPath, config.fileUpload.imgItemPath);
-        itemInputDTO.imgPath = newFilePath;
+        const newFilePath = fileUtil.moveFileToPath(itemTrans.imgPath, config.fileUpload.imgItemPath);
+        itemTrans.imgPath = newFilePath;
       }else{
         //no new image uploaded
         //copy image path from existing
-        itemInputDTO.imgPath = itemRecord.imgPath;
+        itemTrans.imgPath = itemRecord.imgPath;
       }
 
       const update = {
-        name: itemInputDTO.name,
-        colorCode: itemInputDTO.colorCode,
-        imgPath: itemInputDTO.imgPath,
-        tags: itemInputDTO.tags,
-        description: itemInputDTO.description,
-        category: itemInputDTO.category,
-        reminderDtm: itemInputDTO.reminderDtm,
-        reminderComplete: itemInputDTO.reminderComplete,
+        name: itemTrans.name,
+        colorCode: itemTrans.colorCode,
+        imgPath: itemTrans.imgPath,
+        tags: itemTrans.tags,
+        description: itemTrans.description,
+        category: itemTrans.category,
+        reminderDtm: itemTrans.reminderDtm,
+        reminderComplete: itemTrans.reminderComplete,
       };
 
       //update record
       const options = {
-        where: {itemId:itemInputDTO.itemId},
+        where: {itemId:itemTrans.itemId},
         returning: true,
         plain: true
       };
@@ -150,12 +150,12 @@ export default class ItemService {
       }
 
       //remove images between new and old is different
-      if (updResult && itemInputDTO.imgPath !== itemRecord.imgPath) {
+      if (updResult && itemTrans.imgPath !== itemRecord.imgPath) {
         fileUtil.clearUploadFile(itemRecord.imgPath);
       }
       return updResult[1];
     } catch (e) {
-      this.logger.error('Fail to update item, itemId: %o, reason: %o ', itemInputDTO.itemId, e.message);
+      this.logger.error('Fail to update item, itemId: %o, reason: %o ', itemTrans.itemId, e.message);
       throw e;
     }
   }

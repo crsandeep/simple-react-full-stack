@@ -3,11 +3,11 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import multer from 'multer';
-import ItemTrans  from '../../interfaces/ItemTrans';
-import ItemService from '../../services/ItemService';
+import SpaceTrans from '../../interfaces/SpaceTrans';
+import SpaceService from '../../services/SpaceService';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
-import Item from '../../models/Item';
+import Space from '../../models/Space';
 const route = Router();
 
 export default (app: Router) => {
@@ -19,24 +19,24 @@ export default (app: Router) => {
      fileFilter: multerOptions.fileTypeFilter
   });
   const logger:winston.Logger = Container.get('logger');  
-  const itemService = Container.get(ItemService);  
+  const spaceService = Container.get(SpaceService);  
 
-  app.use('/item', route);
+  app.use('/space', route);
   
   route.get(
-    '/:itemId',
+    '/:spaceId',
     celebrate({
       params: Joi.object({
-        itemId: Joi.number().required(),
+        spaceId: Joi.number().required(),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling getItemById endpoint');
+      logger.debug('Calling getSpaceById endpoint');
 
       try {
-        const itemId:number = parseInt(req.params.itemId,10);
-        const itemRecord:Item = await itemService.getItemById(itemId);
-        const result:ItemTrans = formatItem(itemRecord);
+        const spaceId:number = parseInt(req.params.spaceId,10);
+        const spaceRecord:Space = await spaceService.getSpaceById(spaceId);
+        const result:SpaceTrans = formatSpace(spaceRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -46,19 +46,19 @@ export default (app: Router) => {
 
   
   route.get(
-    '/space/:spaceId',
+    '/user/:userId',
     celebrate({
       params: Joi.object({
-        spaceId: Joi.number().required(),
+        userId: Joi.number().required(),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling getItemBySpaceId endpoint')
+      logger.debug('Calling getSpaceByUserId endpoint')
 
       try {
-        const spaceId:number = parseInt(req.params.spaceId,10);
-        const itemRecordList:Item[] = await itemService.getItemBySpaceId(spaceId);
-        const result:ItemTrans[] = formatItemList(itemRecordList);
+        const userId:number = parseInt(req.params.userId,10);
+        const spaceRecordList:Space[] = await spaceService.getSpaceByUserId(userId);
+        const result:SpaceTrans[] = formatSpaceList(spaceRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -71,26 +71,28 @@ export default (app: Router) => {
     multerUpload.single('imgFile'),
     celebrate({
       body: Joi.object({
-        spaceId: Joi.number().required(),
-        itemId: Joi.number().allow(null),
+        userId: Joi.number().required(),
+        spaceId: Joi.number().allow(null),
         name: Joi.string().required(),
         colorCode: Joi.string().required(),
         imgPath: Joi.string().allow(null),
         tags: Joi.string().allow(null),
-        description: Joi.string().allow(null),
-        category: Joi.string().required(),
-        reminderDtm: Joi.date().allow(null),
-        reminderComplete: Joi.boolean().allow(null),
+        location: Joi.string().required(),
+        sizeUnit: Joi.number().allow(null),
+        sizeWidth: Joi.number().allow(null),
+        sizeHeight: Joi.number().allow(null),
+        sizeDepth: Joi.number().allow(null),
+        drawerCount: Joi.number().allow(null),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling addItem endpoint');
+      logger.debug('Calling addSpace endpoint');
 
       try {
-        let input:ItemTrans = req.body;
+        let input:SpaceTrans = req.body;
         input.imgPath = (req.file!=null?req.file.path:null);
-        const itemRecord:Item = await itemService.addItem(input);
-        const result:ItemTrans = formatItem(itemRecord);
+        const spaceRecord:Space = await spaceService.addSpace(input);
+        const result:SpaceTrans = formatSpace(spaceRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -100,31 +102,33 @@ export default (app: Router) => {
   );
 
   route.put(
-    '/:itemId',
+    '/:spaceId',
     multerUpload.single('imgFile'),
     celebrate({
       body: Joi.object({
-        spaceId: Joi.number().required(),
-        itemId: Joi.number().required(),
+        userId: Joi.number().required(),
+        spaceId: Joi.number().allow(null),
         name: Joi.string().required(),
         colorCode: Joi.string().required(),
         imgPath: Joi.string().allow(null),
         tags: Joi.string().allow(null),
-        description: Joi.string().allow(null),
-        category: Joi.string().required(),
-        reminderDtm: Joi.date().allow(null),
-        reminderComplete: Joi.boolean().allow(null),
+        location: Joi.string().required(),
+        sizeUnit: Joi.number().allow(null),
+        sizeWidth: Joi.number().allow(null),
+        sizeHeight: Joi.number().allow(null),
+        sizeDepth: Joi.number().allow(null),
+        drawerCount: Joi.number().allow(null),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling updateItem endpoint')
+      logger.debug('Calling updateSpace endpoint')
 
       try {
-        let input:ItemTrans = req.body;
-        input.itemId = parseInt(req.params.itemId);
+        let input:SpaceTrans = req.body;
+        input.spaceId = parseInt(req.params.spaceId);
         input.imgPath = (req.file!=null?req.file.path:null);
-        const updResult:Item = await itemService.updateItem(input);
-        const result:ItemTrans = formatItem(updResult);
+        const updResult:Space = await spaceService.updateSpace(input);
+        const result:SpaceTrans = formatSpace(updResult);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -135,19 +139,19 @@ export default (app: Router) => {
 
   
   route.delete(
-    '/:itemId',
+    '/:spaceId',
     celebrate({
       params: Joi.object({
-        itemId: Joi.number().required(),
+        spaceId: Joi.number().required(),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling deleteItem endpoint')
+      logger.debug('Calling deleteSpace endpoint')
 
       try {
-        const itemId:number = parseInt(req.params.itemId,10);
-        const itemRecord:Item = await itemService.deleteItem(itemId);
-        const result:ItemTrans = formatItem(itemRecord);
+        const spaceId:number = parseInt(req.params.spaceId,10);
+        const spaceRecord:Space = await spaceService.deleteSpace(spaceId);
+        const result:SpaceTrans = formatSpace(spaceRecord);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -157,18 +161,18 @@ export default (app: Router) => {
 
   
   route.delete(
-    '/image/:itemId',
+    '/image/:spaceId',
     celebrate({
       params: Joi.object({
-        itemId: Joi.number().required(),
+        spaceId: Joi.number().required(),
       }),
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling delete item image endpoint')
+      logger.debug('Calling delete space image endpoint')
 
       try {
-        const itemId:number = parseInt(req.params.itemId,10);
-        const result:boolean = await itemService.deleteItemImage(itemId);
+        const spaceId:number = parseInt(req.params.spaceId,10);
+        const result:boolean = await spaceService.deleteSpaceImage(spaceId);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -180,56 +184,56 @@ export default (app: Router) => {
     return {isSuccess:true, payload: payload, message: message};
   }
 
-  function formatItemList(itemRecordList: (Item)[]): ItemTrans[] {
-    logger.debug('format item list');
+  function formatSpaceList(spaceRecordList: (Space)[]): SpaceTrans[] {
+    logger.debug('format space list');
 
-    if (itemRecordList == null) {
+    if (spaceRecordList == null) {
       let empty:any = {};
       return empty;
     }
 
     try {
-      let outputItemList: ItemTrans[] = [];
-      if (itemRecordList != null) {
-        itemRecordList.map((item) => {
-          outputItemList.push(formatItem(item));
+      let outputSpaceList: SpaceTrans[] = [];
+      if (spaceRecordList != null) {
+        spaceRecordList.map((space) => {
+          outputSpaceList.push(formatSpace(space));
         });
       }
-      return outputItemList;
+      return outputSpaceList;
     } catch (e) {
-      logger.error('Fail to prepare output item list , reason: %o ', e.message);
+      logger.error('Fail to prepare output space list , reason: %o ', e.message);
       throw e;
     }
   }
 
-  function formatItem(itemRecord: Item): ItemTrans {
-    logger.debug('format item');
-    let outputItem:any = {};
+  function formatSpace(spaceRecord: Space): SpaceTrans {
+    logger.debug('format space');
+    let outputSpace:any = {};
 
     const excludeAttr:string[] = ['creationDate','updatedOn'];
 
-    if (itemRecord == null) {
+    if (spaceRecord == null) {
       let empty:any = {};
       return empty;
     }
 
     try {
       //remove image path for display
-      if(itemRecord.imgPath!=null){
-        itemRecord.imgPath = itemRecord.imgPath.replace(config.publicFolder,'');
+      if(spaceRecord.imgPath!=null){
+        spaceRecord.imgPath = spaceRecord.imgPath.replace(config.publicFolder,'');
       }
 
       //copy value from db object to transmission object
-      for (let [key, value] of Object.entries(itemRecord['dataValues'])) {
+      for (let [key, value] of Object.entries(spaceRecord['dataValues'])) {
         if(excludeAttr.indexOf(key)<0){
           //non exclude field
-          outputItem[key] = value;
+          outputSpace[key] = value;
         }
       }
 
-      return outputItem;
+      return outputSpace;
     } catch (e) {
-      logger.error('Fail to prepare output item , reason: %o ', e.message);
+      logger.error('Fail to prepare output space , reason: %o ', e.message);
       throw e;
     }
   }

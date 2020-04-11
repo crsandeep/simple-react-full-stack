@@ -1,6 +1,7 @@
-import {Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, HasMany} from 'sequelize-typescript';
+import {Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, HasMany, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import Item from './Item';
- 
+import User from './User';
+
 @Table
 export default class Space extends Model<Space> {
   @Index
@@ -48,6 +49,16 @@ export default class Space extends Model<Space> {
  
   @HasMany(() => Item)
   items: Item[];
+
+
+  //relationship with other tables
+  @ForeignKey(() => User)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  userId: number;
+  
+  @BelongsTo(() => User)
+  User: User;
 
   @CreatedAt
   creationDate: Date;
