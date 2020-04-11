@@ -32,8 +32,8 @@ export default class Space extends Model<Space> {
   location: string;
   
   @AllowNull(true)
-  @Column(DataType.INTEGER)
-  sizeUnit: number;
+  @Column(DataType.TEXT)
+  sizeUnit: string;
   
   @AllowNull(true)
   @Column(DataType.INTEGER)

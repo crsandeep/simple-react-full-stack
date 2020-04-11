@@ -32,7 +32,7 @@ function initalSpaceValues() {
     tags: 'business',
     colorCode: 'yellow',
     location: 'Bedroom 1',
-    sizeUnit: 1,
+    sizeUnit: 'cm',
     sizeDepth: 100,
     sizeHeight: 50,
     sizeWidth: 70
@@ -44,7 +44,7 @@ function initalSpaceValues() {
   updSpaceValues.tags = 'casual';
   updSpaceValues.colorCode = 'red';
   updSpaceValues.location = 'Living Room';
-  updSpaceValues.sizeUnit = 2,
+  updSpaceValues.sizeUnit = 'm',
   updSpaceValues.sizeDepth = 600,
   updSpaceValues.sizeHeight = 10,
   updSpaceValues.sizeWidth = 30

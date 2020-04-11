@@ -103,7 +103,6 @@ export default class SpaceService {
         sizeWidth : spaceTrans.sizeWidth,
         sizeHeight : spaceTrans.sizeHeight,
         sizeDepth : spaceTrans.sizeDepth,
-        drawerCount : spaceTrans.drawerCount,
       };
 
       //update record

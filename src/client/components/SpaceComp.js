@@ -1,23 +1,20 @@
 import React from "react";
 import { useRef } from 'react';
 import PropTypes from 'prop-types'
-// import RemindNoteComp from './common/RemindNoteComp';
-import * as Constants from '../constants/Item'
+import * as Constants from '../constants/Space'
 
 //ui
 import '../css/Form.css';
-import "react-datepicker/dist/react-datepicker.css";
 
 import { Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns, Spinner, Image, Badge, Alert } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import DatePicker from "react-datepicker";
-import AddAlertIcon from '@material-ui/icons/AddAlert';
 import { IconButton } from '@material-ui/core';
 import LabelIcon from '@material-ui/icons/Label';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -27,41 +24,54 @@ const validateFormSchema = Yup.object().shape({
   colorCode: Yup.string()
     .required("Color is required")
     .min(1, 'Please select Color'),
-  description: Yup.string().nullable()
-    .min(3, 'Description must be at least 3 characters')
-    .trim(),
+  location: Yup.string()
+    .required('Location is required')
+    .min(1, 'Please select location'),
   tags: Yup.string().nullable()
     .min(3, 'Tags must be at least 3 characters')
     .trim(),
-  category: Yup.string()
-    .required('Category is required')
-    .min(1, 'Please select Category')
+  sizeUnit: Yup.string().nullable()
+    .when(['sizeWidth', 'sizeHeight', 'sizeDepth'], {
+      is: (sizeWidth, sizeHeight, sizeDepth) => sizeWidth > 0 || sizeHeight > 0 || sizeDepth > 0,
+      then: Yup.string().required('Unit is required')
+    }),
+  sizeWidth: Yup.number().nullable()
+    .min(0, 'Please enter valid Width'),
+  sizeHeight: Yup.number().nullable()
+    .min(0, 'Please enter valid Height'),
+  sizeDepth: Yup.number().nullable()
+    .min(0, 'Please enter valid Depth'),
 })
 
-//generate item list content
-const genItemData = (item, key, handleEdit, handleDelete) => {
+//generate space list content
+const genSpaceData = (space, key, handleEdit, handleSelect, handleDelete) => {
   let tagsArr = {};
-  if (item.tags != null && item.tags.length > 0) {
-    tagsArr = item.tags.split(',');
+  if (space.tags != null && space.tags.length > 0) {
+    tagsArr = space.tags.split(',');
   }
 
-  return <Card key={key} bg={item.colorCode.toLowerCase()}>
+  return <Card key={key} bg={space.colorCode.toLowerCase()}>
     {
-        item.imgPath!= null &&
-          <Card.Img variant="top" src={item.imgPath} />
+        space.imgPath!= null &&
+          <Card.Img variant="top" src={space.imgPath} />
     }
     <Card.Header>
       <CardGiftcardIcon /> {' '}
-      {item.name}
-      <Badge className='float-right' variant='light'><LabelIcon />{item.category}</Badge>
+      {space.name}
+      <Badge className='float-right' variant='light'><LabelIcon />{space.category}</Badge>
     </Card.Header>
     <Card.Body>
       <Card.Text>
-        {item.description}
+        Location : {space.location} <br />
+        Size (WxHxD): 
+        {space.sizeWidth!=null?space.sizeWidth:'NA'} x
+        {space.sizeHeight!=null?space.sizeHeight:'NA'} x
+        {space.sizeDepth!=null?space.sizeDepth:'NA'}
+        {space.sizeUnit!=null?' '+space.sizeUnit:''}
       </Card.Text>
       <div>
         <Row>
-          <Col xs={8} md={8}>
+          <Col xs={7} md={7}>
             {
               tagsArr != null && tagsArr.length > 0 &&
               tagsArr.map((tags, i) => {
@@ -72,12 +82,15 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
               })
             }
           </Col>
-          <Col xs={4} md={4}>
+          <Col xs={5} md={5}>
             <ButtonToolbar >
-              <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+              <IconButton aria-label="select" onClick={() => handleSelect(space.spaceId)}>
+                <VisibilityIcon />
+              </IconButton>
+              <IconButton aria-label="edit" onClick={() => handleEdit(space.spaceId)}>
                 <EditIcon />
               </IconButton>
-              <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId)}>
+              <IconButton aria-label="delete" onClick={() => handleDelete(space.spaceId)}>
                 <DeleteIcon />
               </IconButton>
             </ButtonToolbar>
@@ -85,17 +98,10 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
         </Row>
       </div>
     </Card.Body>
-    <Card.Footer>
-      {
-        // item.reminderDtm != null &&
-        // <RemindNoteComp remindDtm={item.reminderDtm}></RemindNoteComp>
-      }
-    </Card.Footer>
   </Card>
 }
 
-function ItemComp(props){
-
+function SpaceComp(props){
   const formRef = useRef();
   const handleSubmit = () => {
     if (formRef.current) {
@@ -103,11 +109,11 @@ function ItemComp(props){
     }
   }
 
-  //generate item data
+  //generate space data
   let displayList = [];
-  if (props.itemList != null) {
-    for (let i = 0; i <= props.itemList.length - 1; i++) {
-      displayList.push(genItemData(props.itemList[i], i, props.handleEdit, props.handleDelete));
+  if (props.spaceList != null) {
+    for (let i = 0; i <= props.spaceList.length - 1; i++) {
+      displayList.push(genSpaceData(props.spaceList[i], i, props.handleEdit, props.handleSelect, props.handleDelete));
     }
   }
 
@@ -124,8 +130,8 @@ function ItemComp(props){
                   
               ) :
                 <Alert variant='danger'>
-                    Failed to {props.editStatus.operation}. Error: {props.editStatus.message}
-                  </Alert>
+                  Failed to {props.editStatus.operation}. Error: {props.editStatus.message}
+                </Alert>
             ):null
           ):null
         }
@@ -144,9 +150,9 @@ function ItemComp(props){
       }
 
       {
-        // new item button
+        // new space button
         props.formState.formMode === Constants.FORM_READONLY_MODE &&
-          <Button variant="primary" onClick={props.handleNew}>New Item</Button>
+          <Button variant="primary" onClick={props.handleNew}>New Space</Button>
       }
 
       <CardColumns>
@@ -161,7 +167,7 @@ function ItemComp(props){
           dialogClassName="modal-90w"
         >
           <Modal.Header closeButton>
-            <Modal.Title>Item Details</Modal.Title>
+            <Modal.Title>Space Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Formik
@@ -186,7 +192,7 @@ function ItemComp(props){
                                   aria-label="delete"
                                   className='align-bottom'
                                   onClick={() =>
-                                    props.handleRemoveItemImg(form.values.itemId)
+                                    props.handleRemoveSpaceImg(form.values.spaceId)
                                   }
                                 >
                                   <DeleteIcon />
@@ -205,6 +211,21 @@ function ItemComp(props){
                       </Col>
                     </Row>
                     <Row>
+                      <Col xs={12} md={3}>
+                        <label htmlFor="location">Location</label>
+                        <Field name="location" as="select" placeholder="Location" className={'form-control' + (errors.location && touched.location ? ' is-invalid' : '')}>
+                          <option value="">Please select...</option>
+                          <option value="Living Room">Living Room</option>
+                          <option value="Dinning Room">Dinning Room</option>
+                          <option value="Kitechen">Kitechen</option>
+                          <option value="Bathroom">Bathroom</option>
+                          <option value="Bedroom 1">Bedroom 1</option>
+                          <option value="Bedroom 2">Bedroom 2</option>
+                          <option value="Bedroom 3">Bedroom 3</option>
+                          <option value="Others">Others</option>
+                        </Field>
+                        <ErrorMessage name="location" component="div" className="invalid-feedback" />
+                      </Col>
                       <Col xs={12} md={3}>
                         <label htmlFor="colorCode">Color Code</label>
                         <Field name="colorCode" as="select" placeholder="Color" className={'form-control' + (errors.colorCode && touched.colorCode ? ' is-invalid' : '')}>
@@ -225,20 +246,6 @@ function ItemComp(props){
                         <ErrorMessage name="tags" component="div" className="invalid-feedback" />
                       </Col>
                       <Col xs={12} md={3}>
-                        <label htmlFor="category">Category</label>
-                        <Field name="category" as="select" placeholder="Category" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')}>
-                          <option value="">Please select...</option>
-                          <option value="Clothes">Clothes</option>
-                          <option value="Shoes">Shoes</option>
-                          <option value="Collections">Collections</option>
-                          <option value="Books">Books</option>
-                          <option value="Kitchenware">Kitchenware</option>
-                          <option value="Tools">Tools</option>
-                          <option value="Others">Others</option>
-                        </Field>
-                        <ErrorMessage name="category" component="div" className="invalid-feedback" />
-                      </Col>
-                      <Col xs={12} md={3}>
                         <label htmlFor="imgFile">Image</label>
                         <Field name="imgFile">
                           {({ field, form, meta }) => (
@@ -255,33 +262,44 @@ function ItemComp(props){
                       </Col>
                     </Row>
                     <Row>
-                      <Col xs={12} md={12}>
-                        <label htmlFor="description">Description</label>
-                        <Field name="description" component="textarea" placeholder="Description" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} />
-                        <ErrorMessage name="description" component="div" className="invalid-feedback" />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col xs={12} md={3}>
-                        <label htmlFor="reminderDtm">Reminder</label>
-                        <AddAlertIcon />
-                        <Field name="reminderDtm">
+                      
+                      <Col xs={12} md={2}>
+                        <label htmlFor="sizeWidth">Width</label>
+                        <Field name="sizeWidth">
                           {({ field, form, meta }) => (
-                            <DatePicker
-                              onChange={date =>
-                                form.setFieldValue('reminderDtm', date)
-                              }
-                              selected={values.reminderDtm}
-                              dateFormat='dd-MMM-yyyy hh:mm aa'
-                              placeholder="Reminder"
-                              todayButton="Today"
-                              showTimeSelect
-                              timeIntervals={15}
-                              className={'datepicker-200w form-control' + (errors.reminderDtm && touched.reminderDtm ? ' is-invalid' : '')}
-                            />
+                            <input type="number" {...field} placeholder="Width" className={'form-control' + (errors.sizeWidth && touched.sizeWidth ? ' is-invalid' : '')} />
                           )}
                         </Field>
-                        <ErrorMessage name="reminderDtm" component="div" className="invalid-feedback" />
+                        <ErrorMessage name="sizeWidth" component="div" className="invalid-feedback" />
+                      </Col>
+                      <Col xs={12} md={2}>
+                        <label htmlFor="sizeHeight">Height</label>
+                        <Field name="sizeHeight">
+                          {({ field, form, meta }) => (
+                            <input type="number" {...field} placeholder="Height" className={'form-control' + (errors.sizeHeight && touched.sizeHeight ? ' is-invalid' : '')} />
+                          )}
+                        </Field>
+                        <ErrorMessage name="sizeHeight" component="div" className="invalid-feedback" />
+                      </Col>
+                      <Col xs={12} md={2}>
+                        <label htmlFor="sizeDepth">Depth</label>
+                        <Field name="sizeDepth">
+                          {({ field, form, meta }) => (
+                            <input type="number" {...field} placeholder="Depth" className={'form-control' + (errors.sizeDepth && touched.sizeDepth ? ' is-invalid' : '')} />
+                          )}
+                        </Field>
+                        <ErrorMessage name="sizeDepth" component="div" className="invalid-feedback" />
+                      </Col>
+                      <Col xs={12} md={2}>
+                        <label htmlFor="sizeUnit">Unit</label>
+                        <Field name="sizeUnit" as="select" placeholder="Unit" className={'form-control' + (errors.sizeUnit && touched.sizeUnit ? ' is-invalid' : '')}>
+                          <option value="">Please select...</option>
+                          <option value="cm">cm</option>
+                          <option value="m">m</option>
+                          <option value="inch">inch</option>
+                          <option value="feet">feet</option>
+                        </Field>
+                        <ErrorMessage name="sizeUnit" component="div" className="invalid-feedback" />
                       </Col>
                     </Row>
                   </Form>
@@ -298,8 +316,8 @@ function ItemComp(props){
   );
 }
 
-ItemComp.propTypes = {
-  itemList: PropTypes.array,
+SpaceComp.propTypes = {
+  spaceList: PropTypes.array,
   editStatus: PropTypes.object,
   formState: PropTypes.object,
   handleFormSave:PropTypes.func.isRequired,
@@ -308,7 +326,7 @@ ItemComp.propTypes = {
   handleEdit:PropTypes.func.isRequired,
   handleDelete:PropTypes.func.isRequired,
   handleReloadList:PropTypes.func.isRequired,
-  handleRemoveItemImg:PropTypes.func.isRequired,
+  handleRemoveSpaceImg:PropTypes.func.isRequired,
 }
 
-export default ItemComp;
+export default SpaceComp;

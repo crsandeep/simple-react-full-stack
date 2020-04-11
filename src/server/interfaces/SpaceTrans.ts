@@ -11,6 +11,5 @@
     sizeWidth: number;
     sizeHeight: number;
     sizeDepth: number;
-    drawerCount: number;
   }
   
