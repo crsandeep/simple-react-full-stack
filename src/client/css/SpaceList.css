@@ -1,0 +1,14 @@
+.spaceList-pc{
+    width: '100%';
+    position: 'relative';
+    overflow: 'auto';
+    max-height: 700;
+}
+
+.spaceList-inline {
+    display: 'inline';
+}
+
+.spaceList-ul{
+    padding:0
+}

@@ -6,6 +6,8 @@ import { SpaceComp } from '../components'
 import * as Actions from '../actions/Space'
 import * as Constants from '../constants/Space'
 
+import SplitPane from 'react-split-pane'
+
 export class Space extends React.Component {
   constructor(props) {
     super(props);
@@ -92,20 +94,28 @@ export class Space extends React.Component {
     const formState = this.props.formState;
     return (
       <div>
-        <SpaceComp
-          handleFormSave={this.handleFormSave}
-          handleCancel={this.handleCancel}
-          handleNew={this.handleNew}
-          handleEdit={this.handleEdit}
-          handleSelect={this.handleSelect}
-          handleDelete={this.handleDelete}
-          handleReloadList={this.handleReloadList}
-          handleRemoveSpaceImg={this.handleRemoveSpaceImg}
+        <SplitPane split="vertical" defaultSize={400}>
+        <div>
+          {/* Left side bar */}
+          <SpaceComp
+            handleFormSave={this.handleFormSave}
+            handleCancel={this.handleCancel}
+            handleNew={this.handleNew}
+            handleEdit={this.handleEdit}
+            handleSelect={this.handleSelect}
+            handleDelete={this.handleDelete}
+            handleReloadList={this.handleReloadList}
+            handleRemoveSpaceImg={this.handleRemoveSpaceImg}
 
-          spaceList={spaceList}
-          editStatus={editStatus}
-          formState={formState}
-        />
+            spaceList={spaceList}
+            editStatus={editStatus}
+            formState={formState}
+          />
+        </div>
+        <div>
+                            Hi 2
+        </div>
+        </SplitPane>
       </div>
     )
   }

@@ -1,20 +1,19 @@
 import React from "react";
 import { useRef } from 'react';
-import PropTypes from 'prop-types'
-import * as Constants from '../constants/Space'
+import PropTypes from 'prop-types';
+import * as Constants from '../constants/Space';
 
+import {ListItemSecondaryAction,List,ListItem,ListItemText,ListSubheader,IconButton,ListItemAvatar,Avatar,Typography} from '@material-ui/core/';
 //ui
 import '../css/Form.css';
+import '../css/Split.css';
+import '../css/SpaceList.css';
 
 import { Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns, Spinner, Image, Badge, Alert } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { IconButton } from '@material-ui/core';
-import LabelIcon from '@material-ui/icons/Label';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -43,63 +42,6 @@ const validateFormSchema = Yup.object().shape({
     .min(0, 'Please enter valid Depth'),
 })
 
-//generate space list content
-const genSpaceData = (space, key, handleEdit, handleSelect, handleDelete) => {
-  let tagsArr = {};
-  if (space.tags != null && space.tags.length > 0) {
-    tagsArr = space.tags.split(',');
-  }
-
-  return <Card key={key} bg={space.colorCode.toLowerCase()}>
-    {
-        space.imgPath!= null &&
-          <Card.Img variant="top" src={space.imgPath} />
-    }
-    <Card.Header>
-      <CardGiftcardIcon /> {' '}
-      {space.name}
-      <Badge className='float-right' variant='light'><LabelIcon />{space.category}</Badge>
-    </Card.Header>
-    <Card.Body>
-      <Card.Text>
-        Location : {space.location} <br />
-        Size (WxHxD): 
-        {space.sizeWidth!=null?space.sizeWidth:'NA'} x
-        {space.sizeHeight!=null?space.sizeHeight:'NA'} x
-        {space.sizeDepth!=null?space.sizeDepth:'NA'}
-        {space.sizeUnit!=null?' '+space.sizeUnit:''}
-      </Card.Text>
-      <div>
-        <Row>
-          <Col xs={7} md={7}>
-            {
-              tagsArr != null && tagsArr.length > 0 &&
-              tagsArr.map((tags, i) => {
-                return <span key={i}>
-                  <Badge variant='warning'>#{tags}</Badge>
-                  {' '}
-                </span>
-              })
-            }
-          </Col>
-          <Col xs={5} md={5}>
-            <ButtonToolbar >
-              <IconButton aria-label="select" onClick={() => handleSelect(space.spaceId)}>
-                <VisibilityIcon />
-              </IconButton>
-              <IconButton aria-label="edit" onClick={() => handleEdit(space.spaceId)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton aria-label="delete" onClick={() => handleDelete(space.spaceId)}>
-                <DeleteIcon />
-              </IconButton>
-            </ButtonToolbar>
-          </Col>
-        </Row>
-      </div>
-    </Card.Body>
-  </Card>
-}
 
 function SpaceComp(props){
   const formRef = useRef();
@@ -109,16 +51,131 @@ function SpaceComp(props){
     }
   }
 
-  //generate space data
-  let displayList = [];
-  if (props.spaceList != null) {
-    for (let i = 0; i <= props.spaceList.length - 1; i++) {
-      displayList.push(genSpaceData(props.spaceList[i], i, props.handleEdit, props.handleSelect, props.handleDelete));
+  //generate left side list bar
+  const [selectedSpace, setSelectedSpace] = React.useState();
+  const handleSpaceClick = (event, index) => {
+    setSelectedSpace(index);
+    props.handleSelect(index)
+  };
+
+  const genSpaceList = (spaceList, handleEdit, handleSelect, handleDelete) => {
+    let displayList = [];
+    let spaceMap = new Map();
+    let tempList = null;
+    
+    //prepare Map<Location,List<Space>> for further generation
+    spaceList.map((space, i) => {
+      //get corresponding list
+      if(spaceMap.get(space.location)!=null){
+        tempList = spaceMap.get(space.location);
+      }else{
+        tempList = [];
+      }
+
+      //add to list
+      tempList.push(space);
+
+      //update map with latest list
+      spaceMap.set(space.location, tempList);
+    });
+
+    //generate header and related spaces under each location according to Map settings
+    for (let [location, spaceList] of spaceMap) {
+      displayList.push( 
+        <li key={`section-${location}`} >
+          <ul className='spaceList-ul'>
+            <ListSubheader>{location}</ListSubheader>
+            {getSpaceItem(spaceList, handleEdit, handleSelect, handleDelete)}
+          </ul>
+        </li>
+      )
     }
+    return displayList;
+  }
+
+  const getSpaceItem = (spaceList, handleEdit, handleSelect, handleDelete) => {
+    let itemList = [];
+
+    spaceList.map((space, i) => {
+      itemList.push(
+        <ListItem key={i} alignItems="flex-start" 
+          button
+          selected={selectedSpace === space.spaceId}
+          onClick={(event) => handleSpaceClick(event, space.spaceId)}
+          >
+          <ListItemAvatar>
+            {
+              space.imgPath !=null ?
+                <Avatar variant="rounded" alt={space.name} src={space.imgPath} />
+              :
+                <Avatar variant="rounded" alt={space.name}>{space.name.substring(0,4)}</Avatar>
+            }
+          </ListItemAvatar>
+          <ListItemText
+            primary={space.name}
+            secondary=
+            {
+              <React.Fragment>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  className='spaceList-inline'
+                  color="textPrimary"
+                >
+                  {
+                    space.tags != null && space.tags.length > 0 &&
+                      space.tags.split(',').map((tags, i) => {
+                        return <span key={i}>
+                          <Badge variant='warning'>#{tags}</Badge>
+                          {' '}
+                        </span>
+                      })
+                  }
+                </Typography>
+                <br/>
+                <span>
+                  Size (WxHxD): 
+                  {space.sizeWidth!=null?space.sizeWidth:'NA'} x
+                  {space.sizeHeight!=null?space.sizeHeight:'NA'} x
+                  {space.sizeDepth!=null?space.sizeDepth:'NA'}
+                  {space.sizeUnit!=null?' '+space.sizeUnit:''}
+                </span>
+              </React.Fragment>
+            }
+          />
+          <ListItemSecondaryAction>
+            <IconButton aria-label="edit" onClick={() => handleEdit(space.spaceId)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton aria-label="delete" onClick={() => handleDelete(space.spaceId)}>
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
+    });
+
+    return itemList;
+  }
+
+  //list mode
+  let dataList = [];
+  if (props.spaceList != null) {
+    dataList = genSpaceList(props.spaceList, props.handleEdit, props.handleSelect, props.handleDelete);
   }
 
   return (
     <div>
+      <List className='spaceList-pc' subheader={<li />}>
+        {dataList}
+      </List>
+      {
+        // new space button
+        props.formState.formMode === Constants.FORM_READONLY_MODE &&
+          <Button variant="primary" onClick={props.handleNew}>New Space</Button>
+      }
+
+      <Button variant="primary" onClick={props.handleReloadList}>Refresh</Button>
       <div>
         {
           props.editStatus!==null ? (
@@ -148,17 +205,6 @@ function SpaceComp(props){
             <h5>Loading...</h5>
           </div>
       }
-
-      {
-        // new space button
-        props.formState.formMode === Constants.FORM_READONLY_MODE &&
-          <Button variant="primary" onClick={props.handleNew}>New Space</Button>
-      }
-
-      <CardColumns>
-        {displayList}
-      </CardColumns>
-      <Button variant="primary" onClick={props.handleReloadList}>Refresh</Button>
 
       <div>
         <Modal 
