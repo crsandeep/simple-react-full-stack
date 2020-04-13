@@ -52,7 +52,8 @@ function SpaceGrid(props){
                 </Col>
                 <Col xs={3} md={3}>
                     {
-                        props.gridLayout.lg != null && props.gridLayout.lg.length>0 &&
+                        // props.gridLayout.lg != null && props.gridLayout.lg.length>0 &&
+                        props.gridLayout != null && props.gridLayout.length>0 &&
                             <div>
                                 Current Mode:
                                 <IconButton aria-label="Toggle Mode" onClick={()=>{setReadMode(!readMode); props.handleToggleMode(readMode)}}>
@@ -70,7 +71,8 @@ function SpaceGrid(props){
             <Row>
                 <Col xs={12} md={12}>
                     {
-                        props.gridLayout.lg != null && props.gridLayout.lg.length>0?
+                        // props.gridLayout.lg != null && props.gridLayout.lg.length>0?
+                        props.gridLayout != null && props.gridLayout.length>0?
                             <ResponsiveReactGridLayout 
                                 layouts={props.gridLayout}
                                 onLayoutChange={(currLayout, allLayouts) =>
@@ -80,7 +82,8 @@ function SpaceGrid(props){
                                 cols={layoutColumns}
                             >
                                 {
-                                    props.gridLayout.lg.map(grid => {
+                                    // props.gridLayout.lg.map(grid => {
+                                    props.gridLayout.map(grid => {
                                         return <div key={grid.i} className='spaceGrid-grid'>
                                             <div>
                                                 <h1>{grid.i}</h1>
@@ -106,9 +109,9 @@ function SpaceGrid(props){
 }
 
 SpaceGrid.propTypes = {
-    gridLayout: PropTypes.object,
-    spaceId: PropTypes.number,
-    formState: PropTypes.object,
+    // gridLayout: PropTypes.array,
+    // spaceId: PropTypes.number,
+    // formState: PropTypes.object,
     handleNew:PropTypes.func.isRequired,
     handleToggleMode:PropTypes.func.isRequired,
     handleSave:PropTypes.func.isRequired,

@@ -26,9 +26,10 @@ export class Space extends React.Component {
     //space grid
 
     this.state = {
-        gridLayout: {
-            lg: [],
-        },
+        gridLayout: [],
+        // {
+            // lg: [],
+        // },
         itemCount: 0,
     }
     this.handleGridNew = this.handleGridNew.bind(this);
@@ -109,29 +110,40 @@ export class Space extends React.Component {
   //space grid start
   handleGridNew(event) {
     let nextId = this.state.itemCount + 1;
+    const newGrid = {
+      w: 2,
+      h: 1,
+      x: 0,
+      y: Infinity, // puts it at the bottom
+      i: '' + nextId,
+      moved:false,
+      static:false
+    };
+    let list = this.state.gridLayout;
+    list.push(newGrid);
+
+    console.log("handleGridNew2: " + JSON.stringify(newGrid))
+
     this.setState({
         itemCount: nextId
-        , gridLayout: {
-            lg: this.state.gridLayout.lg.concat({
-                i: '' + nextId,
-                x: 0,
-                y: Infinity, // puts it at the bottom
-                w: 2,
-                h: 1
-            })
-        }
+        , gridLayout: list
     })
-    console.log("handleGridNew: " + this.state.itemCount)
+    console.log("handleGridNew3: " + JSON.stringify(this.state.gridLayout))
   }
 
   handleGridToggleMode(isReadMode){
     //update each grid
-    let gridList = this.state.gridLayout.lg.map(obj => {
-      return { ...obj, static: isReadMode }
+    // let gridList = this.state.gridLayout.lg.map(obj => {
+    let updGridList = []
+    this.state.gridLayout.map(obj => {
+      obj.static = isReadMode;
+      updGridList.push(obj)
+      // return { ...obj, static: isReadMode }
     })
 
     this.setState({
-      gridLayout: { lg: gridList }
+      // gridLayout: { lg: gridList }
+      gridLayout: updGridList
     })
     console.log("handleGridToggleMode: "+isReadMode);
   }
@@ -148,8 +160,10 @@ export class Space extends React.Component {
   };
 
   handleGridUpdateLayout(currLayout,allLayouts) {
-    this.setState({ gridLayout: allLayouts });
-    console.log("handleGridUpdateLayout: "+ JSON.stringify(currLayout) + ' --- '+  JSON.stringify(allLayouts));
+    this.setState({ gridLayout: currLayout });
+    console.log("handleGridUpdateLayout: "+ JSON.stringify(currLayout) 
+    // +  ' --- '+  JSON.stringify(allLayouts)
+     );
   }
 
   handleGridSelect(gridId){
@@ -159,8 +173,9 @@ export class Space extends React.Component {
   handleGridRemove(itemKey){
     event.stopPropagation();
     this.setState({
-        gridLayout: { lg: _.reject(this.state.gridLayout.lg, { i: itemKey }) },
-        itemCount: this.state.itemCount - 1
+      // gridLayout: { lg: _.reject(this.state.gridLayout.lg, { i: itemKey }) },
+        gridLayout:  _.reject(this.state.gridLayout, { i: itemKey }),
+        // itemCount: this.state.itemCount - 1
     });
     console.log('handleGridRemove, ' + itemKey )
   }
