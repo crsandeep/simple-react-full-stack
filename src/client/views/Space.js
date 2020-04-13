@@ -1,18 +1,19 @@
 import React from "react";
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 
-import { SpaceComp } from '../components'
-import * as Actions from '../actions/Space'
-import * as Constants from '../constants/Space'
+import { SpaceList,SpaceGrid } from '../components';
+import * as Actions from '../actions/Space';
+import * as Constants from '../constants/Space';
 
-import SplitPane from 'react-split-pane'
+import SplitPane from 'react-split-pane';
+import _ from "lodash";
 
 export class Space extends React.Component {
   constructor(props) {
     super(props);
 
-    //bind handler
+    //space list 
     this.handleNew = this.handleNew.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -21,12 +22,29 @@ export class Space extends React.Component {
     this.handleReloadList = this.handleReloadList.bind(this);
     this.handleFormSave = this.handleFormSave.bind(this);
     this.handleRemoveSpaceImg = this.handleRemoveSpaceImg.bind(this);
+
+    //space grid
+
+    this.state = {
+        gridLayout: {
+            lg: [],
+        },
+        itemCount: 0,
+    }
+    this.handleGridNew = this.handleGridNew.bind(this);
+    this.handleGridSave = this.handleGridSave.bind(this);
+    this.handleGridCancel = this.handleGridCancel.bind(this);
+    this.handleGridUpdateLayout = this.handleGridUpdateLayout.bind(this);
+    this.handleGridSelect = this.handleGridSelect.bind(this);
+    this.handleGridToggleMode = this.handleGridToggleMode.bind(this);
+    this.handleGridRemove = this.handleGridRemove.bind(this);
   };
 
   componentDidMount() {
     this.getSpaceList()
   }
 
+  //space list start
   getSpaceList() {
     this.props.sagaGetSpaceList(this.props.userId);
   }
@@ -86,18 +104,82 @@ export class Space extends React.Component {
     this.props.updateFormMode(Constants.FORM_READONLY_MODE);
     this.handleReloadList();
   };
+  //space list end
 
+  //space grid start
+  handleGridNew(event) {
+    let nextId = this.state.itemCount + 1;
+    this.setState({
+        itemCount: nextId
+        , gridLayout: {
+            lg: this.state.gridLayout.lg.concat({
+                i: '' + nextId,
+                x: 0,
+                y: Infinity, // puts it at the bottom
+                w: 2,
+                h: 1
+            })
+        }
+    })
+    console.log("handleGridNew: " + this.state.itemCount)
+  }
+
+  handleGridToggleMode(isReadMode){
+    //update each grid
+    let gridList = this.state.gridLayout.lg.map(obj => {
+      return { ...obj, static: isReadMode }
+    })
+
+    this.setState({
+      gridLayout: { lg: gridList }
+    })
+    console.log("handleGridToggleMode: "+isReadMode);
+  }
+
+  handleGridSave(event) {
+    const gridLayout = this.state.gridLayout;
+    console.log("handleGridSave: "+ JSON.stringify(gridLayout));
+  };
+
+  handleGridCancel(event) {
+    // this.props.updateFormMode(Constants.FORM_READONLY_MODE);
+    // this.handleReloadList();
+    console.log("handleGridCancel: ");
+  };
+
+  handleGridUpdateLayout(currLayout,allLayouts) {
+    this.setState({ gridLayout: allLayouts });
+    console.log("handleGridUpdateLayout: "+ JSON.stringify(currLayout) + ' --- '+  JSON.stringify(allLayouts));
+  }
+
+  handleGridSelect(gridId){
+    console.log("handleGridSelect: "+ JSON.stringify(gridId));
+  }
+
+  handleGridRemove(itemKey){
+    event.stopPropagation();
+    this.setState({
+        gridLayout: { lg: _.reject(this.state.gridLayout.lg, { i: itemKey }) },
+        itemCount: this.state.itemCount - 1
+    });
+    console.log('handleGridRemove, ' + itemKey )
+  }
+  //space grid end
 
   render() {
+    let splitType = 'vertical';
+    let initSize = 400;
+    let spaceId = 1;
+
     const spaceList = this.props.spaceList;
     const editStatus = this.props.editStatus;
     const formState = this.props.formState;
     return (
       <div>
-        <SplitPane split="vertical" defaultSize={400}>
+        <SplitPane split={splitType} defaultSize={initSize}>
         <div>
           {/* Left side bar */}
-          <SpaceComp
+          <SpaceList
             handleFormSave={this.handleFormSave}
             handleCancel={this.handleCancel}
             handleNew={this.handleNew}
@@ -113,7 +195,19 @@ export class Space extends React.Component {
           />
         </div>
         <div>
-                            Hi 2
+          <SpaceGrid
+            handleNew={this.handleGridNew}
+            handleToggleMode={this.handleGridToggleMode}
+            handleSave={this.handleGridSave}
+            handleCancel={this.handleGridCancel}
+            handleUpdateLayout={this.handleGridUpdateLayout}
+            handleRemove={this.handleGridRemove}
+            handleSelect={this.handleGridSelect}
+
+            gridLayout={this.state.gridLayout}
+            spaceId={spaceId}
+            formState={formState}
+          />
         </div>
         </SplitPane>
       </div>

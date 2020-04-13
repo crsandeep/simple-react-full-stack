@@ -43,7 +43,7 @@ const validateFormSchema = Yup.object().shape({
 })
 
 
-function SpaceComp(props){
+function SpaceList(props){
   const formRef = useRef();
   const handleSubmit = () => {
     if (formRef.current) {
@@ -362,7 +362,7 @@ function SpaceComp(props){
   );
 }
 
-SpaceComp.propTypes = {
+SpaceList.propTypes = {
   spaceList: PropTypes.array,
   editStatus: PropTypes.object,
   formState: PropTypes.object,
@@ -375,4 +375,4 @@ SpaceComp.propTypes = {
   handleRemoveSpaceImg:PropTypes.func.isRequired,
 }
 
-export default SpaceComp;
+export default SpaceList;

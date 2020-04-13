@@ -1,0 +1,29 @@
+.spaceGrid-grid{
+    background-color: 'grey';
+    background-size: '100% 100%';
+    background-repeat: 'no-repeat';
+}
+
+.spaceGrid-close {
+    display: 'inline';
+    position: "absolute";
+    left: "35%";
+    right: "35%";
+    top: "100px";
+    color: 'blue';
+    text-decoration-line: 'underline';
+    cursor: "pointer";
+}
+
+.spaceGrid-select{
+    position: "absolute";
+    right: "2px";
+    top: 0;
+    cursor: "pointer";
+}
+
+.spaceGrid-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
