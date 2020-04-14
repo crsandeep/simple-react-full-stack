@@ -6,7 +6,7 @@ import "../css/SpaceGrid.css";
 import PropTypes from 'prop-types';
 
 import {Row, Col, ButtonToolbar, Spinner, Alert} from 'react-bootstrap';
-import {IconButton,} from '@material-ui/core/';
+import {IconButton} from '@material-ui/core/';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
@@ -18,11 +18,10 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 function SpaceGrid(props){
-    const [readMode, setReadMode] = React.useState(false);
+    const [mode, setMode] = React.useState('edit');
 
     const layoutBreakpoints = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
     const layoutColumns = { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
-
     return (
         <div>
             {
@@ -37,7 +36,7 @@ function SpaceGrid(props){
                 </div>
             }
             <Row className="justify-content-md-center">
-                <Col xs={9} md={9}>
+                <Col xs={12} md={9}>
                     <ButtonToolbar >
                         <IconButton aria-label="New" onClick={props.handleNew}>
                             <AddCircleOutlineIcon />
@@ -50,31 +49,25 @@ function SpaceGrid(props){
                         </IconButton>
                     </ButtonToolbar>
                 </Col>
-                <Col xs={3} md={3}>
+                <Col xs={12} md={3}>
                     {
-                        // props.gridLayout.lg != null && props.gridLayout.lg.length>0 &&
-                        props.gridLayout != null && props.gridLayout.length>0 &&
+                        props.gridList != null && props.gridList.length>0 &&
                             <div>
-                                Current Mode:
-                                <IconButton aria-label="Toggle Mode" onClick={()=>{setReadMode(!readMode); props.handleToggleMode(readMode)}}>
-                                    {
-                                        readMode ?
-                                            <EditIcon />
-                                        : <VisibilityIcon/>
-                                    }
-                                </IconButton>
+                                Current Mode: 
+                                <select value={mode} onChange={(event)=>{setMode(event.target.value); props.handleToggleMode(mode=='edit'?true:false)}}>
+                                    <option value="edit">Edit</option>
+                                    <option value="view">View</option>
+                                </select>
                             </div>
                     }
                 </Col>
-                
             </Row>
             <Row>
                 <Col xs={12} md={12}>
                     {
-                        // props.gridLayout.lg != null && props.gridLayout.lg.length>0?
-                        props.gridLayout != null && props.gridLayout.length>0?
+                        props.gridList != null && props.gridList.length>0?
                             <ResponsiveReactGridLayout 
-                                layouts={props.gridLayout}
+                                // layouts={props.gridLayout}
                                 onLayoutChange={(currLayout, allLayouts) =>
                                     props.handleUpdateLayout(currLayout, allLayouts)
                                 }
@@ -82,20 +75,17 @@ function SpaceGrid(props){
                                 cols={layoutColumns}
                             >
                                 {
-                                    // props.gridLayout.lg.map(grid => {
-                                    props.gridLayout.map(grid => {
-                                        return <div key={grid.i} className='spaceGrid-grid'>
-                                            <div>
-                                                <h1>{grid.i}</h1>
-                                                <ButtonToolbar className='spaceGrid-btn'>
-                                                    <IconButton aria-label="select" onClick={()=>props.handleSelect(grid.i)}>
-                                                        <TouchAppIcon />
-                                                    </IconButton>
-                                                    <IconButton aria-label="delete" onClick={() => props.handleRemove(grid.i)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </ButtonToolbar>
-                                            </div>
+                                    props.gridList.map(grid => {
+                                        return <div key={grid.i} className={grid.static?'spaceGrid-grid-static':'spaceGrid-grid'} data-grid={grid}>
+                                            <h1>{grid.i}</h1>
+                                            <ButtonToolbar className='spaceGrid-btn'>
+                                                <IconButton aria-label="select" onClick={()=>props.handleSelect(grid.i)}>
+                                                    <TouchAppIcon />
+                                                </IconButton>
+                                                <IconButton aria-label="delete" onClick={() => props.handleRemove(grid.i)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </ButtonToolbar>
                                         </div>
                                     })
                                 }

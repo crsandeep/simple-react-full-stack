@@ -1,7 +1,11 @@
 .spaceGrid-grid{
-    background-color: grey;
+    /* background-color: grey; */
     background-size: 100%;
     background-repeat: 'no-repeat';
+}
+
+.spaceGrid-grid-static{
+    background-color: grey;
 }
 
 .spaceGrid-close {
