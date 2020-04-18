@@ -1,0 +1,27 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: |
+      Get the IAM policy for a subordinate Certificate Authority.
+    description: |
+      Gets the IAM policy for the given subordinate Certificate Authority.
+
+      Returns an empty policy if the resource does not have a policy
+      set.
+    examples: |
+      To get the IAM policy for the CA 'server-tls-1' with the location 'us', run:
+
+        $ {command} server-tls-1 --location us
+
+  request:
+    collection: privateca.projects.locations.certificateAuthorities
+    api_version: v1alpha1
+
+  arguments:
+    resource:
+      help_text: The certificate authority for which to display the IAM policy.
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:certificate_authority
+
+  iam:
+    # TODO(b/149315616): Enable iam conditionals
+    enable_condition: false

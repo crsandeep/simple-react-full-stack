@@ -1,0 +1,34 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief:  Create a Cloud Healthcare API dataset.
+    description: |
+      Create a new Cloud Healthcare API dataset
+    examples: |
+      To create a dataset called 'test-dataset' in us-central1, run:
+
+        $ {command} test-dataset
+
+      To create a dataset in a different region (ex: asia-northeast1), run:
+
+        $ {command} test-dataset --location=asia-northeast1
+  request:
+    collection: healthcare.projects.locations.datasets
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+
+  arguments:
+    resource:
+      help_text: Cloud Healthcare API dataset to create.
+      spec: !REF googlecloudsdk.command_lib.healthcare.resources:dataset
+
+    params:
+    - arg_name: time-zone
+      api_field: dataset.timeZone
+      help_text: |
+        Default timezone used by this dataset.
+
+  async:
+    collection: healthcare.projects.locations.datasets.operations

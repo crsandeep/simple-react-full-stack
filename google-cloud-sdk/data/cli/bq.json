@@ -1,0 +1,391 @@
+{
+  "CLI_VERSION": "2.0.56",
+  "VERSION": "1",
+  "capsule": "",
+  "commands": {
+    "cancel": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "cancel"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Request a cancel and waits for the job to be cancelled.\n\nRequests a cancel and then either: a) waits until the job is\ndone if the sync flag is set [default], or b) returns\nimmediately if the sync flag is not set. Not all job types\nsupport a cancel, an error is returned if it cannot be\ncancelled. Even for jobs that support a cancel, success is not\nguaranteed, the job may have completed by the time the cancel\nrequest is noticed, or the job may be in a stage where it cannot\nbe cancelled.\n",
+        "EXAMPLES": "bq cancel job_id  # Requests a cancel and waits until the job is\ndone.\nbq --nosync cancel job_id  # Requests a cancel and returns\nimmediately.\n"
+      }
+    },
+    "cp": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "cp"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Copies one table to another.\n",
+        "EXAMPLES": "bq cp dataset.old_table dataset2.new_table\nbq cp --destination_kms_key=kms_key dataset.old_table\ndataset2.new_table\n"
+      }
+    },
+    "extract": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "extract"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Perform an extract operation of source into destination_uris.\n\nUsage:\nextract <source_table> <destination_uris>\n\nUse -m option to extract a source_model.\n",
+        "EXAMPLES": "bq extract ds.table gs://mybucket/table.csv\nbq extract -m ds.model gs://mybucket/model\n"
+      }
+    },
+    "get-iam-policy": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "get-iam-policy"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Get the IAM policy for a resource.\n\nGets the IAM policy for a dataset or table resource, and prints\nit to stdout. The policy is in JSON format.\n",
+        "EXAMPLES": "bq get-iam-policy ds\nbq get-iam-policy proj:ds\nbq get-iam-policy ds.table\nbq get-iam-policy --project_id=proj -t ds.table\n\nNote: As of September, 2019 this command is an ALPHA feature. It\nis only enabled for customer's projects that are on the\nfeature's ALPHA list until it is released as a public generally-\navailable feature. This command may change before the public\nrelease. Users who need to get access controls for BigQuery\nresources in projects that are not enabled for this ALPHA may\nstill use the 'gcloud projects get-iam-policy' and 'bq show'\ncommands to get access controls on projects and datasets,\nrespectively.\n"
+      }
+    },
+    "head": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "head"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Displays rows in a table.\n",
+        "EXAMPLES": "bq head dataset.table\nbq head -j job\nbq head -n 10 dataset.table\nbq head -s 5 -n 10 dataset.table\n"
+      }
+    },
+    "help": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "help"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Help for all or selected command:\nbq_lite help [<command>]\n\nTo retrieve help with global flags:\nbq_lite --help\n\nTo retrieve help with flags only from the main module:\nbq_lite --helpshort [<command>]\n"
+      }
+    },
+    "init": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "init"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Authenticate and create a default .bigqueryrc file.\n"
+      }
+    },
+    "insert": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "insert"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Inserts rows in a table.\n\nInserts the records formatted as newline delimited JSON from\nfile into the specified table. If file is not specified, reads\nfrom stdin. If there were any insert errors it prints the errors\nto stdout.\n",
+        "EXAMPLES": "bq insert dataset.table /tmp/mydata.json\necho '{\"a\":1, \"b\":2}' | bq insert dataset.table\n\nTemplate table examples: Insert to dataset.template_suffix table\nusing dataset.template table as its template.\nbq insert -x=_suffix dataset.table /tmp/mydata.json\n"
+      }
+    },
+    "load": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "load"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Perform a load operation of source into destination_table.\n\nUsage:\nload <destination_table> <source> [<schema>]\n\nThe <destination_table> is the fully-qualified table name of\ntable to create, or append to if the table already exists.\n\nThe <source> argument can be a path to a single local file, or a\ncomma-separated list of URIs.\n\nThe <schema> argument should be either the name of a JSON file\nor a text schema. This schema should be omitted if the table\nalready has one.\n\nIn the case that the schema is provided in text form, it should\nbe a comma-separated list of entries of the form name[:type],\nwhere type will default to string if not specified.\n\nIn the case that <schema> is a filename, it should contain a\nsingle array object, each entry of which should be an object\nwith properties 'name', 'type', and (optionally) 'mode'. See the\nonline documentation for more detail:\nhttps://developers.google.com/bigquery/preparing-data-for-\nbigquery\n\nNote: the case of a single-entry schema with no type specified\nis ambiguous; one can use name:string to force interpretation as\na text schema.\n",
+        "EXAMPLES": "bq load ds.new_tbl ./info.csv ./info_schema.json\nbq load ds.new_tbl gs://mybucket/info.csv ./info_schema.json\nbq load ds.small gs://mybucket/small.csv\nname:integer,value:string\nbq load ds.small gs://mybucket/small.csv field1,field2,field3\n"
+      }
+    },
+    "ls": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "ls"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "List the objects contained in the named collection.\n\nList the objects in the named project or dataset. A trailing :\nor . can be used to signify a project or dataset.\n* With -j, show the jobs in the named project.\n* With -p, show all projects.\n",
+        "EXAMPLES": "bq ls\nbq ls -j proj\nbq ls -p -n 1000\nbq ls mydataset\nbq ls -a\nbq ls -m mydataset\nbq ls --routines mydataset (requires whitelisting)\nbq ls --filter labels.color:red\nbq ls --filter 'labels.color:red labels.size:*'\nbq ls --transfer_config --transfer_location='us'\n--filter='dataSourceIds:play,adwords'\nbq ls --transfer_run --filter='states:SUCCESSED,PENDING'\n--run_attempt='LATEST' projects/p/locations/l/transferConfigs/c\nbq ls --transfer_log --message_type='messageTypes:INFO,ERROR'\nprojects/p/locations/l/transferConfigs/c/runs/r\nbq ls --capacity_commitment --project_id=proj --location='us'\nbq ls --reservation --project_id=proj --location='us'\nbq ls --reservation_assignment --project_id=proj --location='us'\nbq ls --reservation_assignment --project_id=proj --location='us'\n<reservation_id>\nbq ls --connection --project_id=proj --location=us\n"
+      }
+    },
+    "mk": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "mk"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Create a dataset, table, view, or transfer configuration with\nthis name.\n\nSee 'bq help load' for more information on specifying the\nschema.\n",
+        "EXAMPLES": "bq mk new_dataset\nbq mk new_dataset.new_table\nbq --dataset_id=new_dataset mk table\nbq mk -t new_dataset.newtable name:integer,value:string\nbq mk --view='select 1 as num' new_dataset.newview\n(--view_udf_resource=path/to/file.js)\nbq mk --materialized_view='select sum(x) as sum_x from\ndataset.table'\nnew_dataset.newview\nbq mk -d --data_location=EU new_dataset\nbq mk --transfer_config --target_dataset=dataset\n--display_name=name\n-p='{\"param\":\"value\"}' --data_source=source\n--schedule_start_time={schedule_start_time}\n--schedule_end_time={schedule_end_time}\nbq mk --transfer_run --start_time={start_time}\n--end_time={end_time}\nprojects/p/locations/l/transferConfigs/c\nbq mk --transfer_run --run_time={run_time}\nprojects/p/locations/l/transferConfigs/c\nbq mk --reservation --project_id=project --location=us\nreservation_name\nbq mk --reservation_assignment --reservation_id=project:us.dev\n--job_type=QUERY --assignee_type=PROJECT --assignee_id=myproject\nbq mk --reservation_assignment --reservation_id=project:us.dev\n--job_type=QUERY --assignee_type=FOLDER --assignee_id=123\nbq mk --reservation_assignment --reservation_id=project:us.dev\n--job_type=QUERY --assignee_type=ORGANIZATION --assignee_id=456\nbq mk --connection --connection_type='CLOUD_SQL'\n--properties='{\"instanceId\" : \"instance\",\n\"database\" : \"db\", \"type\" : \"MYSQL\" }'\n--connection_credential='{\"username\":\"u\", \"password\":\"p\"}'\n--project_id=proj --location=us --display_name=name\nnew_connection\n"
+      }
+    },
+    "mkdef": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "mkdef"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Emits a definition in JSON for an external table, such as GCS.\n\nThe output of this command can be redirected to a file and used\nfor the external_table_definition flag with the \"bq query\" and\n\"bq mk\" commands. It produces a definition with the most\ncommonly used values for options. You can modify the output to\noverride option values.\n\nUsage:\nmkdef <source_uris> [<schema>]\n",
+        "EXAMPLES": "bq mkdef 'gs://bucket/file.csv' field1:integer,field2:string\n"
+      }
+    },
+    "partition": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "partition"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Copies source tables into partitioned tables.\n\nUsage: bq partition <source_table_prefix>\n<destination_partitioned_table>\n\nCopies tables of the format <source_table_prefix><YYYYmmdd> to a\ndestination partitioned table, with the date suffix of the\nsource tables becoming the partition date of the destination\ntable partitions.\n\nIf the destination table does not exist, one will be created\nwith a schema and that matches the last table that matches the\nsupplied prefix.\n",
+        "EXAMPLES": "bq partition dataset1.sharded_ dataset2.partitioned_table\n"
+      }
+    },
+    "query": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "query"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Execute a query.\n\nQuery should be specifed on command line, or passed on stdin.\n",
+        "EXAMPLES": "bq query 'select count(*) from publicdata:samples.shakespeare'\necho 'select count(*) from publicdata:samples.shakespeare' | bq\nquery\n\nUsage:\nquery [<sql_query>]\n"
+      }
+    },
+    "rm": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "rm"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Delete the dataset, table, transfer config, or reservation\ndescribed by identifier.\n\nAlways requires an identifier, unlike the show and ls commands.\nBy default, also requires confirmation before deleting. Supports\nthe -d -t flags to signify that the identifier is a dataset or\ntable.\n* With -f, don't ask for confirmation before deleting.\n* With -r, remove all tables in the named dataset.\n",
+        "EXAMPLES": "bq rm ds.table\nbq rm -m ds.model\nbq rm --routine ds.routine (requires whitelisting)\nbq rm -r -f old_dataset\nbq rm --transfer_config=projects/p/locations/l/transferConfigs/c\nbq rm --connection --project_id=proj --location=us con\nbq rm --capacity_commitment proj:US.capacity_commitment_id\nbq rm --reservation --project_id=proj --location=us\nreservation_name\nbq rm --reservation_assignment --project_id=proj --location=us\nassignment_name\n"
+      }
+    },
+    "set-iam-policy": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "set-iam-policy"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Set the IAM policy for a resource.\n\nSets the IAM policy for a dataset or table resource. After\nsetting the policy, the new policy is printed to stdout.\nPolicies are in JSON format.\n\nIf the 'etag' field is present in the policy, it must match the\nvalue in the current policy, which can be obtained with 'bq get-\niam-policy'. Otherwise this command will fail. This feature\nallows users to prevent concurrent updates.\n\nUsage: set-iam-policy <identifier> <filename>\n\nThe <identifier> can be an identifier for a table or dataset.\n\nThe <filename> is the name of a file containing the policy in\nJSON format.\n",
+        "EXAMPLES": "bq set-iam-policy ds /tmp/policy.json\npq set-iam-policy proj:ds /tmp/policy.json\nbq set-iam-policy ds.table /tmp/policy.json\nbq set-iam-policy --project_id=proj -t ds.table /tmp/policy.json\n\nNote: As of September, 2019 this command is an ALPHA feature. It\nis only enabled for customer's projects that are on the\nfeature's ALPHA list until it is released as a public generally-\navailable feature. This command may change before the public\nrelease. Users who need to set access controls for BigQuery\nresources in projects that are not enabled for this ALPHA may\nstill use the 'gcloud projects set-iam-policy' and 'bq update'\ncommands to set access controls on projects and datasets,\nrespectively.\n"
+      }
+    },
+    "shell": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "shell"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Start an interactive bq session.\n"
+      }
+    },
+    "show": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "show"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Show all information about an object.\n",
+        "EXAMPLES": "bq show -j <job_id>\nbq show dataset\nbq show [--schema] dataset.table\nbq show [--view] dataset.view\nbq show [--materialized_view] dataset.materialized_view\nbq show -m ds.model\nbq show --routine ds.routine (requires whitelisting)\nbq show --transfer_config\nprojects/p/locations/l/transferConfigs/c\nbq show --transfer_run\nprojects/p/locations/l/transferConfigs/c/runs/r\nbq show --encryption_service_account\nbq show --connection --project_id=project --location=us\nconnection\nbq show --capacity_commitment project:US.capacity_commitment_id\nbq show --reservation --location=US --project_id=project\nreservation_name\nbq show --reservation_assignment --project_id=project\n--location=US\n--assignee_type=PROJECT --assignee_id=myproject --job_type=QUERY\nbq show --reservation_assignment --project_id=project\n--location=US\n--assignee_type=FOLDER --assignee_id=123 --job_type=QUERY\nbq show --reservation_assignment --project_id=project\n--location=US\n--assignee_type=ORGANIZATION --assignee_id=456 --job_type=QUERY\n"
+      }
+    },
+    "update": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "update"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Updates a dataset, table, view or transfer configuration with\nthis name.\n\nSee 'bq help load' for more information on specifying the\nschema.\n",
+        "EXAMPLES": "bq update --description \"Dataset description\" existing_dataset\nbq update --description \"My table\"\nexisting_dataset.existing_table\nbq update --description \"My model\" -m\nexisting_dataset.existing_model\nbq update -t existing_dataset.existing_table\nname:integer,value:string\nbq update --destination_kms_key\nprojects/p/locations/l/keyRings/r/cryptoKeys/k\nexisting_dataset.existing_table\nbq update --view='select 1 as num'\nexisting_dataset.existing_view\n(--view_udf_resource=path/to/file.js)\nbq update --transfer_config --display_name=name\n-p='{\"param\":\"value\"}'\nprojects/p/locations/l/transferConfigs/c\nbq update --transfer_config --target_dataset=dataset\n--refresh_window_days=5 --update_credentials\nprojects/p/locations/l/transferConfigs/c\nbq update --reservation --location=US --project_id=my-project\n--reservation_size=2G\nbq update --capacity_commitment --location=US --project_id=my-\nproject\n--plan=MONTHLY --renewal_plan=FLEX\nbq update --reservation_assignment\n--reservation_id=proj:US.reservation1\nreservation2.<reservation_assignment_id>\nbq update --connection_credential='{\"username\":\"u\",\n\"password\":\"p\"}'\n--location=US --project_id=my-project existing_connection\n"
+      }
+    },
+    "version": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "version"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Return the version of bq.\n"
+      }
+    },
+    "wait": {
+      "capsule": "",
+      "commands": {},
+      "flags": {},
+      "groups": {},
+      "is_group": false,
+      "is_hidden": false,
+      "path": [
+        "bq",
+        "wait"
+      ],
+      "positionals": [],
+      "release": "GA",
+      "sections": {
+        "DESCRIPTION": "Wait some number of seconds for a job to finish.\n\nPoll job_id until either (1) the job is DONE or (2) the\nspecified number of seconds have elapsed. Waits forever if\nunspecified. If no job_id is specified, and there is only one\nrunning job, we poll that job.\n",
+        "EXAMPLES": "bq wait # Waits forever for the currently running job.\nbq wait job_id  # Waits forever\nbq wait job_id 100  # Waits 100 seconds\nbq wait job_id 0  # Polls if a job is done, then returns\nimmediately.\n# These may exit with a non-zero status code to indicate\n\"failure\":\nbq wait --fail_on_error job_id  # Succeeds if job succeeds.\nbq wait --fail_on_error job_id 100  # Succeeds if job succeeds\nin 100 sec.\n"
+      }
+    }
+  },
+  "flags": {},
+  "groups": {},
+  "is_group": true,
+  "is_hidden": false,
+  "path": [
+    "bq"
+  ],
+  "positionals": [],
+  "release": "GA",
+  "sections": {}
+}

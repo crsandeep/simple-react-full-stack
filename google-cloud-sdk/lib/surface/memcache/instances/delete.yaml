@@ -1,0 +1,33 @@
+- help_text:
+    brief: |
+      Delete a Memorystore Memcached instance.
+    description: |
+      Delete a Memorystore Memcached instance.
+
+      This command can fail for the following reasons:
+        * The instance specified does not exist.
+        * The active account does not have permission to access the given
+          instance.
+    examples: |
+      The following command deletes an instance with the name
+      `my-memcache-instance` in region `us-central1`:
+
+        $ {command} my-memcache-instance --region=us-central1
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.memcache.resources:instance
+      help_text: |
+        Arguments and flags that specify the Memcached instance you want
+        to delete.
+
+  async:
+    collection: memcache.projects.locations.operations
+
+  input:
+    confirmation_prompt: |
+      You are about to delete instance [{__name__}] in [{locationsId}].
+      Any associated data will be lost.
+
+  request: &request
+    collection: memcache.projects.locations.instances

@@ -1,0 +1,27 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Delete a Deployment.
+    description: |
+      Delete a Cloud Game Server Deployment.
+
+      ## EXAMPLES
+
+      To delete Game Server Deployment 'my-deployment' in project 'my-project' and location 'global'(deployments only support the 'global' location), run:
+
+        $ {command} my-deployment --project=my-project --location=global
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Deployment to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:deployment
+
+  async:
+    collection: gameservices.projects.locations.operations

@@ -1,0 +1,244 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+title: compute v1 BackendService export schema
+description: A gcloud export/import command YAML validation schema.
+type: object
+additionalProperties: false
+properties:
+  COMMENT:
+    type: object
+    description: User specified info ignored by gcloud import.
+    additionalProperties: false
+    properties:
+      template-id:
+        type: string
+      region:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+      version:
+        type: string
+  UNKNOWN:
+    type: array
+    description: Unknown API fields that cannot be imported.
+    items:
+      type: string
+  affinityCookieTtlSec:
+    description: |-
+      If set to 0, the cookie is non-persistent and lasts only until the end of
+      the browser session (or equivalent). The maximum allowed value is one day
+      (86,400).
+    type: integer
+  backends:
+    description: The list of backends that serve this BackendService.
+    type: array
+    items:
+      $ref: Backend.yaml
+  cdnPolicy:
+    description: Cloud CDN configuration for this BackendService.
+    $ref: BackendServiceCdnPolicy.yaml
+  circuitBreakers:
+    description: |-
+      Settings controlling the volume of connections to a backend service.
+      If not set, this feature is considered disabled.  This field is
+      applicable to either:   - A regional backend service with the
+      service_protocol set to HTTP, HTTPS, or HTTP2, and
+      load_balancing_scheme set to INTERNAL_MANAGED.  - A global backend
+      service with the load_balancing_scheme set to INTERNAL_SELF_MANAGED.
+    $ref: CircuitBreakers.yaml
+  connectionDraining:
+    description: A ConnectionDraining attribute.
+    $ref: ConnectionDraining.yaml
+  consistentHash:
+    description: |-
+      Consistent Hash-based load balancing can be used to provide soft
+      session affinity based on HTTP headers, cookies or other properties.
+      This load balancing policy is applicable only for HTTP connections.
+      The affinity to a particular destination host will be lost when one or
+      more hosts are added/removed from the destination service. This field
+      specifies parameters that control consistent hashing. This field is
+      only applicable when localityLbPolicy is set to MAGLEV or RING_HASH.
+      This field is applicable to either:   - A regional backend service
+      with the service_protocol set to HTTP, HTTPS, or HTTP2, and
+      load_balancing_scheme set to INTERNAL_MANAGED.  - A global backend
+      service with the load_balancing_scheme set to INTERNAL_SELF_MANAGED.
+    $ref: ConsistentHashLoadBalancerSettings.yaml
+  creationTimestamp:
+    description: '[Output Only] Creation timestamp in RFC3339 text format.'
+    type: string
+  customRequestHeaders:
+    description: |-
+      Headers that the HTTP/S load balancer should add to proxied requests.
+    type: array
+    items:
+      type: string
+  description:
+    description: |-
+      An optional description of this resource. Provide this property
+      when you create the resource.
+    type: string
+  enableCDN:
+    description: |-
+      If true, enables Cloud CDN for the backend service. Only
+      applicable if the loadBalancingScheme is EXTERNAL and the protocol
+      is HTTP or HTTPS.
+    type: boolean
+  healthChecks:
+    description: |-
+      The list of URLs to the HttpHealthCheck or HttpsHealthCheck
+      resource for health checking this BackendService. Currently at
+      most one health check can be specified, and a health check is
+      required for Compute Engine backend services. A health check must
+      not be specified for App Engine backend and Cloud Function
+      backend.  For internal load balancing, a URL to a HealthCheck
+      resource must be specified instead.
+    type: array
+    items:
+      type: string
+  iap:
+    description: A BackendServiceIAP attribute.
+    $ref: BackendServiceIAP.yaml
+  kind:
+    description: |-
+      [Output Only] Type of resource. Always compute#backendService
+      for backend services.
+    type: string
+  loadBalancingScheme:
+    description: |-
+      Specifies the load balancer type. Choose EXTERNAL for load
+      balancers that receive traffic from external clients. Choose
+      INTERNAL for Internal TCP/UDP Load Balancing. Choose
+      INTERNAL_MANAGED for Internal HTTP(S) Load Balancing. Choose
+      INTERNAL_SELF_MANAGED for Traffic Director. A backend service
+      created for one type of load balancing cannot be used with
+      another. For more information, refer to Choosing a load
+      balancer.
+    type: string
+    enum:
+    - EXTERNAL
+    - INTERNAL
+    - INTERNAL_MANAGED
+    - INTERNAL_SELF_MANAGED
+    - INVALID_LOAD_BALANCING_SCHEME
+  localityLbPolicy:
+    description: |-
+      The load balancing algorithm used within the scope of the
+      locality. The possible values are:   - ROUND_ROBIN: This is a
+      simple policy in which each healthy backend is selected in
+      round robin order. This is the default.  - LEAST_REQUEST: An
+      O(1) algorithm which selects two random healthy hosts and
+      picks the host which has fewer active requests.  - RING_HASH:
+      The ring/modulo hash load balancer implements consistent
+      hashing to backends. The algorithm has the property that the
+      addition/removal of a host from a set of N hosts only affects
+      1/N of the requests.  - RANDOM: The load balancer selects a
+      random healthy host.  -
+    type: string
+    enum:
+    - INVALID_LB_POLICY
+    - LEAST_REQUEST
+    - MAGLEV
+    - ORIGINAL_DESTINATION
+    - RANDOM
+    - RING_HASH
+    - ROUND_ROBIN
+  name:
+    description: |-
+      Name of the resource. Provided by the client when the resource
+      is created. The name must be 1-63 characters long, and comply
+      with RFC1035. Specifically, the name must be 1-63 characters
+      long and match the regular expression
+      `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character
+      must be a lowercase letter, and all following characters must
+      be a dash, lowercase letter, or digit, except the last
+      character, which cannot be a dash.
+    type: string
+  outlierDetection:
+    description: |-
+      Settings controlling the eviction of unhealthy hosts from the
+      load balancing pool for the backend service. If not set, this
+      feature is considered disabled.  This field is applicable to
+      either:   - A regional backend service with the
+      service_protocol set to HTTP, HTTPS, or HTTP2, and
+      load_balancing_scheme set to INTERNAL_MANAGED.  - A global
+      backend service with the load_balancing_scheme set to
+      INTERNAL_SELF_MANAGED.
+    $ref: OutlierDetection.yaml
+  port:
+    description: |-
+      Deprecated in favor of portName. The TCP port to connect on
+      the backend. The default value is 80.  This cannot be used if
+      the loadBalancingScheme is INTERNAL (Internal TCP/UDP Load
+      Balancing).
+    type: integer
+  portName:
+    description: |-
+      A named port on a backend instance group representing the port
+      for communication to the backend VMs in that group. Required
+      when the loadBalancingScheme is EXTERNAL and the backends are
+      instance groups. The named port must be defined on each
+      backend instance group. This parameter has no meaning if the
+      backends are NEGs.    Must be omitted when the
+      loadBalancingScheme is INTERNAL (Internal TCP/UDP Load
+      Blaancing).
+    type: string
+  protocol:
+    description: |-
+      The protocol this BackendService uses to communicate with
+      backends.  Possible values are HTTP, HTTPS, HTTP2, TCP, SSL,
+      or UDP, depending on the chosen load balancer or Traffic
+      Director configuration. Refer to the documentation for the
+      load balancer or for Traffic Director for more information.
+    type: string
+    enum:
+    - HTTP
+    - HTTP2
+    - HTTPS
+    - SSL
+    - TCP
+    - UDP
+  region:
+    description: |-
+      [Output Only] URL of the region where the regional backend
+      service resides. This field is not applicable to global
+      backend services. You must specify this field as part of the
+      HTTP request URL. It is not settable as a field in the request
+      body.
+    type: string
+  securityPolicy:
+    description: |-
+      [Output Only] The resource URL for the security policy
+      associated with this backend service.
+    type: string
+  selfLink:
+    description: '[Output Only] Server-defined URL for the resource.'
+    type: string
+  sessionAffinity:
+    description: |-
+      Type of session affinity to use. The default is NONE. Session
+      affinity is not applicable if the --protocol is UDP.  When the
+      loadBalancingScheme is EXTERNAL, possible values are NONE,
+      CLIENT_IP, or GENERATED_COOKIE. You can use GENERATED_COOKIE
+      if the protocol is HTTP or HTTPS.  When the
+      loadBalancingScheme is INTERNAL, possible values are NONE,
+      CLIENT_IP, CLIENT_IP_PROTO, or CLIENT_IP_PORT_PROTO.  When the
+      loadBalancingScheme is INTERNAL_SELF_MANAGED, possible values
+      are NONE, CLIENT_IP, GENERATED_COOKIE, HEADER_FIELD, or
+      HTTP_COOKIE.
+    type: string
+    enum:
+    - CLIENT_IP
+    - CLIENT_IP_PORT_PROTO
+    - CLIENT_IP_PROTO
+    - GENERATED_COOKIE
+    - HEADER_FIELD
+    - HTTP_COOKIE
+    - NONE
+  timeoutSec:
+    description: |-
+      The backend service timeout has a different meaning depending
+      on the type of load balancer. For more information read,
+      Backend service settings The default is 30 seconds.
+    type: integer

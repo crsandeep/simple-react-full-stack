@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA, BETA, GA]
+  help_text:
+    brief: Delete a membership.
+    description: |
+      This command deletes the Hub membership resource corresponding to the cluster.
+
+      This command is intended to delete stale Hub Membership resources as doing so on a fully
+      registered cluster will skip uninstalling the Connect Agent and and orphan in-cluster
+      resources and agent connections to Google. To completely unregister the cluster, consider
+      using the command: `{parent_command} unregister`.
+    examples: |
+      Delete a membership from Hub:
+
+        $ {command} a-membership
+
+  request:
+    collection: gkehub.projects.locations.memberships
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+    GA:
+      api_version: v1
+
+  async:
+    collection: gkehub.projects.locations.operations
+
+  arguments:
+    resource:
+      help_text: The cluster membership to delete.
+      spec: !REF googlecloudsdk.command_lib.container.hub.memberships.resources:membership

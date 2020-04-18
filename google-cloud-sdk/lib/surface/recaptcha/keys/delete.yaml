@@ -1,0 +1,13 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    description: Deletes one or more reCAPTCHA Keys from a given cloud project.
+    brief: Deletes one or more reCAPTCHA Keys.
+
+  request:
+    collection: recaptchaenterprise.projects.keys
+
+  arguments:
+    resource:
+      help_text: The reCAPTCHA key to delete.
+      spec: !REF googlecloudsdk.command_lib.recaptcha.resources:keys

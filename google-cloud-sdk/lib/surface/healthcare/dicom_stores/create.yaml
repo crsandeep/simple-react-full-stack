@@ -1,0 +1,35 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief:  Create a Cloud Healthcare API DICOM store.
+    description: |
+      Create a Cloud Healthcare API DICOM store.
+    examples: |
+      To create a dicom store called 'test-dicom-store', run:
+
+        $ {command} test-dicom-store --dataset=test-dataset
+
+      To create a dicom store with the Cloud Pub/Sub topic 'test-pubsub-topic', run:
+
+        $ {command} test-dicom-store --dataset=test-dataset --pubsub-topic=projects/my-project/topics/test-pubsub-topic
+
+  request:
+    collection: healthcare.projects.locations.datasets.dicomStores
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+
+  arguments:
+    resource:
+      help_text: Cloud Healthcare API DICOM store to create.
+      spec: !REF googlecloudsdk.command_lib.healthcare.resources:dicom_store
+
+    params:
+    - api_field: dicomStore.notificationConfig.pubsubTopic
+      arg_name: pubsub-topic
+      help_text: |
+        Google Cloud Pub/Sub topic to send updates to.
+
+        Note: A topic must be created before publishing or subscribing to it. For instructions
+        on creating topics, refer to: https://cloud.google.com/pubsub/docs/admin#create_a_topic

@@ -1,0 +1,2843 @@
+{
+  "kind": "discovery#restDescription",
+  "discoveryVersion": "v1",
+  "id": "osconfig:v1alpha1",
+  "name": "osconfig",
+  "canonicalName": "Cloud OS Config",
+  "version": "v1alpha1",
+  "revision": "0",
+  "title": "Cloud OS Config API",
+  "description": "OS management tools that can be used for patch management, patch compliance, and configuration management on VM instances.",
+  "ownerDomain": "google.com",
+  "ownerName": "Google",
+  "icons": {
+    "x16": "http://www.google.com/images/icons/product/search-16.gif",
+    "x32": "http://www.google.com/images/icons/product/search-32.gif"
+   },
+  "documentationLink": "https://cloud.google.com/",
+  "protocol": "rest",
+  "rootUrl": "https://osconfig.googleapis.com/",
+  "servicePath": "",
+  "baseUrl": "https://osconfig.googleapis.com/",
+  "batchPath": "batch",
+  "version_module": true,
+  "fullyEncodeReservedExpansion": true,
+  "parameters": {
+    "access_token": {
+      "type": "string",
+      "description": "OAuth access token.",
+      "location": "query"
+    },
+    "alt": {
+      "type": "string",
+      "description": "Data format for response.",
+      "default": "json",
+      "enum": [
+        "json",
+        "media",
+        "proto"
+      ],
+      "enumDescriptions": [
+        "Responses with Content-Type of application/json",
+        "Media download with context-dependent Content-Type",
+        "Responses with Content-Type of application/x-protobuf"
+      ],
+      "location": "query"
+    },
+    "callback": {
+      "type": "string",
+      "description": "JSONP",
+      "location": "query"
+    },
+    "fields": {
+      "type": "string",
+      "description": "Selector specifying which fields to include in a partial response.",
+      "location": "query"
+    },
+    "key": {
+      "type": "string",
+      "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+      "location": "query"
+    },
+    "oauth_token": {
+      "type": "string",
+      "description": "OAuth 2.0 token for the current user.",
+      "location": "query"
+    },
+    "prettyPrint": {
+      "type": "boolean",
+      "description": "Returns response with indentations and line breaks.",
+      "default": "true",
+      "location": "query"
+    },
+    "quotaUser": {
+      "type": "string",
+      "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.",
+      "location": "query"
+    },
+    "upload_protocol": {
+      "type": "string",
+      "description": "Upload protocol for media (e.g. \"raw\", \"multipart\").",
+      "location": "query"
+    },
+    "uploadType": {
+      "type": "string",
+      "description": "Legacy upload protocol for media (e.g. \"media\", \"multipart\").",
+      "location": "query"
+    },
+    "$.xgafv": {
+      "type": "string",
+      "description": "V1 error format.",
+      "enum": [
+        "1",
+        "2"
+      ],
+      "enumDescriptions": [
+        "v1 error format",
+        "v2 error format"
+      ],
+      "location": "query"
+    }
+  },
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://www.googleapis.com/auth/cloud-platform": {
+          "description": "View and manage your data across Google Cloud Platform services"
+        },
+        "https://www.googleapis.com/auth/compute": {
+          "description": "View and manage your Google Compute Engine resources"
+        }
+      }
+    }
+  },
+  "schemas": {
+    "OsConfig": {
+      "id": "OsConfig",
+      "description": "An OS Config resource describing a set of OS configs that should be set\non a group of instances.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Identifying name for this OsConfig.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description of the OsConfig. Length of the description is limited\nto 1024 characters.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Output only. Time this OsConfig was created.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. Last time this OsConfig was updated.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "labels": {
+          "description": "Represents cloud resource labels.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "apt": {
+          "description": "Optional package manager configurations for apt.",
+          "$ref": "AptPackageConfig"
+        },
+        "yum": {
+          "description": "Optional package manager configurations for yum.",
+          "$ref": "YumPackageConfig"
+        },
+        "goo": {
+          "description": "Optional package manager configurations for windows.",
+          "$ref": "GooPackageConfig"
+        },
+        "windowsUpdate": {
+          "description": "Optional Windows Update configurations.",
+          "$ref": "WindowsUpdateConfig"
+        },
+        "zypper": {
+          "description": "Optional package manager configuration for zypper.",
+          "$ref": "ZypperPackageConfig"
+        }
+      }
+    },
+    "AptPackageConfig": {
+      "id": "AptPackageConfig",
+      "description": "A list of packages to install, remove, and their repos for a given\npackage manager type.",
+      "type": "object",
+      "properties": {
+        "packageInstalls": {
+          "description": "Packages to install.\napt-get update && apt-get -y install package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "packageRemovals": {
+          "description": "Packages to remove.\napt-get -y remove package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "repositories": {
+          "description": "Package repositories to configure in the package manager. The instance\nlikely already has some defaults set and duplicates are acceptable but\nignored.",
+          "type": "array",
+          "items": {
+            "$ref": "AptRepository"
+          }
+        }
+      }
+    },
+    "Package": {
+      "id": "Package",
+      "description": "Package is a reference to the actual package to be installed or removed.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name of the package.",
+          "type": "string"
+        }
+      }
+    },
+    "AptRepository": {
+      "id": "AptRepository",
+      "description": "Represents a single apt package repository. These will be added to a repo\nfile that will be managed at \/etc\/apt\/sources.list.d\/google_osconfig.list",
+      "type": "object",
+      "properties": {
+        "archiveType": {
+          "description": "Type of archive files in this repository. Unspecified will default to DEB.",
+          "enumDescriptions": [
+            "Unspecified.",
+            "Deb.",
+            "Deb-src."
+          ],
+          "type": "string",
+          "enum": [
+            "ARCHIVE_TYPE_UNSPECIFIED",
+            "DEB",
+            "DEB_SRC"
+          ]
+        },
+        "uri": {
+          "description": "URI for this repository.",
+          "type": "string"
+        },
+        "distribution": {
+          "description": "Distribution of this repository.",
+          "type": "string"
+        },
+        "components": {
+          "description": "List of components for this repository. Must contain at least one item.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keyUri": {
+          "description": "Optional. URI of the key file for this repository. The agent will ensure\nthat this key has been downloaded.",
+          "type": "string"
+        }
+      }
+    },
+    "YumPackageConfig": {
+      "id": "YumPackageConfig",
+      "description": "A list of packages to install, remove, and their repos for a given\npackage manager type.",
+      "type": "object",
+      "properties": {
+        "packageInstalls": {
+          "description": "Packages to install.\nyum -y install package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "packageRemovals": {
+          "description": "Packages to remove.\nyum -y remove package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "repositories": {
+          "description": "Package repositories to configure in the package manager. The instance\nlikely already has some defaults set and duplicates are acceptable but\nignored.",
+          "type": "array",
+          "items": {
+            "$ref": "YumRepository"
+          }
+        }
+      }
+    },
+    "YumRepository": {
+      "id": "YumRepository",
+      "description": "Represents a single yum package repository. These will be added to a repo\nfile that will be managed a \/etc\/yum.repos.d\/google_osconfig.repo",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Required. A one word, unique name for this repository. This will be\nthe `repo id` in the yum config file and also the `display_name` if\n`display_name` is omitted.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Optional. If omitted, the id will be used for the name.",
+          "type": "string"
+        },
+        "baseUrl": {
+          "description": "Required. The location of the repository directory.",
+          "type": "string"
+        },
+        "gpgKeys": {
+          "description": "Optional. URIs of GPG keys.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GooPackageConfig": {
+      "id": "GooPackageConfig",
+      "description": "A list of packages to install, remove, and their repos for a given\npackage manager type.",
+      "type": "object",
+      "properties": {
+        "packageInstalls": {
+          "description": "Packages to install.\ngooget -noconfirm install package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "packageRemovals": {
+          "description": "Packages to remove.\ngooget -noconfirm remove package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "repositories": {
+          "description": "Package repositories to configure in the package manager. The instance\nlikely already has some defaults set and duplicates are acceptable but\nignored.",
+          "type": "array",
+          "items": {
+            "$ref": "GooRepository"
+          }
+        }
+      }
+    },
+    "GooRepository": {
+      "id": "GooRepository",
+      "description": "Represents a Goo package repository. These will be added to a repo file that\nwill be managed at C:\/ProgramData\/GooGet\/repos\/google_osconfig.repo",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name of the repository.",
+          "type": "string"
+        },
+        "url": {
+          "description": "The url of the repository.",
+          "type": "string"
+        }
+      }
+    },
+    "WindowsUpdateConfig": {
+      "id": "WindowsUpdateConfig",
+      "description": "Configuration settings for the Windows update.",
+      "type": "object",
+      "properties": {
+        "windowsUpdateServerUri": {
+          "description": "Optional URI of Windows update server. This sets the registry value\n`WUServer` under `HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate`.",
+          "type": "string"
+        }
+      }
+    },
+    "ZypperPackageConfig": {
+      "id": "ZypperPackageConfig",
+      "description": "A list of packages to install, remove, and their repos for a given\npackage manager type.",
+      "type": "object",
+      "properties": {
+        "packageInstalls": {
+          "description": "Packages to install.\nzypper install package1 package2 package3",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "packageRemovals": {
+          "description": "Packages to remove.\nzypper rm package1 package2",
+          "type": "array",
+          "items": {
+            "$ref": "Package"
+          }
+        },
+        "repositories": {
+          "description": "Package repositories to configure in the package manager. The instance\nlikely already has some defaults set and duplicates are acceptable but\nignored.",
+          "type": "array",
+          "items": {
+            "$ref": "ZypperRepository"
+          }
+        }
+      }
+    },
+    "ZypperRepository": {
+      "id": "ZypperRepository",
+      "description": "Represents a single zypper package repository. These will be added to a repo\nfile that will be managed a \/etc\/zypp\/repos.d\/google_osconfig.repo",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Required. A one word, unique name for this repository. This will be\nthe `repo id` in the zypper config file and also the `display_name` if\n`display_name` is omitted.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Optional. If omitted, the id will be used for the name.",
+          "type": "string"
+        },
+        "baseUrl": {
+          "description": "Required. The location of the repository directory.",
+          "type": "string"
+        },
+        "gpgKeys": {
+          "description": "Optional. URIs of GPG keys.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ListOsConfigsResponse": {
+      "id": "ListOsConfigsResponse",
+      "description": "A response message for listing OsConfigs.",
+      "type": "object",
+      "properties": {
+        "osConfigs": {
+          "description": "The list of OsConfigs.",
+          "type": "array",
+          "items": {
+            "$ref": "OsConfig"
+          }
+        },
+        "nextPageToken": {
+          "description": "A pagination token that can be used to get the next page\nof OsConfigs.",
+          "type": "string"
+        }
+      }
+    },
+    "Empty": {
+      "id": "Empty",
+      "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Assignment": {
+      "id": "Assignment",
+      "description": "An Assignment maps configurations to instance guest environments.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Identifying name for this Assignment.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description of the Assignment. Length of the description is limited\nto 1024 characters.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Output only. Time this Assignment was created.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. Last time this Assignment was updated.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "labels": {
+          "description": "Represents cloud resource labels.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "osConfigs": {
+          "description": "List of OsConfigs to configure on the instances. These are relative\nresource names of OsConfigs. For example 'organizations\/1234\/osConfigs\/foo'\nor 'projects\/12345\/osConfigs\/foo'. If an OsConfig referenced here is\ndeleted it will be ignored when instances lookup their configs.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expression": {
+          "description": "Optional. A [CEL](https:\/\/github.com\/google\/cel-spec) expression used to\nfilter instances when determining which configs apply. If omitted, the\nOsConfigs specified in this assignment will apply to all instances under\nthis resource.",
+          "type": "string"
+        }
+      }
+    },
+    "ListAssignmentsResponse": {
+      "id": "ListAssignmentsResponse",
+      "description": "A response message for listing Assignments.",
+      "type": "object",
+      "properties": {
+        "assignments": {
+          "description": "The list of Assignments.",
+          "type": "array",
+          "items": {
+            "$ref": "Assignment"
+          }
+        },
+        "nextPageToken": {
+          "description": "A pagination token that can be used to get the next page\nof Assignments.",
+          "type": "string"
+        }
+      }
+    },
+    "GetIamPolicyRequest": {
+      "id": "GetIamPolicyRequest",
+      "description": "Request message for `GetIamPolicy` method.",
+      "type": "object",
+      "properties": {
+        "options": {
+          "description": "OPTIONAL: A `GetPolicyOptions` object for specifying options to\n`GetIamPolicy`. This field is only used by Cloud IAM.",
+          "$ref": "GetPolicyOptions"
+        }
+      }
+    },
+    "GetPolicyOptions": {
+      "id": "GetPolicyOptions",
+      "description": "Encapsulates settings provided to GetIamPolicy.",
+      "type": "object",
+      "properties": {
+        "requestedPolicyVersion": {
+          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Policy": {
+      "id": "Policy",
+      "description": "An Identity and Access Management (IAM) policy, which specifies access\ncontrols for Google Cloud resources.\n\n\nA `Policy` is a collection of `bindings`. A `binding` binds one or more\n`members` to a single `role`. Members can be user accounts, service accounts,\nGoogle groups, and domains (such as G Suite). A `role` is a named list of\npermissions; each `role` can be an IAM predefined role or a user-created\ncustom role.\n\nOptionally, a `binding` can specify a `condition`, which is a logical\nexpression that allows access to a resource only if the expression evaluates\nto `true`. A condition can add constraints based on attributes of the\nrequest, the resource, or both.\n\n**JSON example:**\n\n    {\n      \"bindings\": [\n        {\n          \"role\": \"roles\/resourcemanager.organizationAdmin\",\n          \"members\": [\n            \"user:mike@example.com\",\n            \"group:admins@example.com\",\n            \"domain:google.com\",\n            \"serviceAccount:my-project-id@appspot.gserviceaccount.com\"\n          ]\n        },\n        {\n          \"role\": \"roles\/resourcemanager.organizationViewer\",\n          \"members\": [\"user:eve@example.com\"],\n          \"condition\": {\n            \"title\": \"expirable access\",\n            \"description\": \"Does not grant access after Sep 2020\",\n            \"expression\": \"request.time < timestamp('2020-10-01T00:00:00.000Z')\",\n          }\n        }\n      ],\n      \"etag\": \"BwWWja0YfJA=\",\n      \"version\": 3\n    }\n\n**YAML example:**\n\n    bindings:\n    - members:\n      - user:mike@example.com\n      - group:admins@example.com\n      - domain:google.com\n      - serviceAccount:my-project-id@appspot.gserviceaccount.com\n      role: roles\/resourcemanager.organizationAdmin\n    - members:\n      - user:eve@example.com\n      role: roles\/resourcemanager.organizationViewer\n      condition:\n        title: expirable access\n        description: Does not grant access after Sep 2020\n        expression: request.time < timestamp('2020-10-01T00:00:00.000Z')\n    - etag: BwWWja0YfJA=\n    - version: 3\n\nFor a description of IAM and its features, see the\n[IAM documentation](https:\/\/cloud.google.com\/iam\/docs\/).",
+      "type": "object",
+      "properties": {
+        "version": {
+          "description": "Specifies the format of the policy.\n\nValid values are `0`, `1`, and `3`. Requests that specify an invalid value\nare rejected.\n\nAny operation that affects conditional role bindings must specify version\n`3`. This requirement applies to the following operations:\n\n* Getting a policy that includes a conditional role binding\n* Adding a conditional role binding to a policy\n* Changing a conditional role binding in a policy\n* Removing any role binding, with or without a condition, from a policy\n  that includes conditions\n\n**Important:** If you use IAM Conditions, you must include the `etag` field\nwhenever you call `setIamPolicy`. If you omit this field, then IAM allows\nyou to overwrite a version `3` policy with a version `1` policy, and all of\nthe conditions in the version `3` policy are lost.\n\nIf a policy does not include any conditions, operations on that policy may\nspecify any valid version or leave the field unset.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "bindings": {
+          "description": "Associates a list of `members` to a `role`. Optionally, may specify a\n`condition` that determines how and when the `bindings` are applied. Each\nof the `bindings` must contain at least one member.",
+          "type": "array",
+          "items": {
+            "$ref": "Binding"
+          }
+        },
+        "auditConfigs": {
+          "description": "Specifies cloud audit logging configuration for this policy.",
+          "type": "array",
+          "items": {
+            "$ref": "AuditConfig"
+          }
+        },
+        "etag": {
+          "description": "`etag` is used for optimistic concurrency control as a way to help\nprevent simultaneous updates of a policy from overwriting each other.\nIt is strongly suggested that systems make use of the `etag` in the\nread-modify-write cycle to perform policy updates in order to avoid race\nconditions: An `etag` is returned in the response to `getIamPolicy`, and\nsystems are expected to put that etag in the request to `setIamPolicy` to\nensure that their change will be applied to the same version of the policy.\n\n**Important:** If you use IAM Conditions, you must include the `etag` field\nwhenever you call `setIamPolicy`. If you omit this field, then IAM allows\nyou to overwrite a version `3` policy with a version `1` policy, and all of\nthe conditions in the version `3` policy are lost.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "Binding": {
+      "id": "Binding",
+      "description": "Associates `members` with a `role`.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Role that is assigned to `members`.\nFor example, `roles\/viewer`, `roles\/editor`, or `roles\/owner`.",
+          "type": "string"
+        },
+        "members": {
+          "description": "Specifies the identities requesting access for a Cloud Platform resource.\n`members` can have the following values:\n\n* `allUsers`: A special identifier that represents anyone who is\n   on the internet; with or without a Google account.\n\n* `allAuthenticatedUsers`: A special identifier that represents anyone\n   who is authenticated with a Google account or a service account.\n\n* `user:{emailid}`: An email address that represents a specific Google\n   account. For example, `alice@example.com` .\n\n\n* `serviceAccount:{emailid}`: An email address that represents a service\n   account. For example, `my-other-app@appspot.gserviceaccount.com`.\n\n* `group:{emailid}`: An email address that represents a Google group.\n   For example, `admins@example.com`.\n\n* `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique\n   identifier) representing a user that has been recently deleted. For\n   example, `alice@example.com?uid=123456789012345678901`. If the user is\n   recovered, this value reverts to `user:{emailid}` and the recovered user\n   retains the role in the binding.\n\n* `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus\n   unique identifier) representing a service account that has been recently\n   deleted. For example,\n   `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`.\n   If the service account is undeleted, this value reverts to\n   `serviceAccount:{emailid}` and the undeleted service account retains the\n   role in the binding.\n\n* `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique\n   identifier) representing a Google group that has been recently\n   deleted. For example, `admins@example.com?uid=123456789012345678901`. If\n   the group is recovered, this value reverts to `group:{emailid}` and the\n   recovered group retains the role in the binding.\n\n\n* `domain:{domain}`: The G Suite domain (primary) that represents all the\n   users of that domain. For example, `google.com` or `example.com`.\n\n",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "condition": {
+          "description": "The condition that is associated with this binding.\nNOTE: An unsatisfied condition will not allow user access via current\nbinding. Different bindings, including their conditions, are examined\nindependently.",
+          "$ref": "Expr"
+        }
+      }
+    },
+    "Expr": {
+      "id": "Expr",
+      "description": "Represents an expression text. Example:\n\n    title: \"User account presence\"\n    description: \"Determines whether the request has a user account\"\n    expression: \"size(request.user) > 0\"",
+      "type": "object",
+      "properties": {
+        "expression": {
+          "description": "Textual representation of an expression in\nCommon Expression Language syntax.\n\nThe application context of the containing message determines which\nwell-known feature set of CEL is supported.",
+          "type": "string"
+        },
+        "title": {
+          "description": "An optional title for the expression, i.e. a short string describing\nits purpose. This can be used e.g. in UIs which allow to enter the\nexpression.",
+          "type": "string"
+        },
+        "description": {
+          "description": "An optional description of the expression. This is a longer text which\ndescribes the expression, e.g. when hovered over it in a UI.",
+          "type": "string"
+        },
+        "location": {
+          "description": "An optional string indicating the location of the expression for error\nreporting, e.g. a file name and a position in the file.",
+          "type": "string"
+        }
+      }
+    },
+    "AuditConfig": {
+      "id": "AuditConfig",
+      "description": "Specifies the audit configuration for a service.\nThe configuration determines which permission types are logged, and what\nidentities, if any, are exempted from logging.\nAn AuditConfig must have one or more AuditLogConfigs.\n\nIf there are AuditConfigs for both `allServices` and a specific service,\nthe union of the two AuditConfigs is used for that service: the log_types\nspecified in each AuditConfig are enabled, and the exempted_members in each\nAuditLogConfig are exempted.\n\nExample Policy with multiple AuditConfigs:\n\n    {\n      \"audit_configs\": [\n        {\n          \"service\": \"allServices\"\n          \"audit_log_configs\": [\n            {\n              \"log_type\": \"DATA_READ\",\n              \"exempted_members\": [\n                \"user:jose@example.com\"\n              ]\n            },\n            {\n              \"log_type\": \"DATA_WRITE\",\n            },\n            {\n              \"log_type\": \"ADMIN_READ\",\n            }\n          ]\n        },\n        {\n          \"service\": \"sampleservice.googleapis.com\"\n          \"audit_log_configs\": [\n            {\n              \"log_type\": \"DATA_READ\",\n            },\n            {\n              \"log_type\": \"DATA_WRITE\",\n              \"exempted_members\": [\n                \"user:aliya@example.com\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n\nFor sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ\nlogging. It also exempts jose@example.com from DATA_READ logging, and\naliya@example.com from DATA_WRITE logging.",
+      "type": "object",
+      "properties": {
+        "service": {
+          "description": "Specifies a service that will be enabled for audit logging.\nFor example, `storage.googleapis.com`, `cloudsql.googleapis.com`.\n`allServices` is a special value that covers all services.",
+          "type": "string"
+        },
+        "auditLogConfigs": {
+          "description": "The configuration for logging of each type of permission.",
+          "type": "array",
+          "items": {
+            "$ref": "AuditLogConfig"
+          }
+        }
+      }
+    },
+    "AuditLogConfig": {
+      "id": "AuditLogConfig",
+      "description": "Provides the configuration for logging a type of permissions.\nExample:\n\n    {\n      \"audit_log_configs\": [\n        {\n          \"log_type\": \"DATA_READ\",\n          \"exempted_members\": [\n            \"user:jose@example.com\"\n          ]\n        },\n        {\n          \"log_type\": \"DATA_WRITE\",\n        }\n      ]\n    }\n\nThis enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting\njose@example.com from DATA_READ logging.",
+      "type": "object",
+      "properties": {
+        "logType": {
+          "description": "The log type that this config enables.",
+          "enumDescriptions": [
+            "Default case. Should never be this.",
+            "Admin reads. Example: CloudIAM getIamPolicy",
+            "Data writes. Example: CloudSQL Users create",
+            "Data reads. Example: CloudSQL Users list"
+          ],
+          "type": "string",
+          "enum": [
+            "LOG_TYPE_UNSPECIFIED",
+            "ADMIN_READ",
+            "DATA_WRITE",
+            "DATA_READ"
+          ]
+        },
+        "exemptedMembers": {
+          "description": "Specifies the identities that do not cause logging for this type of\npermission.\nFollows the same format of Binding.members.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SetIamPolicyRequest": {
+      "id": "SetIamPolicyRequest",
+      "description": "Request message for `SetIamPolicy` method.",
+      "type": "object",
+      "properties": {
+        "policy": {
+          "description": "REQUIRED: The complete policy to be applied to the `resource`. The size of\nthe policy is limited to a few 10s of KB. An empty policy is a\nvalid policy but certain Cloud Platform services (such as Projects)\nmight reject them.",
+          "$ref": "Policy"
+        },
+        "updateMask": {
+          "description": "OPTIONAL: A FieldMask specifying which fields of the policy to modify. Only\nthe fields in the mask will be modified. If no mask is provided, the\nfollowing default mask is used:\npaths: \"bindings, etag\"\nThis field is only used by Cloud IAM.",
+          "type": "string",
+          "format": "google-fieldmask"
+        }
+      }
+    },
+    "TestIamPermissionsRequest": {
+      "id": "TestIamPermissionsRequest",
+      "description": "Request message for `TestIamPermissions` method.",
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "description": "The set of permissions to check for the `resource`. Permissions with\nwildcards (such as '*' or 'storage.*') are not allowed. For more\ninformation see\n[IAM Overview](https:\/\/cloud.google.com\/iam\/docs\/overview#permissions).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TestIamPermissionsResponse": {
+      "id": "TestIamPermissionsResponse",
+      "description": "Response message for `TestIamPermissions` method.",
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "description": "A subset of `TestPermissionsRequest.permissions` that the caller is\nallowed.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LookupConfigsRequest": {
+      "id": "LookupConfigsRequest",
+      "description": "A request message for getting the configs assigned to the instance.",
+      "type": "object",
+      "properties": {
+        "osInfo": {
+          "description": "Optional. OS info about the instance that can be used to filter its\nconfigs. If none is provided, the API will return the configs for this\ninstance regardless of its OS.",
+          "$ref": "LookupConfigsRequestOsInfo"
+        },
+        "configTypes": {
+          "description": "Types of configuration system the instance is using. Only configs relevant\nto these configuration types will be returned.",
+          "enumDescriptions": [
+            "Invalid. Config type must be specified.",
+            "This instance runs apt.",
+            "This instance runs yum.",
+            "This instance runs googet.",
+            "This instance runs Windows Update.",
+            "This instance runs zypper."
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "CONFIG_TYPE_UNSPECIFIED",
+              "APT",
+              "YUM",
+              "GOO",
+              "WINDOWS_UPDATE",
+              "ZYPPER"
+            ]
+          }
+        }
+      }
+    },
+    "LookupConfigsRequestOsInfo": {
+      "id": "LookupConfigsRequestOsInfo",
+      "description": "Guest information provided to service by agent when requesting\nconfigurations.",
+      "type": "object",
+      "properties": {
+        "osLongName": {
+          "description": "OS long name. Optional.",
+          "type": "string"
+        },
+        "osShortName": {
+          "description": "OS short name. Optional.",
+          "type": "string"
+        },
+        "osVersion": {
+          "description": "OS version. Optional.",
+          "type": "string"
+        },
+        "osKernel": {
+          "description": "OS kernel name. Optional.",
+          "type": "string"
+        },
+        "osArchitecture": {
+          "description": "Architecture of the OS. Optional.",
+          "type": "string"
+        }
+      }
+    },
+    "LookupConfigsResponse": {
+      "id": "LookupConfigsResponse",
+      "description": "Response with assigned configs for the instance.",
+      "type": "object",
+      "properties": {
+        "apt": {
+          "description": "Configs for apt.",
+          "$ref": "AptPackageConfig"
+        },
+        "yum": {
+          "description": "Configs for yum.",
+          "$ref": "YumPackageConfig"
+        },
+        "goo": {
+          "description": "Configs for windows.",
+          "$ref": "GooPackageConfig"
+        },
+        "windowsUpdate": {
+          "description": "Configs for Windows Update.",
+          "$ref": "WindowsUpdateConfig"
+        },
+        "zypper": {
+          "description": "Configs for Zypper.",
+          "$ref": "ZypperPackageConfig"
+        }
+      }
+    },
+    "ExecutePatchJobRequest": {
+      "id": "ExecutePatchJobRequest",
+      "description": "A request message to initiate patching across GCE instances.",
+      "type": "object",
+      "properties": {
+        "description": {
+          "description": "Description of the PatchJob. Length of the description is limited\nto 1024 characters.",
+          "type": "string"
+        },
+        "filter": {
+          "description": "Required. There must be at least one instance to patch for this job\nto succeed. This is the same filter used when listing compute instances.",
+          "type": "string"
+        },
+        "patchConfig": {
+          "description": "Optional. Patch configuration being applied. If omitted, instances will be\npatched using the default configurations.",
+          "$ref": "PatchConfig"
+        },
+        "duration": {
+          "description": "Optional. Duration of the patch job. After the duration ends, the\npatch job will time out.",
+          "type": "string",
+          "format": "google-duration"
+        },
+        "dryRun": {
+          "description": "Should this patch be a dry-run only.  Instances will be contacted, but\nthey will do nothing.",
+          "type": "boolean"
+        },
+        "displayName": {
+          "description": "Display name for this patch job. This does not have to be unique.",
+          "type": "string"
+        }
+      }
+    },
+    "PatchConfig": {
+      "id": "PatchConfig",
+      "description": "Patch configuration specifications. Contains details on specifically how to\napply the patch(es) to an instance.",
+      "type": "object",
+      "properties": {
+        "rebootConfig": {
+          "description": "Optional. Post-patch reboot settings.",
+          "enumDescriptions": [
+            "The default behavior is DEFAULT.",
+            "The agent will decide if a reboot is necessary by checking well known\nsignals such as registry keys or `\/var\/run\/reboot-required`.",
+            "Always reboot the machine after the update has completed.",
+            "Never reboot the machine after the update has completed."
+          ],
+          "type": "string",
+          "enum": [
+            "REBOOT_CONFIG_UNSPECIFIED",
+            "DEFAULT",
+            "ALWAYS",
+            "NEVER"
+          ]
+        },
+        "retryStrategy": {
+          "description": "Optional. Retry strategy can be defined to have the agent retry patching\nduring the window if patching fails. If omitted, the agent will use its\ndefault retry strategy.",
+          "$ref": "RetryStrategy"
+        },
+        "apt": {
+          "description": "Apt update settings. Use this override the default apt patch rules.",
+          "$ref": "AptSettings"
+        },
+        "yum": {
+          "description": "Yum update settings. Use this override the default yum patch rules.",
+          "$ref": "YumSettings"
+        },
+        "goo": {
+          "description": "Goo update settings. Use this override the default goo patch rules.",
+          "$ref": "GooSettings"
+        },
+        "zypper": {
+          "description": "Zypper update settings. Use this override the default zypper patch rules.",
+          "$ref": "ZypperSettings"
+        },
+        "windowsUpdate": {
+          "description": "Windows update settings. Use this override the default windows patch rules.",
+          "$ref": "WindowsUpdateSettings"
+        }
+      }
+    },
+    "RetryStrategy": {
+      "id": "RetryStrategy",
+      "description": "The strategy for retrying failed patches during the patch window.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "If true, the agent will continue to try and patch until the window has\nended.",
+          "type": "boolean"
+        }
+      }
+    },
+    "AptSettings": {
+      "id": "AptSettings",
+      "description": "Apt patching will be performed by executing `apt-get update && apt-get\nupgrade`. Additional options can be set to control how this is executed.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Optional. By changing the type to DIST, the patching will be performed\nusing `apt-get dist-upgrade` instead.",
+          "enumDescriptions": [
+            "By default, upgrade will be performed.",
+            "Runs `apt-get dist-upgrade`.",
+            "Runs `apt-get upgrade`."
+          ],
+          "type": "string",
+          "enum": [
+            "TYPE_UNSPECIFIED",
+            "DIST",
+            "UPGRADE"
+          ]
+        },
+        "excludes": {
+          "description": "List of packages to exclude from update.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclusivePackages": {
+          "description": "An exclusive list of packages to be updated. These are the only packages\nthat will be updated. If these packages are not installed, they will be\nignored. This field cannot be specified with any other patch configuration\nfields.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "YumSettings": {
+      "id": "YumSettings",
+      "description": "Yum patching will be performed by executing `yum update`. Additional options\ncan be set to control how this is executed.\n\nNote that not all settings are supported on all platforms.",
+      "type": "object",
+      "properties": {
+        "security": {
+          "description": "Optional. Adds the `--security` flag to `yum update`. Not supported on\nall platforms.",
+          "type": "boolean"
+        },
+        "minimal": {
+          "description": "Optional. Will cause patch to run `yum update-minimal` instead.",
+          "type": "boolean"
+        },
+        "excludes": {
+          "description": "List of packages to exclude from update. These packages will be excluded by\nusing the yum `--exclude` field.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclusivePackages": {
+          "description": "An exclusive list of packages to be updated. These are the only packages\nthat will be updated. If these packages are not installed, they will be\nignored. This field must not be specified with any other patch\nconfiguration fields.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GooSettings": {
+      "id": "GooSettings",
+      "description": "Googet patching is performed by running `googet update`.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "ZypperSettings": {
+      "id": "ZypperSettings",
+      "description": "Zypper patching is performed by running `zypper patch`.\nSee also https:\/\/en.opensuse.org\/SDB:Zypper_manual.",
+      "type": "object",
+      "properties": {
+        "withOptional": {
+          "description": "Optional. Adds the `--with-optional` flag to `zypper patch`.",
+          "type": "boolean"
+        },
+        "withUpdate": {
+          "description": "Optional. Adds the `--with-update` flag, to `zypper patch`.",
+          "type": "boolean"
+        },
+        "categories": {
+          "description": "Optional. Install only patches with these categories.\nCommon categories include security, recommended, and feature.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "severities": {
+          "description": "Optional. Install only patches with these severities.\nCommon severities include critical, important, moderate, and low.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludes": {
+          "description": "List of patches to exclude from update.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclusivePatches": {
+          "description": "An exclusive list of patches to be updated. These are the only patches\nthat will be installed using 'zypper patch patch:<patch_name>' command.\nThis field must not be used with any other patch configuration fields.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "WindowsUpdateSettings": {
+      "id": "WindowsUpdateSettings",
+      "description": "Windows patching is performed using the Windows Update Agent.",
+      "type": "object",
+      "properties": {
+        "classifications": {
+          "description": "Only apply updates of these windows update classifications. If empty, all\nupdates will be applied.",
+          "enumDescriptions": [
+            "Invalid. If classifications are included, they must be specified.",
+            "\"A widely released fix for a specific problem that addresses a critical,\nnon-security-related bug.\" [1]",
+            "\"A widely released fix for a product-specific, security-related\nvulnerability. Security vulnerabilities are rated by their severity. The\nseverity rating is indicated in the Microsoft security bulletin as\ncritical, important, moderate, or low.\" [1]",
+            "\"A widely released and frequent software update that contains additions\nto a product\u2019s definition database. Definition databases are often used\nto detect objects that have specific attributes, such as malicious code,\nphishing websites, or junk mail.\" [1]",
+            "\"Software that controls the input and output of a device.\" [1]",
+            "\"New product functionality that is first distributed outside the context\nof a product release and that is typically included in the next full\nproduct release.\" [1]",
+            "\"A tested, cumulative set of all hotfixes, security updates, critical\nupdates, and updates. Additionally, service packs may contain additional\nfixes for problems that are found internally since the release of the\nproduct. Service packs my also contain a limited number of\ncustomer-requested design changes or features.\" [1]",
+            "\"A utility or feature that helps complete a task or set of tasks.\" [1]",
+            "\"A tested, cumulative set of hotfixes, security updates, critical\nupdates, and updates that are packaged together for easy deployment. A\nrollup generally targets a specific area, such as security, or a\ncomponent of a product, such as Internet Information Services (IIS).\" [1]",
+            "\"A widely released fix for a specific problem. An update addresses a\nnoncritical, non-security-related bug.\" [1]"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "CLASSIFICATION_UNSPECIFIED",
+              "CRITICAL",
+              "SECURITY",
+              "DEFINITION",
+              "DRIVER",
+              "FEATURE_PACK",
+              "SERVICE_PACK",
+              "TOOL",
+              "UPDATE_ROLLUP",
+              "UPDATE"
+            ]
+          }
+        },
+        "excludes": {
+          "description": "List of KBs to exclude from update.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclusivePatches": {
+          "description": "An exclusive list of kbs to be updated. These are the only patches\nthat will be updated. This field must not be used with other\npatch configurations.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PatchJob": {
+      "id": "PatchJob",
+      "description": "A high level representation of a patch job that is either in progress\nor has completed.\n\nInstances' details are not included in the job. To paginate through instance\ndetails, use ListPatchJobInstanceDetails.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Unique identifier for this patch job in the form\n`projects\/*\/patchJobs\/*`",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Display name for this patch job. This is not a unique identifier.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description of the patch job. Length of the description is limited\nto 1024 characters.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Time this PatchJob was created.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Last time this PatchJob was updated.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "state": {
+          "description": "The current state of the PatchJob.",
+          "enumDescriptions": [
+            "State must be specified.",
+            "The patch job was successfully initiated.",
+            "The patch job is looking up instances to run the patch on.",
+            "Instances are being patched.",
+            "Patch job completed successfully.",
+            "Patch job completed but there were errors.",
+            "The patch job was canceled.",
+            "The patch job has timed out."
+          ],
+          "type": "string",
+          "enum": [
+            "STATE_UNSPECIFIED",
+            "STARTED",
+            "INSTANCE_LOOKUP",
+            "PATCHING",
+            "SUCCEEDED",
+            "COMPLETED_WITH_ERRORS",
+            "CANCELED",
+            "TIMED_OUT"
+          ]
+        },
+        "filter": {
+          "description": "There must be at least one instance to patch for this job\nto succeed. This is the same filter used when listing compute instances.",
+          "type": "string"
+        },
+        "patchConfig": {
+          "description": "Patch configuration being applied.",
+          "$ref": "PatchConfig"
+        },
+        "duration": {
+          "description": "Duration of the patch job. After the duration ends, the\npatch job will time out.",
+          "type": "string",
+          "format": "google-duration"
+        },
+        "instanceDetailsSummary": {
+          "description": "Summary of instance details.",
+          "$ref": "PatchJobInstanceDetailsSummary"
+        },
+        "dryRun": {
+          "description": "If this patch job is a dry run, the agent will report that it has\nfinished without running any updates on the VM.",
+          "type": "boolean"
+        },
+        "errorMessage": {
+          "description": "If this patch job failed, this message will provide information about the\nfailure.",
+          "type": "string"
+        },
+        "percentComplete": {
+          "description": "Reflects the overall progress of the patch job in the range of\n0.0 being no progress to 100.0 being complete.",
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "PatchJobInstanceDetailsSummary": {
+      "id": "PatchJobInstanceDetailsSummary",
+      "description": "A summary of the current patch state across all instances this patch job\naffects. Contains counts of instances in different states. These states map\nto InstancePatchState. List patch job instance details to see the specific\nstates of each instance.",
+      "type": "object",
+      "properties": {
+        "instancesPending": {
+          "description": "Number of instances pending patch job.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesInactive": {
+          "description": "Number of instances that are inactive.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesNotified": {
+          "description": "Number of instances notified about patch job.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesStarted": {
+          "description": "Number of instances that have started.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesDownloadingPatches": {
+          "description": "Number of instances that are downloading patches.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesApplyingPatches": {
+          "description": "Number of instances that are applying patches.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesRebooting": {
+          "description": "Number of instances rebooting.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesSucceeded": {
+          "description": "Number of instances that have completed successfully.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesSucceededRebootRequired": {
+          "description": "Number of instances that require reboot.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesFailed": {
+          "description": "Number of instances that failed.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesAcked": {
+          "description": "Number of instances that have acked and will start shortly.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instancesTimedOut": {
+          "description": "Number of instances that exceeded the time out while applying the patch.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "CancelPatchJobRequest": {
+      "id": "CancelPatchJobRequest",
+      "description": "Message for canceling a patch job.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "ListPatchJobsResponse": {
+      "id": "ListPatchJobsResponse",
+      "description": "A response message for listing patch jobs.",
+      "type": "object",
+      "properties": {
+        "patchJobs": {
+          "description": "The list of patch jobs.",
+          "type": "array",
+          "items": {
+            "$ref": "PatchJob"
+          }
+        },
+        "nextPageToken": {
+          "description": "A pagination token that can be used to get the next page of results.",
+          "type": "string"
+        }
+      }
+    },
+    "ReportPatchJobInstanceDetailsRequest": {
+      "id": "ReportPatchJobInstanceDetailsRequest",
+      "description": "Request to report the patch status for an instance.",
+      "type": "object",
+      "properties": {
+        "instanceSystemId": {
+          "description": "Required. The unique, system-generated identifier for the instance.\n\nThis is the unchangeable, auto-generated ID assigned to the instance upon\ncreation. This is needed here because GCE instance names are not\ntombstoned; it is possible to delete an instance and create a new one with\nthe same name; this provides a mechanism for this API to identify distinct\ninstances in this case.",
+          "type": "string"
+        },
+        "patchJob": {
+          "description": "Unique identifier of the patch job this request applies to.",
+          "type": "string"
+        },
+        "state": {
+          "description": "State of current patch execution on the instance.",
+          "enumDescriptions": [
+            "Unspecified.",
+            "The instance has not been notified yet.",
+            "Instance is inactive and cannot be patched.",
+            "The instance has been notified that it should patch.",
+            "The instance has started the patching process.",
+            "The instance is downloading patches.",
+            "The instance is applying patches.",
+            "The instance is rebooting.",
+            "The instance has completed applying patches.",
+            "The instance has completed applying patches but a reboot is required.",
+            "The instance has failed to apply the patch.",
+            "The instance acked the notification and will start shortly.",
+            "The instance exceeded the time out while applying the patch."
+          ],
+          "type": "string",
+          "enum": [
+            "PATCH_STATE_UNSPECIFIED",
+            "PENDING",
+            "INACTIVE",
+            "NOTIFIED",
+            "STARTED",
+            "DOWNLOADING_PATCHES",
+            "APPLYING_PATCHES",
+            "REBOOTING",
+            "SUCCEEDED",
+            "SUCCEEDED_REBOOT_REQUIRED",
+            "FAILED",
+            "ACKED",
+            "TIMED_OUT"
+          ]
+        },
+        "failureReason": {
+          "description": "Reason for failure.",
+          "type": "string"
+        },
+        "attemptCount": {
+          "description": "Number of times the agent attempted to apply the patch.",
+          "type": "string",
+          "format": "int64"
+        },
+        "instanceIdToken": {
+          "description": "This is the GCE instance identity token described in\nhttps:\/\/cloud.google.com\/compute\/docs\/instances\/verifying-instance-identity\nwhere the audience is 'osconfig.googleapis.com' and the format is 'full'.",
+          "type": "string"
+        }
+      }
+    },
+    "ReportPatchJobInstanceDetailsResponse": {
+      "id": "ReportPatchJobInstanceDetailsResponse",
+      "description": "Response from reporting instance patch details. Includes information the\nagent needs to continue or stop patching.",
+      "type": "object",
+      "properties": {
+        "patchJob": {
+          "description": "Unique identifier for the current patch job.",
+          "type": "string"
+        },
+        "patchConfig": {
+          "description": "Patch configuration the agent should apply.",
+          "$ref": "PatchConfig"
+        },
+        "patchJobState": {
+          "description": "State of the overall patch. If the patch is no longer active, the\nagent should not begin a new patch step.",
+          "enumDescriptions": [
+            "Unspecified is invalid.",
+            "The patch job is running. Instances will continue to run patch\njob steps.",
+            "The patch job is complete."
+          ],
+          "type": "string",
+          "enum": [
+            "PATCH_JOB_STATE_UNSPECIFIED",
+            "ACTIVE",
+            "COMPLETED"
+          ]
+        },
+        "dryRun": {
+          "description": "If this patch job is a dry run, the agent will report its status as it goes\nthrough the motions but won't actually run any updates or perform any\nreboots.",
+          "type": "boolean"
+        }
+      }
+    },
+    "ListPatchJobInstanceDetailsResponse": {
+      "id": "ListPatchJobInstanceDetailsResponse",
+      "description": "A response message for listing the instances' details for a patch job.",
+      "type": "object",
+      "properties": {
+        "patchJobInstanceDetails": {
+          "description": "The list of instance status.",
+          "type": "array",
+          "items": {
+            "$ref": "PatchJobInstanceDetails"
+          }
+        },
+        "nextPageToken": {
+          "description": "A pagination token that can be used to get the next page of results.",
+          "type": "string"
+        }
+      }
+    },
+    "PatchJobInstanceDetails": {
+      "id": "PatchJobInstanceDetails",
+      "description": "Patch details of an instance.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The instance name in the form `projects\/*\/zones\/*\/instances\/*`",
+          "type": "string"
+        },
+        "instanceSystemId": {
+          "description": "The unique, system-generated identifier for the instance.",
+          "type": "string"
+        },
+        "state": {
+          "description": "Current state of instance patch.",
+          "enumDescriptions": [
+            "Unspecified.",
+            "The instance has not been notified yet.",
+            "Instance is inactive and cannot be patched.",
+            "The instance has been notified that it should patch.",
+            "The instance has started the patching process.",
+            "The instance is downloading patches.",
+            "The instance is applying patches.",
+            "The instance is rebooting.",
+            "The instance has completed applying patches.",
+            "The instance has completed applying patches but a reboot is required.",
+            "The instance has failed to apply the patch.",
+            "The instance acked the notification and will start shortly.",
+            "The instance exceeded the time out while applying the patch."
+          ],
+          "type": "string",
+          "enum": [
+            "PATCH_STATE_UNSPECIFIED",
+            "PENDING",
+            "INACTIVE",
+            "NOTIFIED",
+            "STARTED",
+            "DOWNLOADING_PATCHES",
+            "APPLYING_PATCHES",
+            "REBOOTING",
+            "SUCCEEDED",
+            "SUCCEEDED_REBOOT_REQUIRED",
+            "FAILED",
+            "ACKED",
+            "TIMED_OUT"
+          ]
+        },
+        "failureReason": {
+          "description": "If the patch has failed, this is the reason.",
+          "type": "string"
+        },
+        "attemptCount": {
+          "description": "Number of times the agent attempted to apply the patch.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    }
+  },
+  "resources": {
+    "organizations": {
+      "methods": {
+        "getIamPolicy": {
+          "id": "osconfig.organizations.getIamPolicy",
+          "path": "v1alpha1/{+resource}:getIamPolicy",
+          "flatPath": "v1alpha1/organizations/{organizationsId}:getIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^organizations\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "GetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Gets the access control policy for an OsConfig or an OS Config Assignment.\nReturns NOT_FOUND error if the OsConfig does not exist. Returns an empty\npolicy if the resource exists but does not have a policy set."
+        },
+        "setIamPolicy": {
+          "id": "osconfig.organizations.setIamPolicy",
+          "path": "v1alpha1/{+resource}:setIamPolicy",
+          "flatPath": "v1alpha1/organizations/{organizationsId}:setIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^organizations\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "SetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Sets the access control policy for an OsConfig or an OS Config Assignment.\nReplaces any existing policy."
+        },
+        "testIamPermissions": {
+          "id": "osconfig.organizations.testIamPermissions",
+          "path": "v1alpha1/{+resource}:testIamPermissions",
+          "flatPath": "v1alpha1/organizations/{organizationsId}:testIamPermissions",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^organizations\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "TestIamPermissionsRequest"
+          },
+          "response": {
+            "$ref": "TestIamPermissionsResponse"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Test the access control policy for an OsConfig or an OS Config Assignment."
+        }
+      }
+      ,
+      "resources": {
+        "osConfigs": {
+          "methods": {
+            "create": {
+              "id": "osconfig.organizations.osConfigs.create",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/osConfigs",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OsConfig."
+            },
+            "get": {
+              "id": "osconfig.organizations.osConfigs.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OsConfig."
+            },
+            "list": {
+              "id": "osconfig.organizations.osConfigs.list",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/osConfigs",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of OsConfigs to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListOsConfigs\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListOsConfigsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OsConfigs."
+            },
+            "patch": {
+              "id": "osconfig.organizations.osConfigs.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the OsConfig should be updated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OsConfig."
+            },
+            "delete": {
+              "id": "osconfig.organizations.osConfigs.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OsConfig."
+            }
+          }
+        },
+        "assignments": {
+          "methods": {
+            "create": {
+              "id": "osconfig.organizations.assignments.create",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/assignments",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OS Config Assignment."
+            },
+            "get": {
+              "id": "osconfig.organizations.assignments.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/assignments/{assignmentsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OS Config Assignment."
+            },
+            "list": {
+              "id": "osconfig.organizations.assignments.list",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/assignments",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of Assignments to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListAssignments\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListAssignmentsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OS Config Assignments."
+            },
+            "patch": {
+              "id": "osconfig.organizations.assignments.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/assignments/{assignmentsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the Assignment should be\nupdated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OS Config Assignment."
+            },
+            "delete": {
+              "id": "osconfig.organizations.assignments.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/organizations/{organizationsId}/assignments/{assignmentsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^organizations\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OS Config Assignment."
+            }
+          }
+        }
+      }
+    },
+    "projects": {
+      "methods": {
+        "getIamPolicy": {
+          "id": "osconfig.projects.getIamPolicy",
+          "path": "v1alpha1/{+resource}:getIamPolicy",
+          "flatPath": "v1alpha1/projects/{projectsId}:getIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^projects\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "GetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Gets the access control policy for an OsConfig or an OS Config Assignment.\nReturns NOT_FOUND error if the OsConfig does not exist. Returns an empty\npolicy if the resource exists but does not have a policy set."
+        },
+        "setIamPolicy": {
+          "id": "osconfig.projects.setIamPolicy",
+          "path": "v1alpha1/{+resource}:setIamPolicy",
+          "flatPath": "v1alpha1/projects/{projectsId}:setIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^projects\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "SetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Sets the access control policy for an OsConfig or an OS Config Assignment.\nReplaces any existing policy."
+        },
+        "testIamPermissions": {
+          "id": "osconfig.projects.testIamPermissions",
+          "path": "v1alpha1/{+resource}:testIamPermissions",
+          "flatPath": "v1alpha1/projects/{projectsId}:testIamPermissions",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^projects\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "TestIamPermissionsRequest"
+          },
+          "response": {
+            "$ref": "TestIamPermissionsResponse"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Test the access control policy for an OsConfig or an OS Config Assignment."
+        }
+      }
+      ,
+      "resources": {
+        "osConfigs": {
+          "methods": {
+            "create": {
+              "id": "osconfig.projects.osConfigs.create",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/projects/{projectsId}/osConfigs",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OsConfig."
+            },
+            "get": {
+              "id": "osconfig.projects.osConfigs.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OsConfig."
+            },
+            "list": {
+              "id": "osconfig.projects.osConfigs.list",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/projects/{projectsId}/osConfigs",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of OsConfigs to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListOsConfigs\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListOsConfigsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OsConfigs."
+            },
+            "patch": {
+              "id": "osconfig.projects.osConfigs.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the OsConfig should be updated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OsConfig."
+            },
+            "delete": {
+              "id": "osconfig.projects.osConfigs.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/osConfigs/{osConfigsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OsConfig."
+            }
+          }
+        },
+        "assignments": {
+          "methods": {
+            "create": {
+              "id": "osconfig.projects.assignments.create",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/projects/{projectsId}/assignments",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OS Config Assignment."
+            },
+            "get": {
+              "id": "osconfig.projects.assignments.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/assignments/{assignmentsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OS Config Assignment."
+            },
+            "list": {
+              "id": "osconfig.projects.assignments.list",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/projects/{projectsId}/assignments",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of Assignments to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListAssignments\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListAssignmentsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OS Config Assignments."
+            },
+            "patch": {
+              "id": "osconfig.projects.assignments.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/assignments/{assignmentsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the Assignment should be\nupdated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OS Config Assignment."
+            },
+            "delete": {
+              "id": "osconfig.projects.assignments.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/assignments/{assignmentsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OS Config Assignment."
+            }
+          }
+        },
+        "zones": {
+          "resources": {
+            "instances": {
+              "methods": {
+                "lookupConfigs": {
+                  "id": "osconfig.projects.zones.instances.lookupConfigs",
+                  "path": "v1alpha1/{+resource}:lookupConfigs",
+                  "flatPath": "v1alpha1/projects/{projectsId}/zones/{zonesId}/instances/{instancesId}:lookupConfigs",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "resource": {
+                      "description": "The resource name for the instance.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/zones\/[^\/]+\/instances\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "resource"
+                  ],
+                  "request": {
+                    "$ref": "LookupConfigsRequest"
+                  },
+                  "response": {
+                    "$ref": "LookupConfigsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform",
+                    "https://www.googleapis.com/auth/compute"
+                  ],
+                  "description": "Lookup the configs that are assigned to an instance. This lookup\nwill merge all configs that are assigned to the instance resolving\nconflicts as necessary.\nThis is usually called by the agent running on the instance but can be\ncalled directly to see what configs\nThis"
+                },
+                "reportPatchJobInstanceDetails": {
+                  "id": "osconfig.projects.zones.instances.reportPatchJobInstanceDetails",
+                  "path": "v1alpha1/{+resource}:reportPatchJobInstanceDetails",
+                  "flatPath": "v1alpha1/projects/{projectsId}/zones/{zonesId}/instances/{instancesId}:reportPatchJobInstanceDetails",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "resource": {
+                      "description": "The instance reporting its status in the form\n`projects\/*\/zones\/*\/instances\/*`",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/zones\/[^\/]+\/instances\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "resource"
+                  ],
+                  "request": {
+                    "$ref": "ReportPatchJobInstanceDetailsRequest"
+                  },
+                  "response": {
+                    "$ref": "ReportPatchJobInstanceDetailsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform",
+                    "https://www.googleapis.com/auth/compute"
+                  ],
+                  "description": "Endpoint used by the agent to report back its state during a patch\njob. This endpoint will also return the patch job's state and\nconfigurations that the agent needs to know in order to run or stop\npatching.\n\nThis endpoint is only used by the agent. Using it in other ways may\naffect the state of the active patch job and prevent the patches from\nbeing correctly applied to this instance."
+                }
+              }
+            }
+          }
+        },
+        "patchJobs": {
+          "methods": {
+            "execute": {
+              "id": "osconfig.projects.patchJobs.execute",
+              "path": "v1alpha1/{+parent}/patchJobs:execute",
+              "flatPath": "v1alpha1/projects/{projectsId}/patchJobs:execute",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The project in which to run this patch in the form `projects\/*`",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "ExecutePatchJobRequest"
+              },
+              "response": {
+                "$ref": "PatchJob"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Patch GCE instances by creating and running a PatchJob."
+            },
+            "get": {
+              "id": "osconfig.projects.patchJobs.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/projects/{projectsId}/patchJobs/{patchJobsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "Name of the patch in the form `projects\/*\/patchJobs\/*`",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/patchJobs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "PatchJob"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get the patch job. This can be used to track the progress of an\nongoing patch job or review the details of completed jobs."
+            },
+            "cancel": {
+              "id": "osconfig.projects.patchJobs.cancel",
+              "path": "v1alpha1/{+name}:cancel",
+              "flatPath": "v1alpha1/projects/{projectsId}/patchJobs/{patchJobsId}:cancel",
+              "httpMethod": "POST",
+              "parameters": {
+                "name": {
+                  "description": "Name of the patch in the form `projects\/*\/patchJobs\/*`",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/patchJobs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "CancelPatchJobRequest"
+              },
+              "response": {
+                "$ref": "PatchJob"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Cancel a patch job. The patch job must be active. Canceled patch jobs\ncannot be restarted."
+            },
+            "list": {
+              "id": "osconfig.projects.patchJobs.list",
+              "path": "v1alpha1/{+parent}/patchJobs",
+              "flatPath": "v1alpha1/projects/{projectsId}/patchJobs",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "In the form of `projects\/*`",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of instance status to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListPatchJobsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of patch jobs."
+            }
+          }
+          ,
+          "resources": {
+            "instanceDetails": {
+              "methods": {
+                "list": {
+                  "id": "osconfig.projects.patchJobs.instanceDetails.list",
+                  "path": "v1alpha1/{+parent}/instanceDetails",
+                  "flatPath": "v1alpha1/projects/{projectsId}/patchJobs/{patchJobsId}/instanceDetails",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "parent": {
+                      "description": "In the form of `projects\/*\/patchJobs\/*`",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/patchJobs\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "pageSize": {
+                      "description": "The maximum number of instance details records to return.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "pageToken": {
+                      "description": "A pagination token returned from a previous call\nthat indicates where this listing should continue from.\nThis field is optional.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "filter": {
+                      "description": "A filter expression that filters results listed in the response. Supports\nfiltering results by instance zone, name, state, or failure_reason.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "response": {
+                    "$ref": "ListPatchJobInstanceDetailsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform",
+                    "https://www.googleapis.com/auth/compute"
+                  ],
+                  "description": "Get a page of instances' details for a given patch job."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "folders": {
+      "methods": {
+        "getIamPolicy": {
+          "id": "osconfig.folders.getIamPolicy",
+          "path": "v1alpha1/{+resource}:getIamPolicy",
+          "flatPath": "v1alpha1/folders/{foldersId}:getIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^folders\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "GetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Gets the access control policy for an OsConfig or an OS Config Assignment.\nReturns NOT_FOUND error if the OsConfig does not exist. Returns an empty\npolicy if the resource exists but does not have a policy set."
+        },
+        "setIamPolicy": {
+          "id": "osconfig.folders.setIamPolicy",
+          "path": "v1alpha1/{+resource}:setIamPolicy",
+          "flatPath": "v1alpha1/folders/{foldersId}:setIamPolicy",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^folders\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "SetIamPolicyRequest"
+          },
+          "response": {
+            "$ref": "Policy"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Sets the access control policy for an OsConfig or an OS Config Assignment.\nReplaces any existing policy."
+        },
+        "testIamPermissions": {
+          "id": "osconfig.folders.testIamPermissions",
+          "path": "v1alpha1/{+resource}:testIamPermissions",
+          "flatPath": "v1alpha1/folders/{foldersId}:testIamPermissions",
+          "httpMethod": "POST",
+          "parameters": {
+            "resource": {
+              "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+              "location": "path",
+              "required": true,
+              "pattern": "^folders\/.+$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resource"
+          ],
+          "request": {
+            "$ref": "TestIamPermissionsRequest"
+          },
+          "response": {
+            "$ref": "TestIamPermissionsResponse"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/compute"
+          ],
+          "description": "Test the access control policy for an OsConfig or an OS Config Assignment."
+        }
+      }
+      ,
+      "resources": {
+        "osConfigs": {
+          "methods": {
+            "create": {
+              "id": "osconfig.folders.osConfigs.create",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/folders/{foldersId}/osConfigs",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OsConfig."
+            },
+            "get": {
+              "id": "osconfig.folders.osConfigs.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/osConfigs/{osConfigsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OsConfig."
+            },
+            "list": {
+              "id": "osconfig.folders.osConfigs.list",
+              "path": "v1alpha1/{+parent}/osConfigs",
+              "flatPath": "v1alpha1/folders/{foldersId}/osConfigs",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of OsConfigs to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListOsConfigs\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListOsConfigsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OsConfigs."
+            },
+            "patch": {
+              "id": "osconfig.folders.osConfigs.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/osConfigs/{osConfigsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the OsConfig should be updated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "OsConfig"
+              },
+              "response": {
+                "$ref": "OsConfig"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OsConfig."
+            },
+            "delete": {
+              "id": "osconfig.folders.osConfigs.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/osConfigs/{osConfigsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the OsConfig.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/osConfigs\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OsConfig."
+            }
+          }
+        },
+        "assignments": {
+          "methods": {
+            "create": {
+              "id": "osconfig.folders.assignments.create",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/folders/{foldersId}/assignments",
+              "httpMethod": "POST",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Create an OS Config Assignment."
+            },
+            "get": {
+              "id": "osconfig.folders.assignments.get",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/assignments/{assignmentsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get an OS Config Assignment."
+            },
+            "list": {
+              "id": "osconfig.folders.assignments.list",
+              "path": "v1alpha1/{+parent}/assignments",
+              "flatPath": "v1alpha1/folders/{foldersId}/assignments",
+              "httpMethod": "GET",
+              "parameters": {
+                "parent": {
+                  "description": "The resource name of the parent.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+$",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The maximum number of Assignments to return.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A pagination token returned from a previous call to ListAssignments\nthat indicates where this listing should continue from.\nThis field is optional.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "parent"
+              ],
+              "response": {
+                "$ref": "ListAssignmentsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Get a page of OS Config Assignments."
+            },
+            "patch": {
+              "id": "osconfig.folders.assignments.patch",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/assignments/{assignmentsId}",
+              "httpMethod": "PATCH",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                },
+                "updateMask": {
+                  "description": "Field mask that controls which fields of the Assignment should be\nupdated.",
+                  "location": "query",
+                  "type": "string",
+                  "format": "google-fieldmask"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "request": {
+                "$ref": "Assignment"
+              },
+              "response": {
+                "$ref": "Assignment"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Update an OS Config Assignment."
+            },
+            "delete": {
+              "id": "osconfig.folders.assignments.delete",
+              "path": "v1alpha1/{+name}",
+              "flatPath": "v1alpha1/folders/{foldersId}/assignments/{assignmentsId}",
+              "httpMethod": "DELETE",
+              "parameters": {
+                "name": {
+                  "description": "The resource name of the Assignment.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^folders\/[^\/]+\/assignments\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/compute"
+              ],
+              "description": "Delete an OS Config Assignment."
+            }
+          }
+        }
+      }
+    }
+  },
+  "basePath": ""
+}

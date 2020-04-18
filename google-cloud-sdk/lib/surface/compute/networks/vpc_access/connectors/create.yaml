@@ -1,0 +1,69 @@
+- release_tracks: [GA, BETA, ALPHA]
+  help_text:
+    brief: |
+      Create a VPC Access connector.
+    description: |
+      Create a new VPC Access connector with the given name.
+
+      This command can fail for the following reasons:
+        * An instance with the same name already exists.
+        * The active account does not have permission to create instances.
+    examples: |
+      The following command creates a VPC Access connector with name 'my-vpc-connector'
+      in region 'us-central1' in network 'my-network' with IP CIDR range of '10.132.0.0/28'.
+
+        $ {command} my-vpc-connector --region=us-central1 --network=my-network
+          --range=10.132.0.0/28
+
+  async:
+    collection: vpcaccess.projects.locations.operations
+
+  request:
+    collection: vpcaccess.projects.locations.connectors
+    api_version: v1
+    BETA:
+      api_version: v1beta1
+    ALPHA:
+      api_version: v1alpha1
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.compute.networks.vpc_access.resources:connector_v1
+      ALPHA:
+        spec: !REF googlecloudsdk.command_lib.compute.networks.vpc_access.resources:connector
+      help_text: |
+        Arguments and flags that specify the VPC Access connector you want to create.
+    params:
+    - arg_name: network
+      api_field: connector.network
+      required: false
+      help_text: |
+        Name of the Google Compute Engine network to which the connector
+        will be connected. If left unspecified, the default network will be
+        used.
+      default: default
+    - arg_name: range
+      api_field: connector.ipCidrRange
+      required: false
+      help_text: |
+        CIDR range of internal addresses that are reserved for this
+        connector. For example, 10.132.0.0/28. Range must be unique and
+        non-overlapping with existing ranges in the network.
+    - arg_name: min-throughput
+      release_tracks: [GA, BETA]
+      api_field: connector.minThroughput
+      required: false
+      help_text: |
+        Minimum throughput in Mbps. Value must be a multiple of 100 between 200 and 1000.
+        Must be lower than the value specified by `--max-throughput`; the set value, if applicable,
+        or the default maximum throughput value.
+      default: 200
+    - arg_name: max-throughput
+      release_tracks: [GA, BETA]
+      api_field: connector.maxThroughput
+      required: false
+      help_text: |
+        Maximum throughput in Mbps. Value must be a multiple of 100 between 200 and 1000.
+        Must be higher than the value specified by `--min-throughput`; the set value, if applicable,
+        or the default minimum throughput value.
+      default: 300

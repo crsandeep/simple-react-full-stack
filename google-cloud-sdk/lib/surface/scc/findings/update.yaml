@@ -1,0 +1,49 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Update a Cloud Security Command Center finding.
+    description: Update a Cloud Security Command Center finding.
+    examples: |
+      Update my-finding's state from ACTIVE to INACTIVE:
+
+        $ {command} my-finding --organization=123456 --source=5678 --state INACTIVE
+
+      Override all source properties on my-finding:
+
+        $ {command} my-finding --organization=123456 --source=5678 --source-properties "propKey1=propVal1,propKey2=propVal2"
+
+      Selectively update a specific source property on my-finding:
+
+        $ {command} my-finding --organization=123456 --source=5678 --source-properties "propKey1=propVal1,propKey2=propVal2" --update-mask "source_properties.propKey1"
+
+  request:
+    collection: securitycenter.organizations.sources.findings
+    api_version: v1
+    method: patch
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.findings.request_hooks:UpdateFindingsReqHook
+
+  arguments:
+
+    resource:
+      help_text: The finding you want to update.
+      spec: !REF googlecloudsdk.command_lib.scc.resources:finding
+
+    params:
+    - !REF googlecloudsdk.command_lib.scc.findings.flags:event_time
+    - !REF googlecloudsdk.command_lib.scc.findings.flags:external_uri
+    - !REF googlecloudsdk.command_lib.scc.findings.flags:source_properties
+    - !REF googlecloudsdk.command_lib.scc.findings.flags:state
+    - arg_name: update-mask
+      api_field: updateMask
+      help_text: |
+        Optional: If left unspecified (default), an update-mask is automatically created using the
+        flags specified in the command and only those values are updated.
+        For example: --external-uri='<some-uri>' --event-time='<some-time>' would automatically
+        generate --update-mask 'external_uri,event_time'. Note that as a result, only external-uri
+        and event-time are updated for the given finding and everything else remains untouched. If
+        you want to delete attributes/properties (that are not being changed in the update command)
+        use an empty update-mask (''). That will delete all the mutable properties/attributes that
+        aren't specified as flags in the update command. In the above example it would delete
+        source-properties. State can be toggled from ACTIVE to INACTIVE and vice-versa but it cannot
+        be deleted.

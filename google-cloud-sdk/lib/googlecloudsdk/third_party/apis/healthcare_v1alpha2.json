@@ -1,0 +1,3274 @@
+{
+  "kind": "discovery#restDescription",
+  "discoveryVersion": "v1",
+  "id": "healthcare:v1alpha2",
+  "name": "healthcare",
+  "canonicalName": "Cloud Healthcare",
+  "version": "v1alpha2",
+  "revision": "0",
+  "title": "Cloud Healthcare API",
+  "description": "Manage, store, and access healthcare data in Google Cloud Platform.",
+  "ownerDomain": "google.com",
+  "ownerName": "Google",
+  "icons": {
+    "x16": "http://www.google.com/images/icons/product/search-16.gif",
+    "x32": "http://www.google.com/images/icons/product/search-32.gif"
+   },
+  "documentationLink": "https://cloud.google.com/healthcare",
+  "protocol": "rest",
+  "rootUrl": "https://healthcare.googleapis.com/",
+  "mtlsRootUrl": "https://healthcare.mtls.googleapis.com/",
+  "servicePath": "",
+  "baseUrl": "https://healthcare.googleapis.com/",
+  "batchPath": "batch",
+  "version_module": true,
+  "fullyEncodeReservedExpansion": true,
+  "parameters": {
+    "access_token": {
+      "type": "string",
+      "description": "OAuth access token.",
+      "location": "query"
+    },
+    "alt": {
+      "type": "string",
+      "description": "Data format for response.",
+      "default": "json",
+      "enum": [
+        "json",
+        "media",
+        "proto"
+      ],
+      "enumDescriptions": [
+        "Responses with Content-Type of application/json",
+        "Media download with context-dependent Content-Type",
+        "Responses with Content-Type of application/x-protobuf"
+      ],
+      "location": "query"
+    },
+    "callback": {
+      "type": "string",
+      "description": "JSONP",
+      "location": "query"
+    },
+    "fields": {
+      "type": "string",
+      "description": "Selector specifying which fields to include in a partial response.",
+      "location": "query"
+    },
+    "key": {
+      "type": "string",
+      "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+      "location": "query"
+    },
+    "oauth_token": {
+      "type": "string",
+      "description": "OAuth 2.0 token for the current user.",
+      "location": "query"
+    },
+    "prettyPrint": {
+      "type": "boolean",
+      "description": "Returns response with indentations and line breaks.",
+      "default": "true",
+      "location": "query"
+    },
+    "quotaUser": {
+      "type": "string",
+      "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.",
+      "location": "query"
+    },
+    "upload_protocol": {
+      "type": "string",
+      "description": "Upload protocol for media (e.g. \"raw\", \"multipart\").",
+      "location": "query"
+    },
+    "uploadType": {
+      "type": "string",
+      "description": "Legacy upload protocol for media (e.g. \"media\", \"multipart\").",
+      "location": "query"
+    },
+    "$.xgafv": {
+      "type": "string",
+      "description": "V1 error format.",
+      "enum": [
+        "1",
+        "2"
+      ],
+      "enumDescriptions": [
+        "v1 error format",
+        "v2 error format"
+      ],
+      "location": "query"
+    }
+  },
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://www.googleapis.com/auth/cloud-platform": {
+          "description": "View and manage your data across Google Cloud Platform services"
+        }
+      }
+    }
+  },
+  "schemas": {
+    "ListLocationsResponse": {
+      "id": "ListLocationsResponse",
+      "description": "The response message for Locations.ListLocations.",
+      "type": "object",
+      "properties": {
+        "locations": {
+          "description": "A list of locations that matches the specified filter in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "Location"
+          }
+        },
+        "nextPageToken": {
+          "description": "The standard List next-page token.",
+          "type": "string"
+        }
+      }
+    },
+    "Location": {
+      "id": "Location",
+      "description": "A resource that represents Google Cloud Platform location.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Resource name for the location, which may vary between implementations.\nFor example: `\"projects\/example-project\/locations\/us-east1\"`",
+          "type": "string"
+        },
+        "locationId": {
+          "description": "The canonical id for this location. For example: `\"us-east1\"`.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "The friendly name for this location, typically a nearby city name.\nFor example, \"Tokyo\".",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Cross-service attributes for the location. For example\n\n    {\"cloud.googleapis.com\/region\": \"us-east1\"}",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "description": "Service-specific metadata. For example the available capacity at the given\nlocation.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        }
+      }
+    },
+    "SetIamPolicyRequest": {
+      "id": "SetIamPolicyRequest",
+      "description": "Request message for `SetIamPolicy` method.",
+      "type": "object",
+      "properties": {
+        "policy": {
+          "description": "REQUIRED: The complete policy to be applied to the `resource`. The size of\nthe policy is limited to a few 10s of KB. An empty policy is a\nvalid policy but certain Cloud Platform services (such as Projects)\nmight reject them.",
+          "$ref": "Policy"
+        },
+        "updateMask": {
+          "description": "OPTIONAL: A FieldMask specifying which fields of the policy to modify. Only\nthe fields in the mask will be modified. If no mask is provided, the\nfollowing default mask is used:\npaths: \"bindings, etag\"\nThis field is only used by Cloud IAM.",
+          "type": "string",
+          "format": "google-fieldmask"
+        }
+      }
+    },
+    "Policy": {
+      "id": "Policy",
+      "description": "An Identity and Access Management (IAM) policy, which specifies access\ncontrols for Google Cloud resources.\n\n\nA `Policy` is a collection of `bindings`. A `binding` binds one or more\n`members` to a single `role`. Members can be user accounts, service accounts,\nGoogle groups, and domains (such as G Suite). A `role` is a named list of\npermissions; each `role` can be an IAM predefined role or a user-created\ncustom role.\n\nOptionally, a `binding` can specify a `condition`, which is a logical\nexpression that allows access to a resource only if the expression evaluates\nto `true`. A condition can add constraints based on attributes of the\nrequest, the resource, or both.\n\n**JSON example:**\n\n    {\n      \"bindings\": [\n        {\n          \"role\": \"roles\/resourcemanager.organizationAdmin\",\n          \"members\": [\n            \"user:mike@example.com\",\n            \"group:admins@example.com\",\n            \"domain:google.com\",\n            \"serviceAccount:my-project-id@appspot.gserviceaccount.com\"\n          ]\n        },\n        {\n          \"role\": \"roles\/resourcemanager.organizationViewer\",\n          \"members\": [\"user:eve@example.com\"],\n          \"condition\": {\n            \"title\": \"expirable access\",\n            \"description\": \"Does not grant access after Sep 2020\",\n            \"expression\": \"request.time < timestamp('2020-10-01T00:00:00.000Z')\",\n          }\n        }\n      ],\n      \"etag\": \"BwWWja0YfJA=\",\n      \"version\": 3\n    }\n\n**YAML example:**\n\n    bindings:\n    - members:\n      - user:mike@example.com\n      - group:admins@example.com\n      - domain:google.com\n      - serviceAccount:my-project-id@appspot.gserviceaccount.com\n      role: roles\/resourcemanager.organizationAdmin\n    - members:\n      - user:eve@example.com\n      role: roles\/resourcemanager.organizationViewer\n      condition:\n        title: expirable access\n        description: Does not grant access after Sep 2020\n        expression: request.time < timestamp('2020-10-01T00:00:00.000Z')\n    - etag: BwWWja0YfJA=\n    - version: 3\n\nFor a description of IAM and its features, see the\n[IAM documentation](https:\/\/cloud.google.com\/iam\/docs\/).",
+      "type": "object",
+      "properties": {
+        "version": {
+          "description": "Specifies the format of the policy.\n\nValid values are `0`, `1`, and `3`. Requests that specify an invalid value\nare rejected.\n\nAny operation that affects conditional role bindings must specify version\n`3`. This requirement applies to the following operations:\n\n* Getting a policy that includes a conditional role binding\n* Adding a conditional role binding to a policy\n* Changing a conditional role binding in a policy\n* Removing any role binding, with or without a condition, from a policy\n  that includes conditions\n\n**Important:** If you use IAM Conditions, you must include the `etag` field\nwhenever you call `setIamPolicy`. If you omit this field, then IAM allows\nyou to overwrite a version `3` policy with a version `1` policy, and all of\nthe conditions in the version `3` policy are lost.\n\nIf a policy does not include any conditions, operations on that policy may\nspecify any valid version or leave the field unset.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "bindings": {
+          "description": "Associates a list of `members` to a `role`. Optionally, may specify a\n`condition` that determines how and when the `bindings` are applied. Each\nof the `bindings` must contain at least one member.",
+          "type": "array",
+          "items": {
+            "$ref": "Binding"
+          }
+        },
+        "auditConfigs": {
+          "description": "Specifies cloud audit logging configuration for this policy.",
+          "type": "array",
+          "items": {
+            "$ref": "AuditConfig"
+          }
+        },
+        "etag": {
+          "description": "`etag` is used for optimistic concurrency control as a way to help\nprevent simultaneous updates of a policy from overwriting each other.\nIt is strongly suggested that systems make use of the `etag` in the\nread-modify-write cycle to perform policy updates in order to avoid race\nconditions: An `etag` is returned in the response to `getIamPolicy`, and\nsystems are expected to put that etag in the request to `setIamPolicy` to\nensure that their change will be applied to the same version of the policy.\n\n**Important:** If you use IAM Conditions, you must include the `etag` field\nwhenever you call `setIamPolicy`. If you omit this field, then IAM allows\nyou to overwrite a version `3` policy with a version `1` policy, and all of\nthe conditions in the version `3` policy are lost.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "Binding": {
+      "id": "Binding",
+      "description": "Associates `members` with a `role`.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Role that is assigned to `members`.\nFor example, `roles\/viewer`, `roles\/editor`, or `roles\/owner`.",
+          "type": "string"
+        },
+        "members": {
+          "description": "Specifies the identities requesting access for a Cloud Platform resource.\n`members` can have the following values:\n\n* `allUsers`: A special identifier that represents anyone who is\n   on the internet; with or without a Google account.\n\n* `allAuthenticatedUsers`: A special identifier that represents anyone\n   who is authenticated with a Google account or a service account.\n\n* `user:{emailid}`: An email address that represents a specific Google\n   account. For example, `alice@example.com` .\n\n\n* `serviceAccount:{emailid}`: An email address that represents a service\n   account. For example, `my-other-app@appspot.gserviceaccount.com`.\n\n* `group:{emailid}`: An email address that represents a Google group.\n   For example, `admins@example.com`.\n\n* `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus unique\n   identifier) representing a user that has been recently deleted. For\n   example, `alice@example.com?uid=123456789012345678901`. If the user is\n   recovered, this value reverts to `user:{emailid}` and the recovered user\n   retains the role in the binding.\n\n* `deleted:serviceAccount:{emailid}?uid={uniqueid}`: An email address (plus\n   unique identifier) representing a service account that has been recently\n   deleted. For example,\n   `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`.\n   If the service account is undeleted, this value reverts to\n   `serviceAccount:{emailid}` and the undeleted service account retains the\n   role in the binding.\n\n* `deleted:group:{emailid}?uid={uniqueid}`: An email address (plus unique\n   identifier) representing a Google group that has been recently\n   deleted. For example, `admins@example.com?uid=123456789012345678901`. If\n   the group is recovered, this value reverts to `group:{emailid}` and the\n   recovered group retains the role in the binding.\n\n\n* `domain:{domain}`: The G Suite domain (primary) that represents all the\n   users of that domain. For example, `google.com` or `example.com`.\n\n",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "condition": {
+          "description": "The condition that is associated with this binding.\nNOTE: An unsatisfied condition will not allow user access via current\nbinding. Different bindings, including their conditions, are examined\nindependently.",
+          "$ref": "Expr"
+        }
+      }
+    },
+    "Expr": {
+      "id": "Expr",
+      "description": "Represents a textual expression in the Common Expression Language (CEL)\nsyntax. CEL is a C-like expression language. The syntax and semantics of CEL\nare documented at https:\/\/github.com\/google\/cel-spec.\n\nExample (Comparison):\n\n    title: \"Summary size limit\"\n    description: \"Determines if a summary is less than 100 chars\"\n    expression: \"document.summary.size() < 100\"\n\nExample (Equality):\n\n    title: \"Requestor is owner\"\n    description: \"Determines if requestor is the document owner\"\n    expression: \"document.owner == request.auth.claims.email\"\n\nExample (Logic):\n\n    title: \"Public documents\"\n    description: \"Determine whether the document should be publicly visible\"\n    expression: \"document.type != 'private' && document.type != 'internal'\"\n\nExample (Data Manipulation):\n\n    title: \"Notification string\"\n    description: \"Create a notification string with a timestamp.\"\n    expression: \"'New message received at ' + string(document.create_time)\"\n\nThe exact variables and functions that may be referenced within an expression\nare determined by the service that evaluates it. See the service\ndocumentation for additional information.",
+      "type": "object",
+      "properties": {
+        "expression": {
+          "description": "Textual representation of an expression in Common Expression Language\nsyntax.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Optional. Title for the expression, i.e. a short string describing\nits purpose. This can be used e.g. in UIs which allow to enter the\nexpression.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Optional. Description of the expression. This is a longer text which\ndescribes the expression, e.g. when hovered over it in a UI.",
+          "type": "string"
+        },
+        "location": {
+          "description": "Optional. String indicating the location of the expression for error\nreporting, e.g. a file name and a position in the file.",
+          "type": "string"
+        }
+      }
+    },
+    "AuditConfig": {
+      "id": "AuditConfig",
+      "description": "Specifies the audit configuration for a service.\nThe configuration determines which permission types are logged, and what\nidentities, if any, are exempted from logging.\nAn AuditConfig must have one or more AuditLogConfigs.\n\nIf there are AuditConfigs for both `allServices` and a specific service,\nthe union of the two AuditConfigs is used for that service: the log_types\nspecified in each AuditConfig are enabled, and the exempted_members in each\nAuditLogConfig are exempted.\n\nExample Policy with multiple AuditConfigs:\n\n    {\n      \"audit_configs\": [\n        {\n          \"service\": \"allServices\"\n          \"audit_log_configs\": [\n            {\n              \"log_type\": \"DATA_READ\",\n              \"exempted_members\": [\n                \"user:jose@example.com\"\n              ]\n            },\n            {\n              \"log_type\": \"DATA_WRITE\",\n            },\n            {\n              \"log_type\": \"ADMIN_READ\",\n            }\n          ]\n        },\n        {\n          \"service\": \"sampleservice.googleapis.com\"\n          \"audit_log_configs\": [\n            {\n              \"log_type\": \"DATA_READ\",\n            },\n            {\n              \"log_type\": \"DATA_WRITE\",\n              \"exempted_members\": [\n                \"user:aliya@example.com\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n\nFor sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ\nlogging. It also exempts jose@example.com from DATA_READ logging, and\naliya@example.com from DATA_WRITE logging.",
+      "type": "object",
+      "properties": {
+        "service": {
+          "description": "Specifies a service that will be enabled for audit logging.\nFor example, `storage.googleapis.com`, `cloudsql.googleapis.com`.\n`allServices` is a special value that covers all services.",
+          "type": "string"
+        },
+        "auditLogConfigs": {
+          "description": "The configuration for logging of each type of permission.",
+          "type": "array",
+          "items": {
+            "$ref": "AuditLogConfig"
+          }
+        }
+      }
+    },
+    "AuditLogConfig": {
+      "id": "AuditLogConfig",
+      "description": "Provides the configuration for logging a type of permissions.\nExample:\n\n    {\n      \"audit_log_configs\": [\n        {\n          \"log_type\": \"DATA_READ\",\n          \"exempted_members\": [\n            \"user:jose@example.com\"\n          ]\n        },\n        {\n          \"log_type\": \"DATA_WRITE\",\n        }\n      ]\n    }\n\nThis enables 'DATA_READ' and 'DATA_WRITE' logging, while exempting\njose@example.com from DATA_READ logging.",
+      "type": "object",
+      "properties": {
+        "logType": {
+          "description": "The log type that this config enables.",
+          "enumDescriptions": [
+            "Default case. Should never be this.",
+            "Admin reads. Example: CloudIAM getIamPolicy",
+            "Data writes. Example: CloudSQL Users create",
+            "Data reads. Example: CloudSQL Users list"
+          ],
+          "type": "string",
+          "enum": [
+            "LOG_TYPE_UNSPECIFIED",
+            "ADMIN_READ",
+            "DATA_WRITE",
+            "DATA_READ"
+          ]
+        },
+        "exemptedMembers": {
+          "description": "Specifies the identities that do not cause logging for this type of\npermission.\nFollows the same format of Binding.members.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TestIamPermissionsRequest": {
+      "id": "TestIamPermissionsRequest",
+      "description": "Request message for `TestIamPermissions` method.",
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "description": "The set of permissions to check for the `resource`. Permissions with\nwildcards (such as '*' or 'storage.*') are not allowed. For more\ninformation see\n[IAM Overview](https:\/\/cloud.google.com\/iam\/docs\/overview#permissions).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TestIamPermissionsResponse": {
+      "id": "TestIamPermissionsResponse",
+      "description": "Response message for `TestIamPermissions` method.",
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "description": "A subset of `TestPermissionsRequest.permissions` that the caller is\nallowed.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ListOperationsResponse": {
+      "id": "ListOperationsResponse",
+      "description": "The response message for Operations.ListOperations.",
+      "type": "object",
+      "properties": {
+        "operations": {
+          "description": "A list of operations that matches the specified filter in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "Operation"
+          }
+        },
+        "nextPageToken": {
+          "description": "The standard List next-page token.",
+          "type": "string"
+        }
+      }
+    },
+    "Operation": {
+      "id": "Operation",
+      "description": "This resource represents a long-running operation that is the result of a\nnetwork API call.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The server-assigned name, which is only unique within the same service that\noriginally returns it. If you use the default HTTP mapping, the\n`name` should be a resource name ending with `operations\/{unique_id}`.",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Service-specific metadata associated with the operation.  It typically\ncontains progress information and common metadata such as create time.\nSome services might not provide such metadata.  Any method that returns a\nlong-running operation should document the metadata type, if any.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        },
+        "done": {
+          "description": "If the value is `false`, it means the operation is still in progress.\nIf `true`, the operation is completed, and either `error` or `response` is\navailable.",
+          "type": "boolean"
+        },
+        "error": {
+          "description": "The error result of the operation in case of failure or cancellation.",
+          "$ref": "Status"
+        },
+        "response": {
+          "description": "The normal response of the operation in case of success.  If the original\nmethod returns no data on success, such as `Delete`, the response is\n`google.protobuf.Empty`.  If the original method is standard\n`Get`\/`Create`\/`Update`, the response should be the resource.  For other\nmethods, the response should have the type `XxxResponse`, where `Xxx`\nis the original method name.  For example, if the original method name\nis `TakeSnapshot()`, the inferred response type is\n`TakeSnapshotResponse`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        }
+      }
+    },
+    "Status": {
+      "id": "Status",
+      "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "The status code, which should be an enum value of google.rpc.Code.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\ngoogle.rpc.Status.details field, or localized by the client.",
+          "type": "string"
+        },
+        "details": {
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "any",
+              "description": "Properties of the object. Contains field @type with type URL."
+            }
+          }
+        }
+      }
+    },
+    "CancelOperationRequest": {
+      "id": "CancelOperationRequest",
+      "description": "The request message for Operations.CancelOperation.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "Empty": {
+      "id": "Empty",
+      "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "AnnotationStore": {
+      "id": "AnnotationStore",
+      "description": "An Annotation store that can store annotation resources such as\nlabels and tags for text, image and audio.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Resource name of the Annotation store, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Optional. User-supplied key-value pairs used to organize Annotation stores.\n\nLabel keys must be between 1 and 63 characters long, have a UTF-8 encoding\nof maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression:\n\\p{Ll}\\p{Lo}{0,62}\n\nLabel values must be between 1 and 63 characters long, have\na UTF-8 encoding of maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63}\n\nNo more than 64 labels can be associated with a given store.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ListAnnotationStoresResponse": {
+      "id": "ListAnnotationStoresResponse",
+      "description": "Lists the Annotation stores\nin the given dataset.",
+      "type": "object",
+      "properties": {
+        "annotationStores": {
+          "description": "The returned Annotation stores. Won't be more Annotation stores than the\nvalue of page_size in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "AnnotationStore"
+          }
+        },
+        "nextPageToken": {
+          "description": "Token to retrieve the next page of results or empty if there are no more\nresults in the list.",
+          "type": "string"
+        }
+      }
+    },
+    "ImportAnnotationsRequest": {
+      "id": "ImportAnnotationsRequest",
+      "description": "Request to import\nAnnotations. The\nAnnotations to be imported must have client-supplied resource names which\nindicate the annotation resource. The import operation is not atomic. If a\nfailure occurs, any annotations already imported are not removed.",
+      "type": "object",
+      "properties": {
+        "gcsSource": {
+          "$ref": "GoogleCloudHealthcareV1alpha2AnnotationGcsSource"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2AnnotationGcsSource": {
+      "id": "GoogleCloudHealthcareV1alpha2AnnotationGcsSource",
+      "description": "Specifies the configuration for importing data from Cloud Storage.",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "Points to a Cloud Storage URI containing file(s) with\ncontent only. The URI must be in the following format:\n`gs:\/\/{bucket_id}\/{object_id}`. The URI can include wildcards in\n`object_id` and thus identify multiple files. Supported wildcards:\n '*' to match 0 or more non-separator characters\n '**' to match 0 or more characters (including separators). Must be used\n at\n      the end of a path and with no other wildcards in the\n      path. Can also be used with a file extension (such as .dcm), which\n      imports all files with the extension in the specified directory and\n      its sub-directories. For example,\n      `gs:\/\/my-bucket\/my-directory\/**.json` imports all files with .json\n      extensions in `my-directory\/` and its sub-directories.\n '?' to match 1 character\nAll other URI formats are invalid.\nFiles matching the wildcard are expected to contain content only, no\nmetadata.",
+          "type": "string"
+        }
+      }
+    },
+    "ExportAnnotationsRequest": {
+      "id": "ExportAnnotationsRequest",
+      "description": "Request to export\nAnnotations. The\nexport operation is not atomic. If a\nfailure occurs, any annotations already imported are not removed.",
+      "type": "object",
+      "properties": {
+        "gcsDestination": {
+          "description": "The Cloud Storage destination, which requires the\n`roles\/storage.objectAdmin` Cloud IAM role.",
+          "$ref": "GoogleCloudHealthcareV1alpha2AnnotationGcsDestination"
+        },
+        "bigqueryDestination": {
+          "description": "The BigQuery output destination, which requires two IAM roles:\n  `roles\/bigquery.dataEditor` and `roles\/bigquery.jobUser`.",
+          "$ref": "GoogleCloudHealthcareV1alpha2AnnotationBigQueryDestination"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2AnnotationGcsDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2AnnotationGcsDestination",
+      "description": "The Cloud Storage location for export.",
+      "type": "object",
+      "properties": {
+        "uriPrefix": {
+          "description": "The Cloud Storage destination to export to.\nURI for a Cloud Storage directory where the server writes result files, in\nthe format `gs:\/\/{bucket-id}\/{path\/to\/destination\/dir}`. If there is no\ntrailing slash, the service appends one when composing the object path.\nThe user is responsible for creating the Cloud Storage bucket referenced in\n`uri_prefix`.",
+          "type": "string"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2AnnotationBigQueryDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2AnnotationBigQueryDestination",
+      "description": "The BigQuery table for export.",
+      "type": "object",
+      "properties": {
+        "tableUri": {
+          "description": "BigQuery URI to a table, up to 2000 characters long, must be of the form\nbq:\/\/projectId.bqDatasetId.tableId.",
+          "type": "string"
+        },
+        "force": {
+          "description": "If the destination table already exists and this flag is `TRUE`, the table\nis overwritten by the contents of the input store. If the flag is not\nset and the destination table already exists, the export call returns an\nerror.",
+          "type": "boolean"
+        },
+        "schemaType": {
+          "description": "Specifies the schema format to export.",
+          "enumDescriptions": [
+            "Same as SIMPLE.",
+            "A flatterned version of\nAnnotation."
+          ],
+          "type": "string",
+          "enum": [
+            "SCHEMA_TYPE_UNSPECIFIED",
+            "SIMPLE"
+          ]
+        }
+      }
+    },
+    "EvaluateAnnotationStoreRequest": {
+      "id": "EvaluateAnnotationStoreRequest",
+      "description": "Request to evaluate an Annotation store against a\nground truth [Annotation store].",
+      "type": "object",
+      "properties": {
+        "goldenStore": {
+          "description": "The Annotation store to use as ground truth, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "bigqueryDestination": {
+          "description": "The BigQuery table where the server writes the output.\nBigQueryDestination requires the `roles\/bigquery.dataEditor` and\n`roles\/bigquery.jobUser` Cloud IAM roles.",
+          "$ref": "GoogleCloudHealthcareV1alpha2AnnotationBigQueryDestination"
+        }
+      }
+    },
+    "Dataset": {
+      "id": "Dataset",
+      "description": "A message representing a health dataset.\n\nA health dataset represents a collection of healthcare data pertaining to one\nor more patients. This may include multiple modalities of healthcare data,\nsuch as electronic medical records or medical imaging data.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Resource name of the dataset, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.",
+          "type": "string"
+        },
+        "timeZone": {
+          "description": "The default timezone used by this dataset. Must be a either a valid IANA\ntime zone name such as \"America\/New_York\" or empty, which defaults to UTC.\nThis is used for parsing times in resources, such as HL7v2 messages, where\nno explicit timezone is specified.",
+          "type": "string"
+        }
+      }
+    },
+    "ListDatasetsResponse": {
+      "id": "ListDatasetsResponse",
+      "description": "Lists the available datasets.",
+      "type": "object",
+      "properties": {
+        "datasets": {
+          "description": "The first page of datasets.",
+          "type": "array",
+          "items": {
+            "$ref": "Dataset"
+          }
+        },
+        "nextPageToken": {
+          "description": "Token to retrieve the next page of results, or empty if there are no\nmore results in the list.",
+          "type": "string"
+        }
+      }
+    },
+    "DeidentifyDatasetRequest": {
+      "id": "DeidentifyDatasetRequest",
+      "description": "Redacts identifying information from the specified dataset.",
+      "type": "object",
+      "properties": {
+        "destinationDataset": {
+          "description": "The name of the dataset resource to create and write the redacted data to.\nFor example,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.\n\n * The destination dataset must not exist.\n * The destination dataset must be in the same project and location as the\n source dataset. De-identifying data across multiple projects or locations\n is not supported.",
+          "type": "string"
+        },
+        "config": {
+          "description": "Deidentify configuration.",
+          "$ref": "DeidentifyConfig"
+        }
+      }
+    },
+    "DeidentifyConfig": {
+      "id": "DeidentifyConfig",
+      "description": "Configures de-id options specific to different types of content.\nEach submessage customizes the handling of an\nhttps:\/\/tools.ietf.org\/html\/rfc6838 media type or subtype. Configs are\napplied in a nested manner at runtime.",
+      "type": "object",
+      "properties": {
+        "dicom": {
+          "description": "Configures de-id of application\/DICOM content.",
+          "$ref": "DicomConfig"
+        },
+        "fhir": {
+          "description": "Configures de-id of application\/FHIR content.",
+          "$ref": "FhirConfig"
+        },
+        "image": {
+          "description": "Configures the de-identification of image pixels in the source_dataset.",
+          "$ref": "ImageConfig"
+        },
+        "text": {
+          "description": "Configures the de-identification of text in `source_dataset`.",
+          "$ref": "TextConfig"
+        }
+      }
+    },
+    "DicomConfig": {
+      "id": "DicomConfig",
+      "description": "Specifies the parameters needed for the de-identification of DICOM stores.",
+      "type": "object",
+      "properties": {
+        "keepList": {
+          "description": "List of tags to keep. Remove all other tags.",
+          "$ref": "TagFilterList"
+        },
+        "removeList": {
+          "description": "List of tags to remove. Keep all other tags.",
+          "$ref": "TagFilterList"
+        },
+        "filterProfile": {
+          "description": "Tag filtering profile that determines the tags to keep or remove.",
+          "enumDescriptions": [
+            "No tag filtration profile provided. Same as KEEP_ALL_PROFILE.",
+            "Keep only tags required to produce valid DICOM.",
+            "Remove tags based on DICOM Standard's Attribute Confidentiality Basic\nProfile (DICOM Standard Edition 2018e)\nhttp:\/\/dicom.nema.org\/medical\/dicom\/2018e\/output\/chtml\/part15\/chapter_E.html.",
+            "Keep all tags.",
+            "Inspects within tag contents (including tags nested in a sequence) and\nreplaces sensitive text. The process can be configured using the\nTextConfig.\nApplies to all tags with the following Value Representation names:\nAE, LO, LT, PN, SH, ST, UC, UT, DA, DT, AS."
+          ],
+          "type": "string",
+          "enum": [
+            "TAG_FILTER_PROFILE_UNSPECIFIED",
+            "MINIMAL_KEEP_LIST_PROFILE",
+            "ATTRIBUTE_CONFIDENTIALITY_BASIC_PROFILE",
+            "KEEP_ALL_PROFILE",
+            "DEIDENTIFY_TAG_CONTENTS"
+          ]
+        }
+      }
+    },
+    "TagFilterList": {
+      "id": "TagFilterList",
+      "description": "List of tags to filter.",
+      "type": "object",
+      "properties": {
+        "tags": {
+          "description": "Tags to filter. Tags must be DICOM Data Elements, File Meta\nElements, or Directory Structuring Elements, as defined at:\nhttp:\/\/dicom.nema.org\/medical\/dicom\/current\/output\/html\/part06.html#table_6-1,.\nThey may be provided by \"Keyword\" or \"Tag\". For example, \"PatientID\",\n\"00100010\".",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "FhirConfig": {
+      "id": "FhirConfig",
+      "description": "Specifies how to handle the de-identification of a FHIR store.",
+      "type": "object",
+      "properties": {
+        "fieldMetadataList": {
+          "description": "Specifies FHIR paths to match and how to transform them. Any field that\nis not matched by a FieldMetadata is passed through to the output\ndataset unmodified. All extensions are removed in the output.\nIf a field can be matched by more than one FieldMetadata, the first\nFieldMetadata.Action is applied.",
+          "type": "array",
+          "items": {
+            "$ref": "FieldMetadata"
+          }
+        }
+      }
+    },
+    "FieldMetadata": {
+      "id": "FieldMetadata",
+      "description": "Specifies FHIR paths to match and how to handle the de-identification of\nmatching fields.",
+      "type": "object",
+      "properties": {
+        "paths": {
+          "description": "List of paths to FHIR fields to redact. Each path is a\nperiod-separated list where each component is either a field name or\nFHIR type name. All types begin with an upper case letter. For example,\nthe resource field \"Patient.Address.city\", which uses a string type,\ncan be matched by \"Patient.Address.String\". Path also supports partial\nmatching. For example, \"Patient.Address.city\" can be matched by\n\"Address.city\" (Patient omitted). Partial matching and type matching\ncan be combined, for example \"Patient.Address.city\" can be matched by\n\"Address.String\". For \"choice\" types (those defined in the FHIR spec\nwith the form: field[x]), use two separate components. For example,\n\"deceasedAge.unit\" is matched by \"Deceased.Age.unit\". Supported types\nare: AdministrativeGenderCode, Code, Date, DateTime, Decimal,\nHumanName, Id, LanguageCode, Markdown, Oid, String, Uri, Uuid, Xhtml.\nThe sub-type for HumanName(for example HumanName.given,\nHumanName.family) can be omitted.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "action": {
+          "description": "Deidentify action for one field.",
+          "enumDescriptions": [
+            "No action specified.",
+            "Transform the entire field based on transformations specified in\nTextConfig. When the specified transformation cannot be applied to a\nfield (for example, a Crypto Hash transformation cannot be applied\nto a FHIR Date field), RedactConfig is used.",
+            "Inspect and transform any found PHI. When `AnnotationConfig` is\nprovided, annotations of PHI are generated, except for Date and Datetime.",
+            "Do not transform."
+          ],
+          "type": "string",
+          "enum": [
+            "ACTION_UNSPECIFIED",
+            "TRANSFORM",
+            "INSPECT_AND_TRANSFORM",
+            "DO_NOT_TRANSFORM"
+          ]
+        }
+      }
+    },
+    "ImageConfig": {
+      "id": "ImageConfig",
+      "description": "Specifies how to handle the de-identification of image pixels.",
+      "type": "object",
+      "properties": {
+        "textRedactionMode": {
+          "description": "Determines how to redact text from images.",
+          "enumDescriptions": [
+            "No text redaction specified. Same as REDACT_NO_TEXT.",
+            "Redact all text.",
+            "Redact sensitive text.",
+            "Do not redact text."
+          ],
+          "type": "string",
+          "enum": [
+            "TEXT_REDACTION_MODE_UNSPECIFIED",
+            "REDACT_ALL_TEXT",
+            "REDACT_SENSITIVE_TEXT",
+            "REDACT_NO_TEXT"
+          ]
+        }
+      }
+    },
+    "TextConfig": {
+      "id": "TextConfig",
+      "description": "Configures how to transform sensitive text `InfoTypes`.",
+      "type": "object",
+      "properties": {
+        "transformations": {
+          "description": "The transformations to apply to the detected data.",
+          "type": "array",
+          "items": {
+            "$ref": "InfoTypeTransformation"
+          }
+        }
+      }
+    },
+    "InfoTypeTransformation": {
+      "id": "InfoTypeTransformation",
+      "description": "A transformation to apply to text that is identified as a specific\ninfo_type.",
+      "type": "object",
+      "properties": {
+        "infoTypes": {
+          "description": "`InfoTypes` to apply this transformation to. If this is not specified, this\ntransformation becomes the default transformation, and is used for any\n`info_type` that is not specified in another transformation.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "redactConfig": {
+          "description": "Config for text redaction.",
+          "$ref": "RedactConfig"
+        },
+        "characterMaskConfig": {
+          "description": "Config for character mask.",
+          "$ref": "CharacterMaskConfig"
+        },
+        "dateShiftConfig": {
+          "description": "Config for date shift.",
+          "$ref": "DateShiftConfig"
+        },
+        "cryptoHashConfig": {
+          "description": "Config for crypto hash.",
+          "$ref": "CryptoHashConfig"
+        },
+        "replaceWithInfoTypeConfig": {
+          "description": "Config for replace with InfoType.",
+          "$ref": "ReplaceWithInfoTypeConfig"
+        }
+      }
+    },
+    "RedactConfig": {
+      "id": "RedactConfig",
+      "description": "Defines how to redact sensitive values. Default behavior is erase.\nFor example, \"My name is Jane.\" becomes \"My name is .\"",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "CharacterMaskConfig": {
+      "id": "CharacterMaskConfig",
+      "description": "Masks a string by replacing its characters with a fixed character.",
+      "type": "object",
+      "properties": {
+        "maskingCharacter": {
+          "description": "Character to mask the sensitive values. If not supplied, defaults to \"*\".",
+          "type": "string"
+        }
+      }
+    },
+    "DateShiftConfig": {
+      "id": "DateShiftConfig",
+      "description": "Shifts a date forward or backward in time by a random amount that is\nconsistent for a given patient and crypto key combination.",
+      "type": "object",
+      "properties": {
+        "cryptoKey": {
+          "description": "An AES 128\/192\/256 bit key. Causes the shift to be computed based on this\nkey and the patient ID. A default key is generated for each\nde-identification operation and is used when crypto_key is not\nspecified.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "CryptoHashConfig": {
+      "id": "CryptoHashConfig",
+      "description": "Pseudonymization method that generates surrogates using cryptographic\nhashing. Uses SHA-256.\nOutputs a base64-encoded representation of the hashed output.\nFor example, `L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=`.",
+      "type": "object",
+      "properties": {
+        "cryptoKey": {
+          "description": "An AES 128\/192\/256 bit key. Causes the hash to be computed based on this\nkey. A default key is generated for each Deidentify operation and is\nused when crypto_key is not specified.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "ReplaceWithInfoTypeConfig": {
+      "id": "ReplaceWithInfoTypeConfig",
+      "description": "When using the\nINSPECT_AND_TRANSFORM\naction, each match is replaced with the name of the `info_type`. For example,\n\"My name is Jane\" becomes \"My name is [PERSON_NAME].\" The\nTRANSFORM\naction is equivalent to redacting.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "DicomStore": {
+      "id": "DicomStore",
+      "description": "Represents a DICOM store.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Resource name of the DICOM store, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/dicomStores\/{dicom_store_id}`.",
+          "type": "string"
+        },
+        "notificationConfig": {
+          "description": "Notification destination for new DICOM instances.\nSupplied by the client.",
+          "$ref": "NotificationConfig"
+        },
+        "labels": {
+          "description": "User-supplied key-value pairs used to organize DICOM stores.\n\nLabel keys must be between 1 and 63 characters long, have a UTF-8 encoding\nof maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression:\n\\p{Ll}\\p{Lo}{0,62}\n\nLabel values are optional, must be between 1 and 63 characters long, have\na UTF-8 encoding of maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63}\n\nNo more than 64 labels can be associated with a given store.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "NotificationConfig": {
+      "id": "NotificationConfig",
+      "description": "Specifies where the server sends notifications upon changes to a data store.",
+      "type": "object",
+      "properties": {
+        "pubsubTopic": {
+          "description": "The [Cloud Pub\/Sub](https:\/\/cloud.google.com\/pubsub\/docs\/) topic that\nnotifications of changes are published on. Supplied by the client.\nPubsubMessage.Data contains the resource name.\nPubsubMessage.MessageId is the ID of this message. It is guaranteed to be\nunique within the topic.\nPubsubMessage.PublishTime is the time at which the message was published.\nNotifications are only sent if the topic is\nnon-empty. [Topic\nnames](https:\/\/cloud.google.com\/pubsub\/docs\/overview#names) must be scoped\nto a project. cloud-healthcare@system.gserviceaccount.com must have\npublisher permissions on the given Cloud Pub\/Sub topic. Not having adequate\npermissions causes the calls that send notifications to fail.\n\nIf a notification can't be published to Cloud Pub\/Sub, errors are logged to\nStackdriver (see [Viewing\nlogs](\/healthcare\/docs\/how-tos\/stackdriver-logging)). If the number of\nerrors exceeds a certain rate, some aren't submitted.",
+          "type": "string"
+        }
+      }
+    },
+    "ListDicomStoresResponse": {
+      "id": "ListDicomStoresResponse",
+      "description": "Lists the DICOM stores in the given dataset.",
+      "type": "object",
+      "properties": {
+        "dicomStores": {
+          "description": "The returned DICOM stores. Won't be more DICOM stores than the value of\npage_size in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "DicomStore"
+          }
+        },
+        "nextPageToken": {
+          "description": "Token to retrieve the next page of results or empty if there are no more\nresults in the list.",
+          "type": "string"
+        }
+      }
+    },
+    "ImportDicomDataRequest": {
+      "id": "ImportDicomDataRequest",
+      "description": "Imports data into the specified DICOM store.\nReturns an error if any of the files to import are not DICOM files. This\nAPI accepts duplicate DICOM instances by ignoring the newly-pushed instance.\nIt does not overwrite.",
+      "type": "object",
+      "properties": {
+        "gcsSource": {
+          "description": "Cloud Storage source data location and import configuration.\n\nThe Cloud Storage location requires the `roles\/storage.objectViewer`\nCloud IAM role.",
+          "$ref": "GoogleCloudHealthcareV1alpha2DicomGcsSource"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2DicomGcsSource": {
+      "id": "GoogleCloudHealthcareV1alpha2DicomGcsSource",
+      "description": "Specifies the configuration for importing data from Cloud Storage.",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "Points to a Cloud Storage URI containing file(s) with\ncontent only. The URI must be in the following format:\n`gs:\/\/{bucket_id}\/{object_id}`. The URI can include wildcards in\n`object_id` and thus identify multiple files. Supported wildcards:\n '*' to match 0 or more non-separator characters\n '**' to match 0 or more characters (including separators). Must be used at\n      the end of a path and with no other wildcards in the\n      path. Can also be used with a file extension (such as .dcm), which\n      imports all files with the extension in the specified directory and\n      its sub-directories. For example,\n      `gs:\/\/my-bucket\/my-directory\/**.dcm` imports all files with .dcm\n      extensions in `my-directory\/` and its sub-directories.\n '?' to match 1 character\nAll other URI formats are invalid.\nFiles matching the wildcard are expected to contain content only, no\nmetadata.",
+          "type": "string"
+        }
+      }
+    },
+    "ExportDicomDataRequest": {
+      "id": "ExportDicomDataRequest",
+      "description": "Exports data from the specified DICOM store.\nIf a given resource, such as a DICOM object with the same SOPInstance UID,\nalready exists in the output, it is overwritten with the version\nin the source dataset.\nExported DICOM data persists when the DICOM store from which it was\nexported is deleted.",
+      "type": "object",
+      "properties": {
+        "gcsDestination": {
+          "description": "The Cloud Storage output destination.\n\nThe Cloud Storage location requires the `roles\/storage.objectAdmin` Cloud\nIAM role.",
+          "$ref": "GoogleCloudHealthcareV1alpha2DicomGcsDestination"
+        },
+        "bigqueryDestination": {
+          "description": "The BigQuery output destination.\n\nYou can only export to a BigQuery dataset that's in the same project as\nthe DICOM store you're exporting from.\n\nThe BigQuery location requires two IAM roles:\n`roles\/bigquery.dataEditor` and `roles\/bigquery.jobUser`.",
+          "$ref": "GoogleCloudHealthcareV1alpha2DicomBigQueryDestination"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2DicomGcsDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2DicomGcsDestination",
+      "description": "The Cloud Storage location where the server writes the output and the export\nconfiguration.",
+      "type": "object",
+      "properties": {
+        "uriPrefix": {
+          "description": "The Cloud Storage destination to export to.\n\nURI for a Cloud Storage directory where the server writes the result files,\nin the format `gs:\/\/{bucket-id}\/{path\/to\/destination\/dir}`). If there is no\ntrailing slash, the service appends one when composing the object path.\nThe user is responsible for creating the Cloud Storage bucket referenced in\n`uri_prefix`.",
+          "type": "string"
+        },
+        "mimeType": {
+          "description": "MIME types supported by DICOM spec.\nEach file is written in the following format:\n`...\/{study_id}\/{series_id}\/{instance_id}[\/{frame_number}].{extension}`\nThe frame_number component exists only for multi-frame instances.\n\nSupported MIME types are consistent with supported formats in DICOMweb:\nhttps:\/\/cloud.google.com\/healthcare\/docs\/dicom#retrieve_transaction.\nSpecifically, the following are supported:\n\n  - application\/dicom; transfer-syntax=1.2.840.10008.1.2.1\n    (uncompressed DICOM)\n  - application\/dicom; transfer-syntax=1.2.840.10008.1.2.4.50\n    (DICOM with embedded JPEG Baseline)\n  - application\/dicom; transfer-syntax=1.2.840.10008.1.2.4.90\n    (DICOM with embedded JPEG 2000 Lossless Only)\n  - application\/dicom; transfer-syntax=1.2.840.10008.1.2.4.91\n    (DICOM with embedded JPEG 2000)\n  - application\/dicom; transfer-syntax=*\n    (DICOM with no transcoding)\n  - application\/octet-stream; transfer-syntax=1.2.840.10008.1.2.1\n    (raw uncompressed PixelData)\n  - application\/octet-stream; transfer-syntax=*\n    (raw PixelData in whatever format it was uploaded in)\n  - image\/jpeg; transfer-syntax=1.2.840.10008.1.2.4.50\n    (Consumer JPEG)\n  - image\/png\n\nThe following extensions are used for output files:\n\n - application\/dicom -> .dcm\n - image\/jpeg -> .jpg\n - image\/png -> .png\n - application\/octet-stream -> no extension\n\nIf unspecified, the instances are exported in the original\nDICOM format they were uploaded in.",
+          "type": "string"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2DicomBigQueryDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2DicomBigQueryDestination",
+      "description": "The BigQuery table where the server writes output.",
+      "type": "object",
+      "properties": {
+        "tableUri": {
+          "description": "BigQuery URI to a table, up to 2000 characters long, in the format\n`bq:\/\/projectId.bqDatasetId.tableId`",
+          "type": "string"
+        },
+        "force": {
+          "description": "This flag is only used for ExportDicomData\noperations.\nIf the destination table already exists and this flag is `TRUE`, the table\nis overwritten by the contents of the DICOM store. If the flag is not\nset and the destination table already exists, the export call returns an\nerror.",
+          "type": "boolean"
+        }
+      }
+    },
+    "Hl7V2Store": {
+      "id": "Hl7V2Store",
+      "description": "Represents an HL7v2 store.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Resource name of the HL7v2 store, of the form\n`projects\/{project_id}\/datasets\/{dataset_id}\/hl7V2Stores\/{hl7v2_store_id}`.",
+          "type": "string"
+        },
+        "notificationConfig": {
+          "description": "The notification destination all messages (both Ingest & Create) are\npublished on. Only the message name is sent as part of the notification. If\nthis is unset, no notifications are sent. Supplied by the client.",
+          "$ref": "NotificationConfig"
+        },
+        "parserConfig": {
+          "description": "The configuration for the parser. It determines how the server parses the\nmessages.",
+          "$ref": "ParserConfig"
+        },
+        "labels": {
+          "description": "User-supplied key-value pairs used to organize HL7v2 stores.\n\nLabel keys must be between 1 and 63 characters long, have a UTF-8 encoding\nof maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression:\n\\p{Ll}\\p{Lo}{0,62}\n\nLabel values are optional, must be between 1 and 63 characters long, have\na UTF-8 encoding of maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63}\n\nNo more than 64 labels can be associated with a given store.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ParserConfig": {
+      "id": "ParserConfig",
+      "description": "The configuration for the parser. It determines how the server parses the\nmessages.",
+      "type": "object",
+      "properties": {
+        "allowNullHeader": {
+          "description": "Determines whether messages with no header are allowed.",
+          "type": "boolean"
+        },
+        "segmentTerminator": {
+          "description": "Byte(s) to use as the segment terminator. If this is unset, '\\r' is\nused as the segment terminator, matching the HL7 version 2\nspecification.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "ListHl7V2StoresResponse": {
+      "id": "ListHl7V2StoresResponse",
+      "description": "Lists the HL7v2 stores in the given dataset.",
+      "type": "object",
+      "properties": {
+        "hl7V2Stores": {
+          "description": "The returned HL7v2 stores. Won't be more HL7v2 stores than the value of\npage_size in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "Hl7V2Store"
+          }
+        },
+        "nextPageToken": {
+          "description": "Token to retrieve the next page of results or empty if there are no more\nresults in the list.",
+          "type": "string"
+        }
+      }
+    },
+    "ImportResourcesRequest": {
+      "id": "ImportResourcesRequest",
+      "description": "Request to import resources.",
+      "type": "object",
+      "properties": {
+        "contentStructure": {
+          "description": "The content structure in the source location. If not specified, the server\ntreats the input source files as BUNDLE.",
+          "enumDescriptions": [
+            "If the content structure is not specified, the default value `BUNDLE`\nis used.",
+            "The source file contains one or more lines of newline-delimited JSON\n(ndjson). Each line is a bundle, which contains one or more resources.\nSet the bundle type to `history` to import resource versions.",
+            "The source file contains one or more lines of newline-delimited JSON\n(ndjson). Each line is a single resource.",
+            "The entire file is one JSON bundle. The JSON can span multiple lines.",
+            "The entire file is one JSON resource. The JSON can span multiple lines."
+          ],
+          "type": "string",
+          "enum": [
+            "CONTENT_STRUCTURE_UNSPECIFIED",
+            "BUNDLE",
+            "RESOURCE",
+            "BUNDLE_PRETTY",
+            "RESOURCE_PRETTY"
+          ]
+        },
+        "gcsSource": {
+          "description": "Cloud Storage source data location and import configuration.\n\nThe Cloud Storage location requires the `roles\/storage.objectViewer`\nCloud IAM role.\n\nFor each Cloud Storage object, use a text file that contains the format\nspecified in ContentStructu.",
+          "$ref": "GoogleCloudHealthcareV1alpha2FhirRestGcsSource"
+        },
+        "gcsErrorDestination": {
+          "description": "The Cloud Storage destination to write the error report to.\n\nThe Cloud Storage location requires the `roles\/storage.objectAdmin` Cloud\nIAM role.\n\nWriting a file to the same destination multiple times results\nin the previous version of the file being overwritten.",
+          "$ref": "GoogleCloudHealthcareV1alpha2FhirRestGcsErrorDestination"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestGcsSource": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestGcsSource",
+      "description": "Specifies the configuration for importing data from Cloud Storage.",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "Points to a Cloud Storage URI containing file(s) to import.\n\nThe URI must be in the following format: `gs:\/\/{bucket_id}\/{object_id}`.\nThe URI can include wildcards in `object_id` and thus identify multiple\nfiles. Supported wildcards:\n\n*  `*` to match 0 or more non-separator characters\n*  `**` to match 0 or more characters (including separators). Must be used\nat the end of a path and with no other wildcards in the\npath. Can also be used with a file extension (such as .ndjson), which\nimports all files with the extension in the specified directory and\nits sub-directories. For example, `gs:\/\/my-bucket\/my-directory\/**.ndjson`\nimports all files with `.ndjson` extensions in `my-directory\/` and its\nsub-directories.\n*  `?` to match 1 character\n\nFiles matching the wildcard are expected to contain content only, no\nmetadata.",
+          "type": "string"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestGcsErrorDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestGcsErrorDestination",
+      "description": "Specifies the Cloud Storage destination where errors are recorded.",
+      "type": "object",
+      "properties": {
+        "uriPrefix": {
+          "description": "URI for a Cloud Storage directory where the server writes error report\nfiles, in the format `gs:\/\/{bucket-id}\/{path\/to\/destination\/dir}`. If\nthere is no trailing slash, the service appends one when composing the\nobject path. The user is responsible for creating the Cloud Storage bucket\nreferenced in `uri_prefix`.",
+          "type": "string"
+        }
+      }
+    },
+    "ExportResourcesRequest": {
+      "id": "ExportResourcesRequest",
+      "description": "Request to export resources.",
+      "type": "object",
+      "properties": {
+        "gcsDestination": {
+          "description": "The Cloud Storage output destination.\n\nThe Cloud Storage location requires the `roles\/storage.objectAdmin` Cloud\nIAM role.\n\nThe exported outputs are\norganized by FHIR resource types. The server creates one object per\nresource type. Each object contains newline delimited JSON, and each line\nis a FHIR resource.",
+          "$ref": "GoogleCloudHealthcareV1alpha2FhirRestGcsDestination"
+        },
+        "bigqueryDestination": {
+          "description": "The BigQuery output destination.\n\nThe BigQuery location requires two IAM roles:\n`roles\/bigquery.dataEditor` and `roles\/bigquery.jobUser`.\n\nThe output is one BigQuery table per resource type.",
+          "$ref": "GoogleCloudHealthcareV1alpha2FhirBigQueryDestination"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestGcsDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestGcsDestination",
+      "description": "The configuration for exporting to Cloud Storage.",
+      "type": "object",
+      "properties": {
+        "uriPrefix": {
+          "description": "URI for a Cloud Storage directory where the server writes result files, in\nthe format `gs:\/\/{bucket-id}\/{path\/to\/destination\/dir}`. If there is no\ntrailing slash, the service appends one when composing the object path.\nThe user is responsible for creating the Cloud Storage bucket referenced in\n`uri_prefix`.",
+          "type": "string"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirBigQueryDestination": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirBigQueryDestination",
+      "description": "The configuration for exporting to BigQuery.",
+      "type": "object",
+      "properties": {
+        "datasetUri": {
+          "description": "BigQuery URI to a dataset, up to 2000 characters long, in the format\n`bq:\/\/projectId.bqDatasetId`",
+          "type": "string"
+        },
+        "schemaConfig": {
+          "description": "The configuration for the exported BigQuery schema.",
+          "$ref": "SchemaConfig"
+        }
+      }
+    },
+    "SchemaConfig": {
+      "id": "SchemaConfig",
+      "description": "Configuration for the FHIR BigQuery and Cloud Storage schema. Determines\nhow the server generates the schema.",
+      "type": "object",
+      "properties": {
+        "schemaType": {
+          "description": "Specifies the output schema type. If unspecified, the default is\n`LOSSLESS`.",
+          "enumDescriptions": [
+            "No schema type specified. Same as `LOSSLESS`.",
+            "A data-driven schema generated from the fields present in the FHIR data\nbeing exported, with no additional simplification.",
+            "Analytics schema defined by the FHIR community.\nSee https:\/\/github.com\/FHIR\/sql-on-fhir\/blob\/master\/sql-on-fhir.md."
+          ],
+          "type": "string",
+          "enum": [
+            "SCHEMA_TYPE_UNSPECIFIED",
+            "LOSSLESS",
+            "ANALYTICS"
+          ]
+        },
+        "recursiveStructureDepth": {
+          "description": "The depth for all recursive structures in the output analytics\nschema. For example, `concept` in the CodeSystem resource is a recursive\nstructure; when the depth is 2, the CodeSystem table will have a column\ncalled `concept.concept` but not `concept.concept.concept`. If not\nspecified or set to 0, the server will use the default value 2. The\nmaximum depth allowed is 5.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "FhirStore": {
+      "id": "FhirStore",
+      "description": "Represents a FHIR store.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Resource name of the FHIR store, of the form\n`projects\/{project_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+          "type": "string"
+        },
+        "enableUpdateCreate": {
+          "description": "Whether this FHIR store has the [updateCreate\ncapability](https:\/\/www.hl7.org\/fhir\/capabilitystatement-definitions.html#CapabilityStatement.rest.resource.updateCreate).\nThis determines if the client can use an Update operation to create a new\nresource with a client-specified ID. If false, all IDs are server-assigned\nthrough the Create operation and attempts to update a non-existent resource\nreturn errors. Please treat the audit logs with appropriate levels of\ncare if client-specified resource IDs contain sensitive data such as\npatient identifiers, those IDs are part of the FHIR resource path\nrecorded in Cloud audit logs and Cloud Pub\/Sub notifications.",
+          "type": "boolean"
+        },
+        "notificationConfig": {
+          "description": "If non-empty, publish all resource modifications of this FHIR store to\nthis destination. The Cloud Pub\/Sub message attributes contain a map\nwith a string describing the action that has triggered the notification.\nFor example, \"action\":\"CreateResource\".",
+          "$ref": "NotificationConfig"
+        },
+        "disableReferentialIntegrity": {
+          "description": "Whether to disable referential integrity in this FHIR store. This field is\nimmutable after FHIR store creation.\nThe default value is false, meaning that the API enforces referential\nintegrity and fail the requests that result in inconsistent state in\nthe FHIR store.\nWhen this field is set to true, the API skips referential integrity\nchecks. Consequently, operations that rely on references, such as\nGetPatientEverything, do not return all the results if broken references\nexist.",
+          "type": "boolean"
+        },
+        "disableResourceVersioning": {
+          "description": "Whether to disable resource versioning for this FHIR store. This field can\nnot be changed after the creation of FHIR store.\nIf set to false, which is the default behavior, all write operations\ncause historical versions to be recorded automatically. The historical\nversions can be fetched through the history APIs, but cannot be updated.\nIf set to true, no historical versions are kept. The server sends errors\nfor attempts to read the historical versions.",
+          "type": "boolean"
+        },
+        "labels": {
+          "description": "User-supplied key-value pairs used to organize FHIR stores.\n\nLabel keys must be between 1 and 63 characters long, have a UTF-8 encoding\nof maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression:\n\\p{Ll}\\p{Lo}{0,62}\n\nLabel values are optional, must be between 1 and 63 characters long, have\na UTF-8 encoding of maximum 128 bytes, and must conform to the\nfollowing PCRE regular expression: [\\p{Ll}\\p{Lo}\\p{N}_-]{0,63}\n\nNo more than 64 labels can be associated with a given store.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "version": {
+          "description": "The FHIR specification version that this FHIR store supports natively. This\nfield is immutable after store creation. Requests are rejected if they\ncontain FHIR resources of a different version.\nAn empty value is treated as STU3.",
+          "enumDescriptions": [
+            "VERSION_UNSPECIFIED is treated as STU3 to accommodate the existing FHIR\nstores.",
+            "Draft Standard for Trial Use, [Release 2](https:\/\/www.hl7.org\/fhir\/DSTU2)",
+            "Standard for Trial Use, [Release 3](https:\/\/www.hl7.org\/fhir\/STU3)",
+            "[Release 4](https:\/\/www.hl7.org\/fhir\/R4)"
+          ],
+          "type": "string",
+          "enum": [
+            "VERSION_UNSPECIFIED",
+            "DSTU2",
+            "STU3",
+            "R4"
+          ]
+        },
+        "streamConfigs": {
+          "description": "A list of streaming configs that configure the destinations of streaming\nexport for every resource mutation in this FHIR store. Each store is\nallowed to have up to 10 streaming configs.\nAfter a new config is added, the next resource mutation is streamed to\nthe new location in addition to the existing ones.\nWhen a location is removed from the list, the server stops streaming to\nthat location. Before adding a new config, you must add the required\n[`bigquery.dataEditor`](https:\/\/cloud.google.com\/bigquery\/docs\/access-control#bigquery.dataEditor)\nrole to your project's **Cloud Healthcare Service Agent**\n[service account](https:\/\/cloud.google.com\/iam\/docs\/service-accounts).\nSome lag (typically on the order of dozens of seconds) is expected before\nthe results show up in the streaming destination.",
+          "type": "array",
+          "items": {
+            "$ref": "StreamConfig"
+          }
+        },
+        "validationConfig": {
+          "description": "Configuration for how to validate incoming FHIR resources against\nconfigured profiles.",
+          "$ref": "ValidationConfig"
+        }
+      }
+    },
+    "StreamConfig": {
+      "id": "StreamConfig",
+      "description": "This structure contains configuration for streaming FHIR export.",
+      "type": "object",
+      "properties": {
+        "resourceTypes": {
+          "description": "Supply a FHIR resource type (such as \"Patient\" or \"Observation\").\nSee https:\/\/www.hl7.org\/fhir\/valueset-resource-types.html for a list of\nall FHIR resource types.\nThe server treats an empty list as an intent to stream all the\nsupported resource types in this FHIR store.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bigqueryDestination": {
+          "description": "The destination BigQuery structure that contains both the dataset\nlocation and corresponding schema config.\n\nThe output is organized in one table per resource type. The server\nreuses the existing tables (if any) that are named after the resource\ntypes, e.g. \"Patient\", \"Observation\". When there is no existing table\nfor a given resource type, the server attempts to create one.\n\nWhen a table schema doesn't align with the schema config, either\nbecause of existing incompatible schema or out of band incompatible\nmodification, the server does not stream in new data.\n\nOne resolution in this case is to delete the incompatible\ntable and let the server recreate one, though the newly created table\nonly contains data after the table recreation.\n\nBigQuery imposes a 1 MB limit on streaming insert row size, therefore\nany resource mutation that generates more than 1 MB of BigQuery data\nwill not be streamed.\n\nResults are appended to the corresponding BigQuery tables. Different\nversions of the same resource are distinguishable by the meta.versionId\nand meta.lastUpdated columns. The operation (CREATE\/UPDATE\/DELETE) that\nresults in the new version is recorded in the meta.tag.\n\nThe tables contain all historical resource versions since streaming was\nenabled. For query convenience, the server also creates one view per\ntable of the same name containing only the current resource version.\n\nIf a resource mutation cannot be streamed to BigQuery, errors will be\nlogged to Stackdriver (see [Viewing logs](\/healthcare\/docs\/how-\ntos\/stackdriver-logging)).",
+          "$ref": "GoogleCloudHealthcareV1alpha2FhirBigQueryDestination"
+        }
+      }
+    },
+    "ValidationConfig": {
+      "id": "ValidationConfig",
+      "description": "This structure contains the configuration for FHIR profiles and validation.",
+      "type": "object",
+      "properties": {
+        "disableProfileValidation": {
+          "description": "Whether to disable profile validation for this FHIR store. Set\nthis to true to disable checking incoming resources for conformance\nagainst StructureDefinitions in this FHIR store.",
+          "type": "boolean"
+        },
+        "enabledImplementationGuides": {
+          "description": "A list of ImplementationGuide URLs in this FHIR store that are used to\nconfigure which profiles are used for validation. For example, if you\nwere using the US Core profiles to your FHIR store you would set\n`enabled_implementation_guides` to\n`[\"http:\/\/hl7.org\/fhir\/us\/core\/ImplementationGuide\/ig\"]`. If\n`enabled_implementation_guides` is empty or omitted, then incoming\nresources are only required to conform to the base FHIR profiles.\nOtherwise, a resource must conform to at least one profile listed in the\n`global` property of one of the enabled ImplementationGuides.\n\nThe Cloud Healthcare API does not currently enforce all of the rules in a\nStructureDefinition. The following rules are supported:\n    - min\/max\n    - minValue\/maxValue\n    - maxLength\n    - type\n    - fixed[x]\n    - pattern[x] on simple types\n    - slicing, when using \"value\" as the discriminator type\nWhen a URL cannot be resolved (for example, in a type assertion), the\nserver does not return an error.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ListFhirStoresResponse": {
+      "id": "ListFhirStoresResponse",
+      "description": "Lists the FHIR stores in the given dataset.",
+      "type": "object",
+      "properties": {
+        "fhirStores": {
+          "description": "The returned FHIR stores. Won't be more FHIR stores than the value of\npage_size in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "FhirStore"
+          }
+        },
+        "nextPageToken": {
+          "description": "Token to retrieve the next page of results or empty if there are no more\nresults in the list.",
+          "type": "string"
+        }
+      }
+    },
+    "OperationMetadata": {
+      "id": "OperationMetadata",
+      "description": "OperationMetadata provides information about the operation execution.\nReturned in the long-running operation's metadata field.",
+      "type": "object",
+      "properties": {
+        "apiMethodName": {
+          "description": "The name of the API method that initiated the operation.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "The time at which the operation was created by the API.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "endTime": {
+          "description": "The time at which execution was completed.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "counter": {
+          "$ref": "ProgressCounter"
+        }
+      }
+    },
+    "ProgressCounter": {
+      "id": "ProgressCounter",
+      "description": "ProgressCounter provides counters to describe an operation's progress.",
+      "type": "object",
+      "properties": {
+        "pending": {
+          "description": "The number of units that are pending in the operation.",
+          "type": "string",
+          "format": "int64"
+        },
+        "success": {
+          "description": "The number of units that succeeded in the operation.",
+          "type": "string",
+          "format": "int64"
+        },
+        "failure": {
+          "description": "The number of units that failed in the operation.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "ExportAnnotationsResponse": {
+      "id": "ExportAnnotationsResponse",
+      "description": "Response for successful annotation export operations. This structure is\nincluded in response upon operation\ncompletion.",
+      "type": "object",
+      "properties": {
+        "annotationStore": {
+          "description": "The annotation_store used for the export operation, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "successCount": {
+          "description": "The total number of annotations successfully exported.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "ExportAnnotationsErrorDetails": {
+      "id": "ExportAnnotationsErrorDetails",
+      "description": "Response for failed annotation export operations. This structure is\nincluded in the details field of the\nerror upon operation completion.",
+      "type": "object",
+      "properties": {
+        "annotationStore": {
+          "description": "The annotation_store used for the export operation, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "successCount": {
+          "description": "The number of annotations successfully exported.",
+          "type": "string",
+          "format": "int64"
+        },
+        "errorCount": {
+          "description": "The number of annotations that had errors.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "ImportAnnotationsResponse": {
+      "id": "ImportAnnotationsResponse",
+      "description": "Final response of importing\nAnnotations in\nsuccessful case. This structure is included in the\nresponse. It is only included\nwhen the operation finishes.",
+      "type": "object",
+      "properties": {
+        "annotationStore": {
+          "description": "The annotation_store that the annotations were imported to. The name\nis in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "successCount": {
+          "description": "The number of the input annotations. All input have been imported\nsuccessfully.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "ImportAnnotationsErrorDetails": {
+      "id": "ImportAnnotationsErrorDetails",
+      "description": "Final response of importing\nAnnotations in\npartial or total failure case. This structure is included in the\ndetails field of the\nerror. It is only included when the\noperation finishes.",
+      "type": "object",
+      "properties": {
+        "annotationStore": {
+          "description": "The annotation_store that the annotations were imported to. The name\nis in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "successCount": {
+          "description": "The number of annotations that have been imported.",
+          "type": "string",
+          "format": "int64"
+        },
+        "errorCount": {
+          "description": "The number of annotations that had errors.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "EvaluateAnnotationStoreResponse": {
+      "id": "EvaluateAnnotationStoreResponse",
+      "description": "Response for successful Annotation store evaluation operations. This\nstructure is included in the\nresponse upon operation completion.",
+      "type": "object",
+      "properties": {
+        "evalStore": {
+          "description": "The evaluated Annotation store in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "goldenStore": {
+          "description": "The ground truth Annotation store in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+          "type": "string"
+        },
+        "goldenCount": {
+          "description": "The number of Annotations in the ground\ntruth Annotation store successfully\nprocessed.",
+          "type": "string",
+          "format": "int64"
+        },
+        "matchedCount": {
+          "description": "The number of Annotations\nin the eval store that match with corresponding annotations\nin the ground truth Annotation store. Two matched\nannotations both annotate the same resource defined in\nAnnotationSource.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "DeidentifyErrorDetails": {
+      "id": "DeidentifyErrorDetails",
+      "description": "Contains the status of the Deidentify operation.",
+      "type": "object",
+      "properties": {
+        "successStoreCount": {
+          "description": "Number of stores successfully processed.",
+          "type": "string",
+          "format": "int64"
+        },
+        "failureStoreCount": {
+          "description": "Number of stores that failed to process.",
+          "type": "string",
+          "format": "int64"
+        },
+        "successResourceCount": {
+          "description": "Number of resources successfully processed.",
+          "type": "string",
+          "format": "int64"
+        },
+        "failureResourceCount": {
+          "description": "Number of resources that failed to process.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "DeidentifySummary": {
+      "id": "DeidentifySummary",
+      "description": "Contains a detailed summary of the Deidentify operation.",
+      "type": "object",
+      "properties": {
+        "successStoreCount": {
+          "description": "Number of stores successfully processed.",
+          "type": "string",
+          "format": "int64"
+        },
+        "successResourceCount": {
+          "description": "Number of resources successfully processed.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "ImportDicomDataErrorDetails": {
+      "id": "ImportDicomDataErrorDetails",
+      "description": "Returns the errors encountered during DICOM store import.",
+      "type": "object",
+      "properties": {
+        "sampleErrors": {
+          "description": "Deprecated. Use only for debugging purposes.\n\nContains sample errors encountered in imports of individual resources,\nsuch as a Cloud Storage object.",
+          "type": "array",
+          "items": {
+            "$ref": "ErrorDetail"
+          }
+        }
+      }
+    },
+    "ErrorDetail": {
+      "id": "ErrorDetail",
+      "description": "Structure to describe the error encountered during batch operation on one\nresource. This is used both for sample errors in operation response, and\nfor format of errors in error reports.",
+      "type": "object",
+      "properties": {
+        "resource": {
+          "description": "The identifier of the resource.",
+          "type": "string"
+        },
+        "error": {
+          "description": "The status of the error.",
+          "$ref": "Status"
+        }
+      }
+    },
+    "ImportDicomDataResponse": {
+      "id": "ImportDicomDataResponse",
+      "description": "Returns additional information in regards to a completed DICOM store import.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "ExportDicomDataResponse": {
+      "id": "ExportDicomDataResponse",
+      "description": "Returns additional information in regards to a completed DICOM store export.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestImportResourcesResponse": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestImportResourcesResponse",
+      "description": "Final response of importing resources.\nThis structure is included in the\nresponse to describe the detailed\noutcome. It is only included when the operation finishes successfully.",
+      "type": "object",
+      "properties": {
+        "fhirStore": {
+          "description": "The name of the FHIR store where the resources have been imported, in the\nformat\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+          "type": "string"
+        },
+        "inputSize": {
+          "description": "The total number of resources included in the source data.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestImportResourcesErrorDetails": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestImportResourcesErrorDetails",
+      "description": "Error response of importing resources.\nThis structure is included in the\nerror\ndetails to describe the detailed error. It is only\nincluded when the operation finishes with some failure.",
+      "type": "object",
+      "properties": {
+        "fhirStore": {
+          "description": "The name of the FHIR store where resources have been imported, in the\nformat\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+          "type": "string"
+        },
+        "inputSize": {
+          "description": "The total number of resources included in the source data. This is the sum\nof the success and error counts.",
+          "type": "string",
+          "format": "int64"
+        },
+        "successCount": {
+          "description": "The number of resources that have been imported.",
+          "type": "string",
+          "format": "int64"
+        },
+        "errorCount": {
+          "description": "The number of resources that had errors.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestExportResourcesResponse": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestExportResourcesResponse",
+      "description": "Response when all resources export successfully.\nThis structure is included in the\nresponse to describe the detailed\noutcome. It is only included when the operation finishes successfully.",
+      "type": "object",
+      "properties": {
+        "fhirStore": {
+          "description": "The name of the FHIR store where resources have been exported, in the\nformat\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+          "type": "string"
+        },
+        "resourceCount": {
+          "description": "The total number of resources exported from the requested FHIR store.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "GoogleCloudHealthcareV1alpha2FhirRestExportResourcesErrorDetails": {
+      "id": "GoogleCloudHealthcareV1alpha2FhirRestExportResourcesErrorDetails",
+      "description": "Response when errors occur while exporting resources.\nThis structure is included in the\nerror\ndetails to describe the detailed outcome. It is\nonly included when the operation finishes with errors.",
+      "type": "object",
+      "properties": {
+        "fhirStore": {
+          "description": "The name of the FHIR store where resources have been exported, in the\nformat\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+          "type": "string"
+        },
+        "resourceCount": {
+          "description": "The total number of resources included in the export operation. This is\nthe sum of the success and error counts.",
+          "type": "string",
+          "format": "int64"
+        },
+        "successCount": {
+          "description": "The number of resources that were exported.",
+          "type": "string",
+          "format": "int64"
+        },
+        "errorCount": {
+          "description": "The number of resources that had errors.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    }
+  },
+  "resources": {
+    "projects": {
+      "resources": {
+        "locations": {
+          "methods": {
+            "list": {
+              "id": "healthcare.projects.locations.list",
+              "path": "v1alpha2/{+name}/locations",
+              "flatPath": "v1alpha2/projects/{projectsId}/locations",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource that owns the locations collection, if applicable.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                },
+                "filter": {
+                  "description": "The standard list filter.",
+                  "location": "query",
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "The standard list page size.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "The standard list page token.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "ListLocationsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform"
+              ],
+              "description": "Lists information about the supported locations for this service."
+            },
+            "get": {
+              "id": "healthcare.projects.locations.get",
+              "path": "v1alpha2/{+name}",
+              "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "Resource name for the location.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Location"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform"
+              ],
+              "description": "Gets information about a location."
+            }
+          }
+          ,
+          "resources": {
+            "datasets": {
+              "methods": {
+                "setIamPolicy": {
+                  "id": "healthcare.projects.locations.datasets.setIamPolicy",
+                  "path": "v1alpha2/{+resource}:setIamPolicy",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}:setIamPolicy",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "resource": {
+                      "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "resource"
+                  ],
+                  "request": {
+                    "$ref": "SetIamPolicyRequest"
+                  },
+                  "response": {
+                    "$ref": "Policy"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                },
+                "getIamPolicy": {
+                  "id": "healthcare.projects.locations.datasets.getIamPolicy",
+                  "path": "v1alpha2/{+resource}:getIamPolicy",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}:getIamPolicy",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "resource": {
+                      "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "options.requestedPolicyVersion": {
+                      "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  },
+                  "parameterOrder": [
+                    "resource"
+                  ],
+                  "response": {
+                    "$ref": "Policy"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                },
+                "testIamPermissions": {
+                  "id": "healthcare.projects.locations.datasets.testIamPermissions",
+                  "path": "v1alpha2/{+resource}:testIamPermissions",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}:testIamPermissions",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "resource": {
+                      "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "resource"
+                  ],
+                  "request": {
+                    "$ref": "TestIamPermissionsRequest"
+                  },
+                  "response": {
+                    "$ref": "TestIamPermissionsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Returns permissions that a caller has on the specified resource.\nIf the resource does not exist, this will return an empty set of\npermissions, not a NOT_FOUND error.\n\nNote: This operation is designed to be used for building permission-aware\nUIs and command-line tools, not for authorization checking. This operation\nmay \"fail open\" without warning."
+                },
+                "create": {
+                  "id": "healthcare.projects.locations.datasets.create",
+                  "path": "v1alpha2/{+parent}/datasets",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "parent": {
+                      "description": "The name of the project in which the server creates the dataset. For\nexample,`projects\/{project_id}\/locations\/{location_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "datasetId": {
+                      "description": "The ID of the dataset that is being created.\nThe string must match the following regex: `[\\p{L}\\p{N}_\\-\\.]{1,256}`.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "request": {
+                    "$ref": "Dataset"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Creates a new health dataset. Results are returned through the\nOperation interface which returns either an\n`Operation.response` which contains a Dataset or\n`Operation.error`. The metadata\nfield type is OperationMetadata.\nA Google Cloud Platform project can contain up to 500 datasets across all\nregions."
+                },
+                "list": {
+                  "id": "healthcare.projects.locations.datasets.list",
+                  "path": "v1alpha2/{+parent}/datasets",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "parent": {
+                      "description": "The name of the project whose datasets should be listed. For example,\n`projects\/{project_id}\/locations\/{location_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "pageSize": {
+                      "description": "The maximum number of items to return. Capped to 100 if not specified.\nMay not be larger than 1000.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "pageToken": {
+                      "description": "The next_page_token value returned from a previous List request, if any.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "response": {
+                    "$ref": "ListDatasetsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Lists the health datasets in the current project."
+                },
+                "delete": {
+                  "id": "healthcare.projects.locations.datasets.delete",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}",
+                  "httpMethod": "DELETE",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the dataset to delete. For example,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Empty"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Deletes the specified health dataset and all data contained in the dataset.\nDeleting a dataset does not affect the sources from which the dataset was\nimported (if any)."
+                },
+                "get": {
+                  "id": "healthcare.projects.locations.datasets.get",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the dataset to read. For example,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Dataset"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Gets any metadata associated with a dataset."
+                },
+                "patch": {
+                  "id": "healthcare.projects.locations.datasets.patch",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}",
+                  "httpMethod": "PATCH",
+                  "parameters": {
+                    "name": {
+                      "description": "Output only. Resource name of the dataset, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "updateMask": {
+                      "description": "The update mask applies to the resource. For the `FieldMask` definition,\nsee\nhttps:\/\/developers.google.com\/protocol-buffers\/docs\/reference\/google.protobuf#fieldmask",
+                      "location": "query",
+                      "type": "string",
+                      "format": "google-fieldmask"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "Dataset"
+                  },
+                  "response": {
+                    "$ref": "Dataset"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Updates dataset metadata."
+                },
+                "deidentify": {
+                  "id": "healthcare.projects.locations.datasets.deidentify",
+                  "path": "v1alpha2/{+sourceDataset}:deidentify",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}:deidentify",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "sourceDataset": {
+                      "description": "Source dataset resource name. For example,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}`.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "sourceDataset"
+                  ],
+                  "request": {
+                    "$ref": "DeidentifyDatasetRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Creates a new dataset containing de-identified data from the source\ndataset. The metadata field type\nis OperationMetadata.\nIf the request is successful, the\nresponse field type is\nDeidentifySummary.\nIf errors occur, the\nerror\ndetails field type is\nDeidentifyErrorDetails.\nThe LRO result may still be successful if de-identification fails for some\nDICOM instances. The new de-identified dataset will not contain these\nfailed resources. Failed resource totals are tracked in\nDeidentifySummary.failure_resource_count.\nError details are also logged to Stackdriver Logging. For more information,\nsee [Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging)."
+                }
+              }
+              ,
+              "resources": {
+                "dataProtectionStores": {
+                  "methods": {
+                    "setIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.dataProtectionStores.setIamPolicy",
+                      "path": "v1alpha2/{+resource}:setIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dataProtectionStores/{dataProtectionStoresId}:setIamPolicy",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dataProtectionStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "SetIamPolicyRequest"
+                      },
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                    },
+                    "getIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.dataProtectionStores.getIamPolicy",
+                      "path": "v1alpha2/{+resource}:getIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dataProtectionStores/{dataProtectionStoresId}:getIamPolicy",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dataProtectionStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "options.requestedPolicyVersion": {
+                          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                    }
+                  }
+                },
+                "dicomStores": {
+                  "methods": {
+                    "setIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.setIamPolicy",
+                      "path": "v1alpha2/{+resource}:setIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}:setIamPolicy",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "SetIamPolicyRequest"
+                      },
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                    },
+                    "getIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.getIamPolicy",
+                      "path": "v1alpha2/{+resource}:getIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}:getIamPolicy",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "options.requestedPolicyVersion": {
+                          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                    },
+                    "testIamPermissions": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.testIamPermissions",
+                      "path": "v1alpha2/{+resource}:testIamPermissions",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}:testIamPermissions",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "TestIamPermissionsRequest"
+                      },
+                      "response": {
+                        "$ref": "TestIamPermissionsResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Returns permissions that a caller has on the specified resource.\nIf the resource does not exist, this will return an empty set of\npermissions, not a NOT_FOUND error.\n\nNote: This operation is designed to be used for building permission-aware\nUIs and command-line tools, not for authorization checking. This operation\nmay \"fail open\" without warning."
+                    },
+                    "create": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.create",
+                      "path": "v1alpha2/{+parent}/dicomStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "parent": {
+                          "description": "The name of the dataset this DICOM store belongs to.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "dicomStoreId": {
+                          "description": "The ID of the DICOM store that is being created.\nAny string value up to 256 characters in length.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "request": {
+                        "$ref": "DicomStore"
+                      },
+                      "response": {
+                        "$ref": "DicomStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Creates a new DICOM store within the parent dataset."
+                    },
+                    "get": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.get",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the DICOM store to get.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "DicomStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the specified DICOM store."
+                    },
+                    "delete": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.delete",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}",
+                      "httpMethod": "DELETE",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the DICOM store to delete.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Empty"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Deletes the specified DICOM store and removes all images that are contained\nwithin it."
+                    },
+                    "patch": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.patch",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}",
+                      "httpMethod": "PATCH",
+                      "parameters": {
+                        "name": {
+                          "description": "Output only. Resource name of the DICOM store, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/dicomStores\/{dicom_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "updateMask": {
+                          "description": "The update mask applies to the resource. For the `FieldMask` definition,\nsee\nhttps:\/\/developers.google.com\/protocol-buffers\/docs\/reference\/google.protobuf#fieldmask",
+                          "location": "query",
+                          "type": "string",
+                          "format": "google-fieldmask"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "DicomStore"
+                      },
+                      "response": {
+                        "$ref": "DicomStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Updates the specified DICOM store."
+                    },
+                    "list": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.list",
+                      "path": "v1alpha2/{+parent}/dicomStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "parent": {
+                          "description": "Name of the dataset.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "pageSize": {
+                          "description": "Limit on the number of DICOM stores to return in a single response.\nIf zero the default page size of 100 is used.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pageToken": {
+                          "description": "The next_page_token value returned from the previous List request, if any.",
+                          "location": "query",
+                          "type": "string"
+                        },
+                        "filter": {
+                          "description": "Restricts stores returned to those matching a filter. Syntax:\nhttps:\/\/cloud.google.com\/appengine\/docs\/standard\/python\/search\/query_strings\nOnly filtering on labels is supported, for example `labels.key=value`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "response": {
+                        "$ref": "ListDicomStoresResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Lists the DICOM stores in the given dataset."
+                    },
+                    "import": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.import",
+                      "path": "v1alpha2/{+name}:import",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}:import",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the DICOM store resource into which the data is imported. For\nexample,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/dicomStores\/{dicom_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "ImportDicomDataRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Imports data into the DICOM store by copying it from the specified source.\nFor errors, the Operation is populated with error details (in the form\nof ImportDicomDataErrorDetails in error.details), which holds\nfiner-grained error information. Errors are also logged to Stackdriver\nLogging. For more information, see\n[Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging).\nThe metadata field type is\nOperationMetadata."
+                    },
+                    "export": {
+                      "id": "healthcare.projects.locations.datasets.dicomStores.export",
+                      "path": "v1alpha2/{+name}:export",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/dicomStores/{dicomStoresId}:export",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "name": {
+                          "description": "The DICOM store resource name from which to export the data. For example,\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/dicomStores\/{dicom_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/dicomStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "ExportDicomDataRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Exports data to the specified destination by copying it from the DICOM\nstore.\nErrors are also logged to Stackdriver Logging. For more information,\nsee [Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging).\nThe metadata field type is\nOperationMetadata."
+                    }
+                  }
+                },
+                "hl7V2Stores": {
+                  "methods": {
+                    "setIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.setIamPolicy",
+                      "path": "v1alpha2/{+resource}:setIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}:setIamPolicy",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "SetIamPolicyRequest"
+                      },
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                    },
+                    "getIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.getIamPolicy",
+                      "path": "v1alpha2/{+resource}:getIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}:getIamPolicy",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "options.requestedPolicyVersion": {
+                          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                    },
+                    "testIamPermissions": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.testIamPermissions",
+                      "path": "v1alpha2/{+resource}:testIamPermissions",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}:testIamPermissions",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "TestIamPermissionsRequest"
+                      },
+                      "response": {
+                        "$ref": "TestIamPermissionsResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Returns permissions that a caller has on the specified resource.\nIf the resource does not exist, this will return an empty set of\npermissions, not a NOT_FOUND error.\n\nNote: This operation is designed to be used for building permission-aware\nUIs and command-line tools, not for authorization checking. This operation\nmay \"fail open\" without warning."
+                    },
+                    "create": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.create",
+                      "path": "v1alpha2/{+parent}/hl7V2Stores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "parent": {
+                          "description": "The name of the dataset this HL7v2 store belongs to.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "hl7V2StoreId": {
+                          "description": "The ID of the HL7v2 store that is being created.\nThe string must match the following regex: `[\\p{L}\\p{N}_\\-\\.]{1,256}`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "request": {
+                        "$ref": "Hl7V2Store"
+                      },
+                      "response": {
+                        "$ref": "Hl7V2Store"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Creates a new HL7v2 store within the parent dataset."
+                    },
+                    "get": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.get",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the HL7v2 store to get.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Hl7V2Store"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the specified HL7v2 store."
+                    },
+                    "delete": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.delete",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}",
+                      "httpMethod": "DELETE",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the HL7v2 store to delete.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Empty"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Deletes the specified HL7v2 store and removes all messages that are\ncontained within it."
+                    },
+                    "list": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.list",
+                      "path": "v1alpha2/{+parent}/hl7V2Stores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "parent": {
+                          "description": "Name of the dataset.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "pageSize": {
+                          "description": "Limit on the number of HL7v2 stores to return in a single response.\nIf zero the default page size of 100 is used.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pageToken": {
+                          "description": "The next_page_token value returned from the previous List request, if any.",
+                          "location": "query",
+                          "type": "string"
+                        },
+                        "filter": {
+                          "description": "Restricts stores returned to those matching a filter. Syntax:\nhttps:\/\/cloud.google.com\/appengine\/docs\/standard\/python\/search\/query_strings\nOnly filtering on labels is supported. For example, `labels.key=value`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "response": {
+                        "$ref": "ListHl7V2StoresResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Lists the HL7v2 stores in the given dataset."
+                    },
+                    "patch": {
+                      "id": "healthcare.projects.locations.datasets.hl7V2Stores.patch",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/hl7V2Stores/{hl7V2StoresId}",
+                      "httpMethod": "PATCH",
+                      "parameters": {
+                        "name": {
+                          "description": "Output only. Resource name of the HL7v2 store, of the form\n`projects\/{project_id}\/datasets\/{dataset_id}\/hl7V2Stores\/{hl7v2_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/hl7V2Stores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "updateMask": {
+                          "description": "The update mask applies to the resource. For the `FieldMask` definition,\nsee\nhttps:\/\/developers.google.com\/protocol-buffers\/docs\/reference\/google.protobuf#fieldmask",
+                          "location": "query",
+                          "type": "string",
+                          "format": "google-fieldmask"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "Hl7V2Store"
+                      },
+                      "response": {
+                        "$ref": "Hl7V2Store"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Updates the HL7v2 store."
+                    }
+                  }
+                },
+                "fhirStores": {
+                  "methods": {
+                    "setIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.setIamPolicy",
+                      "path": "v1alpha2/{+resource}:setIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}:setIamPolicy",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "SetIamPolicyRequest"
+                      },
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                    },
+                    "getIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.getIamPolicy",
+                      "path": "v1alpha2/{+resource}:getIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}:getIamPolicy",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "options.requestedPolicyVersion": {
+                          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                    },
+                    "testIamPermissions": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.testIamPermissions",
+                      "path": "v1alpha2/{+resource}:testIamPermissions",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}:testIamPermissions",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "TestIamPermissionsRequest"
+                      },
+                      "response": {
+                        "$ref": "TestIamPermissionsResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Returns permissions that a caller has on the specified resource.\nIf the resource does not exist, this will return an empty set of\npermissions, not a NOT_FOUND error.\n\nNote: This operation is designed to be used for building permission-aware\nUIs and command-line tools, not for authorization checking. This operation\nmay \"fail open\" without warning."
+                    },
+                    "import": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.import",
+                      "path": "v1alpha2/{+name}:import",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}:import",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the FHIR store to which the server imports FHIR resources, in\nthe format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "ImportResourcesRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Import resources to the FHIR store by loading data from the specified\nsources. This method is optimized to load large quantities of data using\nimport semantics that ignore some FHIR store configuration options and are\nnot suitable for all use cases. It is primarily intended to load data into\nan empty FHIR store that is not being used by other clients. In cases\nwhere this method is not appropriate, consider using ExecuteBundle to\nload data.\n\nEvery resource in the input must contain a client-supplied ID and is\nstored using that ID regardless of the\nenable_update_create setting on the FHIR\nstore.\n\nThe import process does not enforce referential integrity, regardless of\nthe\ndisable_referential_integrity\nsetting on the FHIR store. This allows the import of resources with\narbitrary interdependencies without considering grouping or ordering, but\nif the input data contains invalid references or if some resources fail to\nbe imported, the FHIR store might be left in a state that violates\nreferential integrity.\n\nThe import process does not trigger Cloud Pub\/Sub notification or BigQuery\nstreaming update, regardless of how those are configured on the FHIR store.\n\nIf a resource with the specified ID already exists, the most recent\nversion of the resource is overwritten without creating a new historical\nversion, regardless of the\ndisable_resource_versioning\nsetting on the FHIR store. If transient failures occur during the import,\nsuccessfully imported resources could be overwritten more than once.\n\nThe import operation is idempotent unless the input data contains multiple\nvalid resources with the same ID but different contents. In that case,\nafter the import completes, the store contains exactly one resource\nwith that ID but there is no ordering guarantee on which version of the\ncontents it has. The operation result counters do not count\nduplicate IDs as an error and count one success for each resource in\nthe input, which might result in a success count larger than the number\nof resources in the FHIR store. This often occurs when importing data\norganized in bundles produced by Patient-everything\nwhere each bundle contains its own copy of a resource such as Practitioner\nthat might be referred to by many patients.\n\nIf some resources fail to import, for example due to parsing errors,\nsuccessfully imported resources are not rolled back.\n\nThe location and format of the input data is specified by the parameters\nbelow. Note that if no format is specified, this method assumes the\n`BUNDLE` format. When using the `BUNDLE` format this method ignores the\n`Bundle.type` field, except that `history` bundles are rejected, and does\nnot apply any of the bundle processing semantics for batch or transaction\nbundles. Unlike in ExecuteBundle, transaction bundles are not executed\nas a single transaction and bundle-internal references are not rewritten.\nThe bundle is treated as a collection of resources to be written as\nprovided in `Bundle.entry.resource`, ignoring `Bundle.entry.request`. As\nan example, this allows the import of `searchset` bundles produced by a\nFHIR search or\nPatient-everything operation.\n\nThis method returns an Operation that can\nbe used to track the status of the import by calling\nGetOperation.\n\nImmediate fatal errors appear in the\nerror field, errors are also logged\nto Stackdriver (see [Viewing\nlogs](\/healthcare\/docs\/how-tos\/stackdriver-logging)). Otherwise, when the\noperation finishes, a detailed response of type ImportResourcesResponse\nis returned in the response field.\nThe metadata field type for this\noperation is OperationMetadata."
+                    },
+                    "export": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.export",
+                      "path": "v1alpha2/{+name}:export",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}:export",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the FHIR store to export resource from, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "ExportResourcesRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Export resources from the FHIR store to the specified destination.\n\nThis method returns an Operation that can\nbe used to track the status of the export by calling\nGetOperation.\n\nImmediate fatal errors appear in the\nerror field, errors are also logged\nto Stackdriver (see [Viewing\nlogs](\/healthcare\/docs\/how-tos\/stackdriver-logging)).\nOtherwise, when the operation finishes, a detailed response of type\nExportResourcesResponse is returned in the\nresponse field.\nThe metadata field type for this\noperation is OperationMetadata."
+                    },
+                    "create": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.create",
+                      "path": "v1alpha2/{+parent}/fhirStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "parent": {
+                          "description": "The name of the dataset this FHIR store belongs to.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "fhirStoreId": {
+                          "description": "The ID of the FHIR store that is being created.\nThe string must match the following regex: `[\\p{L}\\p{N}_\\-\\.]{1,256}`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "request": {
+                        "$ref": "FhirStore"
+                      },
+                      "response": {
+                        "$ref": "FhirStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Creates a new FHIR store within the parent dataset."
+                    },
+                    "get": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.get",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the FHIR store to get.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "FhirStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the configuration of the specified FHIR store."
+                    },
+                    "patch": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.patch",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}",
+                      "httpMethod": "PATCH",
+                      "parameters": {
+                        "name": {
+                          "description": "Output only. Resource name of the FHIR store, of the form\n`projects\/{project_id}\/datasets\/{dataset_id}\/fhirStores\/{fhir_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "updateMask": {
+                          "description": "The update mask applies to the resource. For the `FieldMask` definition,\nsee\nhttps:\/\/developers.google.com\/protocol-buffers\/docs\/reference\/google.protobuf#fieldmask",
+                          "location": "query",
+                          "type": "string",
+                          "format": "google-fieldmask"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "FhirStore"
+                      },
+                      "response": {
+                        "$ref": "FhirStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Updates the configuration of the specified FHIR store."
+                    },
+                    "delete": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.delete",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores/{fhirStoresId}",
+                      "httpMethod": "DELETE",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the FHIR store to delete.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/fhirStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Empty"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Deletes the specified FHIR store and removes all resources within it."
+                    },
+                    "list": {
+                      "id": "healthcare.projects.locations.datasets.fhirStores.list",
+                      "path": "v1alpha2/{+parent}/fhirStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/fhirStores",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "parent": {
+                          "description": "Name of the dataset.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "pageSize": {
+                          "description": "Limit on the number of FHIR stores to return in a single response.  If zero\nthe default page size of 100 is used.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pageToken": {
+                          "description": "The next_page_token value returned from the previous List request, if any.",
+                          "location": "query",
+                          "type": "string"
+                        },
+                        "filter": {
+                          "description": "Restricts stores returned to those matching a filter. Syntax:\nhttps:\/\/cloud.google.com\/appengine\/docs\/standard\/python\/search\/query_strings\nOnly filtering on labels is supported, for example `labels.key=value`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "response": {
+                        "$ref": "ListFhirStoresResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Lists the FHIR stores in the given dataset."
+                    }
+                  }
+                },
+                "annotationStores": {
+                  "methods": {
+                    "setIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.setIamPolicy",
+                      "path": "v1alpha2/{+resource}:setIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:setIamPolicy",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being specified.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "SetIamPolicyRequest"
+                      },
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Sets the access control policy on the specified resource. Replaces any\nexisting policy.\n\nCan return Public Errors: NOT_FOUND, INVALID_ARGUMENT and PERMISSION_DENIED"
+                    },
+                    "getIamPolicy": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.getIamPolicy",
+                      "path": "v1alpha2/{+resource}:getIamPolicy",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:getIamPolicy",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "options.requestedPolicyVersion": {
+                          "description": "Optional. The policy format version to be returned.\n\nValid values are 0, 1, and 3. Requests specifying an invalid value will be\nrejected.\n\nRequests for policies with any conditional bindings must specify version 3.\nPolicies without any conditional bindings may specify any valid value or\nleave the field unset.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "response": {
+                        "$ref": "Policy"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the access control policy for a resource.\nReturns an empty policy if the resource exists and does not have a policy\nset."
+                    },
+                    "testIamPermissions": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.testIamPermissions",
+                      "path": "v1alpha2/{+resource}:testIamPermissions",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:testIamPermissions",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "resource": {
+                          "description": "REQUIRED: The resource for which the policy detail is being requested.\nSee the operation documentation for the appropriate value for this field.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "resource"
+                      ],
+                      "request": {
+                        "$ref": "TestIamPermissionsRequest"
+                      },
+                      "response": {
+                        "$ref": "TestIamPermissionsResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Returns permissions that a caller has on the specified resource.\nIf the resource does not exist, this will return an empty set of\npermissions, not a NOT_FOUND error.\n\nNote: This operation is designed to be used for building permission-aware\nUIs and command-line tools, not for authorization checking. This operation\nmay \"fail open\" without warning."
+                    },
+                    "create": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.create",
+                      "path": "v1alpha2/{+parent}/annotationStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "parent": {
+                          "description": "The name of the dataset this Annotation store belongs to.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "annotationStoreId": {
+                          "description": "The ID of the Annotation store that is being created.\nThe string must match the following regex: `[\\p{L}\\p{N}_\\-\\.]{1,256}`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "request": {
+                        "$ref": "AnnotationStore"
+                      },
+                      "response": {
+                        "$ref": "AnnotationStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Creates a new Annotation store within the parent dataset."
+                    },
+                    "get": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.get",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the Annotation store to get.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "AnnotationStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the specified Annotation store or returns NOT_FOUND if it does not\nexist."
+                    },
+                    "delete": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.delete",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}",
+                      "httpMethod": "DELETE",
+                      "parameters": {
+                        "name": {
+                          "description": "The resource name of the Annotation store to delete.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Empty"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Deletes the specified Annotation store and removes all annotations that are\ncontained within it."
+                    },
+                    "patch": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.patch",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}",
+                      "httpMethod": "PATCH",
+                      "parameters": {
+                        "name": {
+                          "description": "Output only. Resource name of the Annotation store, of the form\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "updateMask": {
+                          "description": "The update mask applies to the resource. For the `FieldMask` definition,\nsee\nhttps:\/\/developers.google.com\/protocol-buffers\/docs\/reference\/google.protobuf#fieldmask",
+                          "location": "query",
+                          "type": "string",
+                          "format": "google-fieldmask"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "AnnotationStore"
+                      },
+                      "response": {
+                        "$ref": "AnnotationStore"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Updates the specified Annotation store."
+                    },
+                    "list": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.list",
+                      "path": "v1alpha2/{+parent}/annotationStores",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "parent": {
+                          "description": "The name of the dataset.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "pageSize": {
+                          "description": "Limit on the number of Annotation stores to return in a single response.\nIf zero the default page size of 100 is used.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pageToken": {
+                          "description": "The next_page_token value returned from the previous List request, if any.",
+                          "location": "query",
+                          "type": "string"
+                        },
+                        "filter": {
+                          "description": "Restricts stores returned to those matching a filter. Syntax:\nhttps:\/\/cloud.google.com\/appengine\/docs\/standard\/python\/search\/query_strings\nOnly filtering on labels is supported. For example, `labels.key=value`.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "parent"
+                      ],
+                      "response": {
+                        "$ref": "ListAnnotationStoresResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Lists the Annotation stores in the given dataset for a source store."
+                    },
+                    "import": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.import",
+                      "path": "v1alpha2/{+annotationStore}:import",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:import",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "annotationStore": {
+                          "description": "The name of the Annotation store to which the server imports annotations,\nin the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "annotationStore"
+                      ],
+                      "request": {
+                        "$ref": "ImportAnnotationsRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Import\nAnnotations to\nthe Annotation\nstore by\nloading data from the specified sources.\nIf the request is successful, a detailed response is returned as of type\nImportAnnotationsResponse, contained in the\nresponse field when the\noperation finishes.\nThe metadata field type is\nOperationMetadata.\nIf errors occur, the error\nfield type is ImportAnnotationsErrorDetails.\nErrors are also logged to Stackdriver\n(see [Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging)).\nFor example, the following sample log entry shows a\n`failed to parse GCS object` error that occurred while attempting to import\n`gs:\/\/ANNOTATION_FILENAME.json` to\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.\n```json\njsonPayload: {\n  @type:\n  \"type.googleapis.com\/google.cloud.healthcare.logging.ImportAnnotationLogEntry\"\n  error: {\n    code:  3\n    message:  \"failed to parse GCS object\"\n  }\n  source:  \"gs:\/\/ANNOTATION_FILENAME.json\"\n}\nlogName:\n\"projects\/{project_id}\/logs\/healthcare.googleapis.com%2Fimport_annotations\"\noperation: {\n  id:\n  \"projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/operations\/{operation_id}\"\n  producer:  \"healthcare.googleapis.com\/ImportAnnotations\"\n}\nreceiveTimestamp:  \"TIMESTAMP\"\nresource: {\n  labels: {\n    annotation_store_id:  \"{annotation_store_id}\"\n    dataset_id:  \"{dataset_id}\"\n    location:  \"{location_id}\"\n    project_id:  \"{project_id}\"\n  }\n  type:  \"healthcare_annotation_store\"\n}\nseverity:  \"ERROR\"\ntimestamp:  \"TIMESTAMP\"\n```"
+                    },
+                    "export": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.export",
+                      "path": "v1alpha2/{+annotationStore}:export",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:export",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "annotationStore": {
+                          "description": "The Annotation store name to export annotations to, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "annotationStore"
+                      ],
+                      "request": {
+                        "$ref": "ExportAnnotationsRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Export\nAnnotations from\nthe Annotation\nstore.\nIf the request is successful, a detailed response is returned of type\nExportAnnotationsResponse, contained in the\nresponse field when the\noperation finishes.\nThe metadata field type is\nOperationMetadata.\nIf errors occur, the error\nfield type is ImportAnnotationsErrorDetails.\nErrors are also logged to Stackdriver\n(see [Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging) and\nImportAnnotations for a sample log entry)."
+                    },
+                    "evaluate": {
+                      "id": "healthcare.projects.locations.datasets.annotationStores.evaluate",
+                      "path": "v1alpha2/{+evalStore}:evaluate",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/annotationStores/{annotationStoresId}:evaluate",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "evalStore": {
+                          "description": "The Annotation store to compare against `golden_store`, in the format\n`projects\/{project_id}\/locations\/{location_id}\/datasets\/{dataset_id}\/annotationStores\/{annotation_store_id}`.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/annotationStores\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "evalStore"
+                      ],
+                      "request": {
+                        "$ref": "EvaluateAnnotationStoreRequest"
+                      },
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Evaluate an Annotation store against a\nground truth Annotation store.\nWhen the operation finishes successfully, a detailed response is returned\nof type EvaluateAnnotationStoreResponse, contained in the response. The metadata field type is\nOperationMetadata.\nErrors are logged to Stackdriver\n(see [Viewing logs](\/healthcare\/docs\/how-tos\/stackdriver-logging) and\nImportAnnotations for a sample log entry)."
+                    }
+                  }
+                },
+                "operations": {
+                  "methods": {
+                    "list": {
+                      "id": "healthcare.projects.locations.datasets.operations.list",
+                      "path": "v1alpha2/{+name}/operations",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/operations",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the operation's parent resource.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+$",
+                          "type": "string"
+                        },
+                        "filter": {
+                          "description": "The standard list filter.",
+                          "location": "query",
+                          "type": "string"
+                        },
+                        "pageSize": {
+                          "description": "The standard list page size.",
+                          "location": "query",
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "pageToken": {
+                          "description": "The standard list page token.",
+                          "location": "query",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "ListOperationsResponse"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Lists operations that match the specified filter in the request. If the\nserver doesn't support this method, it returns `UNIMPLEMENTED`.\n\nNOTE: the `name` binding allows API services to override the binding\nto use different resource name schemes, such as `users\/*\/operations`. To\noverride the binding, API services can add a binding such as\n`\"\/v1\/{name=users\/*}\/operations\"` to their service configuration.\nFor backwards compatibility, the default name includes the operations\ncollection id, however overriding users must ensure the name binding\nis the parent resource, without the operations collection id."
+                    },
+                    "get": {
+                      "id": "healthcare.projects.locations.datasets.operations.get",
+                      "path": "v1alpha2/{+name}",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/operations/{operationsId}",
+                      "httpMethod": "GET",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the operation resource.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/operations\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "response": {
+                        "$ref": "Operation"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Gets the latest state of a long-running operation.  Clients can use this\nmethod to poll the operation result at intervals as recommended by the API\nservice."
+                    },
+                    "cancel": {
+                      "id": "healthcare.projects.locations.datasets.operations.cancel",
+                      "path": "v1alpha2/{+name}:cancel",
+                      "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/datasets/{datasetsId}/operations/{operationsId}:cancel",
+                      "httpMethod": "POST",
+                      "parameters": {
+                        "name": {
+                          "description": "The name of the operation resource to be cancelled.",
+                          "location": "path",
+                          "required": true,
+                          "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/datasets\/[^\/]+\/operations\/[^\/]+$",
+                          "type": "string"
+                        }
+                      },
+                      "parameterOrder": [
+                        "name"
+                      ],
+                      "request": {
+                        "$ref": "CancelOperationRequest"
+                      },
+                      "response": {
+                        "$ref": "Empty"
+                      },
+                      "scopes": [
+                        "https://www.googleapis.com/auth/cloud-platform"
+                      ],
+                      "description": "Starts asynchronous cancellation on a long-running operation.  The server\nmakes a best effort to cancel the operation, but success is not\nguaranteed.  If the server doesn't support this method, it returns\n`google.rpc.Code.UNIMPLEMENTED`.  Clients can use\nOperations.GetOperation or\nother methods to check whether the cancellation succeeded or whether the\noperation completed despite cancellation. On successful cancellation,\nthe operation is not deleted; instead, it becomes an operation with\nan Operation.error value with a google.rpc.Status.code of 1,\ncorresponding to `Code.CANCELLED`."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "basePath": ""
+}

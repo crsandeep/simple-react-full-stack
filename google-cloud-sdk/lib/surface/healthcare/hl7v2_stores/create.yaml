@@ -1,0 +1,35 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief:  Create a Cloud Healthcare API HL7v2 store.
+    description: |
+      Create a Cloud Healthcare API HL7v2 store.
+    examples: |
+      To create a HL7v2 store called 'test-hl7v2-store', run:
+
+        $ {command} test-hl7v2-store --dataset=test-dataset
+
+      To create a HL7v2 store with the Cloud Pub/Sub topic 'test-pubsub-topic', run:
+
+        $ {command} test-hl7v2-store --dataset=test-dataset --pubsub-topic=projects/my-project/topics/test-pubsub-topic
+
+  request:
+    collection: healthcare.projects.locations.datasets.hl7V2Stores
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+
+  arguments:
+    resource:
+      help_text: Cloud Healthcare API HL7v2 store to create.
+      spec: !REF googlecloudsdk.command_lib.healthcare.resources:hl7v2_store
+
+    params:
+    - api_field: hl7V2Store.notificationConfig.pubsubTopic
+      arg_name: pubsub-topic
+      help_text: |
+        A Google Cloud Pub/Sub topic name for notifications.
+
+        Note: A topic must be created before publishing or subscribing to it. For instructions
+        on creating topics, refer to: https://cloud.google.com/pubsub/docs/admin#create_a_topic

@@ -1,0 +1,1833 @@
+{
+  "kind": "discovery#restDescription",
+  "discoveryVersion": "v1",
+  "id": "datamigration:v1alpha2",
+  "name": "datamigration",
+  "canonicalName": "Cloud Database Migration Service",
+  "version": "v1alpha2",
+  "revision": "0",
+  "title": "Database Migration API",
+  "description": "Manage Cloud Database Migration Service resources on Google Cloud Platform.",
+  "ownerDomain": "google.com",
+  "ownerName": "Google",
+  "icons": {
+    "x16": "http://www.google.com/images/icons/product/search-16.gif",
+    "x32": "http://www.google.com/images/icons/product/search-32.gif"
+   },
+  "documentationLink": "https://cloud.google.com/datamigration/",
+  "protocol": "rest",
+  "rootUrl": "https://datamigration.googleapis.com/",
+  "mtlsRootUrl": "https://datamigration.mtls.googleapis.com/",
+  "servicePath": "",
+  "baseUrl": "https://datamigration.googleapis.com/",
+  "batchPath": "batch",
+  "version_module": true,
+  "fullyEncodeReservedExpansion": true,
+  "parameters": {
+    "access_token": {
+      "type": "string",
+      "description": "OAuth access token.",
+      "location": "query"
+    },
+    "alt": {
+      "type": "string",
+      "description": "Data format for response.",
+      "default": "json",
+      "enum": [
+        "json",
+        "media",
+        "proto"
+      ],
+      "enumDescriptions": [
+        "Responses with Content-Type of application/json",
+        "Media download with context-dependent Content-Type",
+        "Responses with Content-Type of application/x-protobuf"
+      ],
+      "location": "query"
+    },
+    "callback": {
+      "type": "string",
+      "description": "JSONP",
+      "location": "query"
+    },
+    "fields": {
+      "type": "string",
+      "description": "Selector specifying which fields to include in a partial response.",
+      "location": "query"
+    },
+    "key": {
+      "type": "string",
+      "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+      "location": "query"
+    },
+    "oauth_token": {
+      "type": "string",
+      "description": "OAuth 2.0 token for the current user.",
+      "location": "query"
+    },
+    "prettyPrint": {
+      "type": "boolean",
+      "description": "Returns response with indentations and line breaks.",
+      "default": "true",
+      "location": "query"
+    },
+    "quotaUser": {
+      "type": "string",
+      "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.",
+      "location": "query"
+    },
+    "upload_protocol": {
+      "type": "string",
+      "description": "Upload protocol for media (e.g. \"raw\", \"multipart\").",
+      "location": "query"
+    },
+    "uploadType": {
+      "type": "string",
+      "description": "Legacy upload protocol for media (e.g. \"media\", \"multipart\").",
+      "location": "query"
+    },
+    "$.xgafv": {
+      "type": "string",
+      "description": "V1 error format.",
+      "enum": [
+        "1",
+        "2"
+      ],
+      "enumDescriptions": [
+        "v1 error format",
+        "v2 error format"
+      ],
+      "location": "query"
+    }
+  },
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://www.googleapis.com/auth/cloud-platform": {
+          "description": "View and manage your data across Google Cloud Platform services"
+        }
+      }
+    }
+  },
+  "schemas": {
+    "ListOperationsResponse": {
+      "id": "ListOperationsResponse",
+      "description": "The response message for Operations.ListOperations.",
+      "type": "object",
+      "properties": {
+        "operations": {
+          "description": "A list of operations that matches the specified filter in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "Operation"
+          }
+        },
+        "nextPageToken": {
+          "description": "The standard List next-page token.",
+          "type": "string"
+        }
+      }
+    },
+    "Operation": {
+      "id": "Operation",
+      "description": "This resource represents a long-running operation that is the result of a\nnetwork API call.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The server-assigned name, which is only unique within the same service that\noriginally returns it. If you use the default HTTP mapping, the\n`name` should be a resource name ending with `operations\/{unique_id}`.",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Service-specific metadata associated with the operation.  It typically\ncontains progress information and common metadata such as create time.\nSome services might not provide such metadata.  Any method that returns a\nlong-running operation should document the metadata type, if any.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        },
+        "done": {
+          "description": "If the value is `false`, it means the operation is still in progress.\nIf `true`, the operation is completed, and either `error` or `response` is\navailable.",
+          "type": "boolean"
+        },
+        "error": {
+          "description": "The error result of the operation in case of failure or cancellation.",
+          "$ref": "Status"
+        },
+        "response": {
+          "description": "The normal response of the operation in case of success.  If the original\nmethod returns no data on success, such as `Delete`, the response is\n`google.protobuf.Empty`.  If the original method is standard\n`Get`\/`Create`\/`Update`, the response should be the resource.  For other\nmethods, the response should have the type `XxxResponse`, where `Xxx`\nis the original method name.  For example, if the original method name\nis `TakeSnapshot()`, the inferred response type is\n`TakeSnapshotResponse`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        }
+      }
+    },
+    "Status": {
+      "id": "Status",
+      "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https:\/\/github.com\/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https:\/\/cloud.google.com\/apis\/design\/errors).",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "The status code, which should be an enum value of google.rpc.Code.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\ngoogle.rpc.Status.details field, or localized by the client.",
+          "type": "string"
+        },
+        "details": {
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "any",
+              "description": "Properties of the object. Contains field @type with type URL."
+            }
+          }
+        }
+      }
+    },
+    "Empty": {
+      "id": "Empty",
+      "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "CancelOperationRequest": {
+      "id": "CancelOperationRequest",
+      "description": "The request message for Operations.CancelOperation.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "ListMigrationJobsResponse": {
+      "id": "ListMigrationJobsResponse",
+      "description": "Response message for 'ListMigrationJobs' request.",
+      "type": "object",
+      "properties": {
+        "migrationJobs": {
+          "description": "The list of migration jobs objects.",
+          "type": "array",
+          "items": {
+            "$ref": "MigrationJob"
+          }
+        },
+        "nextPageToken": {
+          "description": "A token, which can be sent as `page_token` to retrieve the next page.\nIf this field is omitted, there are no subsequent pages.",
+          "type": "string"
+        },
+        "unreachable": {
+          "description": "Locations that could not be reached.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "MigrationJob": {
+      "id": "MigrationJob",
+      "description": "Represents a Database Migration Service migration job object.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name (URI) of this migration job resource, in the form of:\nprojects\/{project}\/locations\/{location}\/instances\/{instance}.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Output only. The timestamp when the migration job resource was created.\nA timestamp in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.\nExample: \"2014-10-02T15:01:23.045123456Z\".",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. The timestamp when the migration job resource was last updated.\nA timestamp in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.\nExample: \"2014-10-02T15:01:23.045123456Z\".",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "labels": {
+          "description": "The resource labels for migration job to use to annotate any related\nunderlying resources such as Compute Engine VMs. An object containing a\nlist of \"key\": \"value\" pairs.\n\nExample: `{ \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "displayName": {
+          "description": "The migration job display name.",
+          "type": "string"
+        },
+        "state": {
+          "description": "The current migration job state.",
+          "enumDescriptions": [
+            "The state of the migration job is unknown.",
+            "The migration job is down for maintenance.",
+            "The migration job is in draft mode and no resources are created.",
+            "The migration job is being created.",
+            "The migration job is created, not started and is fully editable.",
+            "The migration job is running.",
+            "The migration job failed.",
+            "The migration job has been completed.",
+            "The migration job is being deleted.",
+            "The migration job is being stopped.",
+            "The migration job is currently stopped.",
+            "The migration job has been deleted.",
+            "The migration job is being updated.",
+            "The migration job is starting."
+          ],
+          "type": "string",
+          "enum": [
+            "STATE_UNSPECIFIED",
+            "MAINTENANCE",
+            "DRAFT",
+            "CREATING",
+            "NOT_STARTED",
+            "RUNNING",
+            "FAILED",
+            "COMPLETED",
+            "DELETING",
+            "STOPPING",
+            "STOPPED",
+            "DELETED",
+            "UPDATING",
+            "STARTING"
+          ]
+        },
+        "phase": {
+          "description": "Output only. The current migration job phase.",
+          "enumDescriptions": [
+            "The phase of the migration job is unknown.",
+            "The migration job is in the full dump phase.",
+            "The migration job is CDC phase.",
+            "The migration job is running the promote phase.",
+            "Only RDS flow - waiting for source writes to stop",
+            "Only RDS flow - the sources writes stopped, waiting for dump to begin"
+          ],
+          "type": "string",
+          "enum": [
+            "PHASE_UNSPECIFIED",
+            "FULL_DUMP",
+            "CDC",
+            "PROMOTE_IN_PROGRESS",
+            "WAITING_FOR_SOURCE_WRITES_TO_STOP",
+            "PREPARING_THE_DUMP"
+          ]
+        },
+        "type": {
+          "description": "Required. The migration job type.",
+          "enumDescriptions": [
+            "The type of the migration job is unknown.",
+            "The migration job is a one time migration.",
+            "The migration job is a continuous migration."
+          ],
+          "type": "string",
+          "enum": [
+            "TYPE_UNSPECIFIED",
+            "ONE_TIME",
+            "CONTINUOUS"
+          ]
+        },
+        "dumpPath": {
+          "description": "The path to the dump file in Google Cloud Storage,\nin the format: (gs:\/\/[BUCKET_NAME]\/[OBJECT_NAME]).",
+          "type": "string"
+        },
+        "source": {
+          "description": "Required. The resource name (URI) of the source connection profile.",
+          "type": "string"
+        },
+        "destination": {
+          "description": "Required. The resource name (URI) of the destination connection profile.",
+          "type": "string"
+        },
+        "reverseSshConnectivity": {
+          "description": "The details needed to communicate to the source over Reverse SSH\ntunnel connectivity.",
+          "$ref": "ReverseSshConnectivity"
+        },
+        "vpcPeeringConnectivity": {
+          "description": "The details of the VPC network that the source database is located in.",
+          "$ref": "VpcPeeringConnectivity"
+        },
+        "staticIpConnectivity": {
+          "description": "static ip connectivity data (default, no additional details needed).",
+          "$ref": "StaticIpConnectivity"
+        },
+        "duration": {
+          "description": "Output only. The duration of the migration job (in seconds). A duration in seconds\nwith up to nine fractional digits, terminated by 's'. Example: \"3.5s\".",
+          "type": "string",
+          "format": "google-duration"
+        },
+        "error": {
+          "description": "Output only. The error details in case of state FAILED.",
+          "$ref": "Status"
+        },
+        "sourceDatabase": {
+          "description": "The database engine type and provider of the source.",
+          "$ref": "DatabaseType"
+        },
+        "destinationDatabase": {
+          "description": "The database engine type and provider of the destination.",
+          "$ref": "DatabaseType"
+        },
+        "endTime": {
+          "description": "Output only. If the migration job is completed, the time when it was completed.",
+          "type": "string",
+          "format": "google-datetime"
+        }
+      }
+    },
+    "ReverseSshConnectivity": {
+      "id": "ReverseSshConnectivity",
+      "description": "The details needed to configure a reverse SSH tunnel between the source and\ndestination databases. These details will be used when calling the\ngenerateSshScript method (see\nhttps:\/\/cloud.google.com\/database-migration\/docs\/reference\/rest\/v1alpha2\/projects.locations.migrationJobs\/generateSshScript)\nto produce the script that will help set up the reverse SSH tunnel, and to\nset up the VPC peering between the Cloud SQL private network and the VPC.",
+      "type": "object",
+      "properties": {
+        "vmIp": {
+          "description": "Required. The IP of the virtual machine (Compute Engine) used as the bastion server\nfor the SSH tunnel.",
+          "type": "string"
+        },
+        "vmPort": {
+          "description": "Required. The forwarding port of the virtual machine (Compute Engine) used as the\nbastion server for the SSH tunnel.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "vm": {
+          "description": "The name of the virtual machine (Compute Engine) used as the bastion server\nfor the SSH tunnel.",
+          "type": "string"
+        },
+        "vpc": {
+          "description": "The name of the VPC to peer with the Cloud SQL private network.",
+          "type": "string"
+        }
+      }
+    },
+    "VpcPeeringConnectivity": {
+      "id": "VpcPeeringConnectivity",
+      "description": "The details of the VPC where the source database is located in Google Cloud.\nWe will use this information to set up the VPC peering connection between\nCloud SQL and this VPC.",
+      "type": "object",
+      "properties": {
+        "vpc": {
+          "description": "The name of the VPC network to peer with the Cloud SQL private network.",
+          "type": "string"
+        }
+      }
+    },
+    "StaticIpConnectivity": {
+      "id": "StaticIpConnectivity",
+      "description": "The source database will allow incoming connections from the destination\ndatabase's public IP. You can retrieve the Cloud SQL instance's public IP\nfrom the Cloud SQL console or using Cloud SQL APIs. No additional\nconfiguration is required.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "DatabaseType": {
+      "id": "DatabaseType",
+      "description": "A message defining the database engine and provider.",
+      "type": "object",
+      "properties": {
+        "provider": {
+          "description": "The database provider.",
+          "enumDescriptions": [
+            "The database provider is unknown.",
+            "CloudSQL runs the database.",
+            "RDS runs the database."
+          ],
+          "type": "string",
+          "enum": [
+            "DATABASE_PROVIDER_UNSPECIFIED",
+            "CLOUDSQL",
+            "RDS"
+          ]
+        },
+        "engine": {
+          "description": "The database engine.",
+          "enumDescriptions": [
+            "The source database engine of the migration job is unknown.",
+            "The source engine is MySQL.",
+            "The source engine is PostgreSQL."
+          ],
+          "type": "string",
+          "enum": [
+            "DATABASE_ENGINE_UNSPECIFIED",
+            "MYSQL",
+            "POSTGRESQL"
+          ]
+        }
+      }
+    },
+    "StartMigrationJobRequest": {
+      "id": "StartMigrationJobRequest",
+      "description": "Request message for 'StartMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "StopMigrationJobRequest": {
+      "id": "StopMigrationJobRequest",
+      "description": "Request message for 'StopMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "ResumeMigrationJobRequest": {
+      "id": "ResumeMigrationJobRequest",
+      "description": "Request message for 'ResumeMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "PromoteMigrationJobRequest": {
+      "id": "PromoteMigrationJobRequest",
+      "description": "Request message for 'PromoteMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "VerifyMigrationJobRequest": {
+      "id": "VerifyMigrationJobRequest",
+      "description": "Request message for 'VerifyMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "RestartMigrationJobRequest": {
+      "id": "RestartMigrationJobRequest",
+      "description": "Request message for 'RestartMigrationJob' request.",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "GenerateSshScriptRequest": {
+      "id": "GenerateSshScriptRequest",
+      "description": "Request message for 'GenerateSshScript' request.",
+      "type": "object",
+      "properties": {
+        "vm": {
+          "description": "Required. Bastion VM Instance name to use or to create.",
+          "type": "string"
+        },
+        "vmCreationConfig": {
+          "$ref": "VmCreationConfig"
+        },
+        "vmSelectionConfig": {
+          "$ref": "VmSelectionConfig"
+        },
+        "vmPort": {
+          "description": "The port that will be open on the bastion host",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "VmCreationConfig": {
+      "id": "VmCreationConfig",
+      "type": "object",
+      "properties": {
+        "vmMachineType": {
+          "description": "Required. VM instance machine type to create.",
+          "type": "string"
+        },
+        "vmZone": {
+          "description": "The Google Cloud Platform zone to create the VM in.",
+          "type": "string"
+        },
+        "vpc": {
+          "description": "Required. The VPC name the vm needs to be created in.",
+          "type": "string"
+        }
+      }
+    },
+    "VmSelectionConfig": {
+      "id": "VmSelectionConfig",
+      "type": "object",
+      "properties": {
+        "vmZone": {
+          "description": "Required. The Google Cloud Platform zone the VM is located.",
+          "type": "string"
+        }
+      }
+    },
+    "SshScript": {
+      "id": "SshScript",
+      "description": "Response message for 'GenerateSshScript' request.",
+      "type": "object",
+      "properties": {
+        "script": {
+          "description": "The ssh configuration script.",
+          "type": "string"
+        }
+      }
+    },
+    "ListConnectionProfilesResponse": {
+      "id": "ListConnectionProfilesResponse",
+      "description": "Response message for 'ListConnectionProfiles' request.",
+      "type": "object",
+      "properties": {
+        "connectionProfiles": {
+          "description": "The response list of connection profiles.",
+          "type": "array",
+          "items": {
+            "$ref": "ConnectionProfile"
+          }
+        },
+        "nextPageToken": {
+          "description": "A token, which can be sent as `page_token` to retrieve the next page.\nIf this field is omitted, there are no subsequent pages.",
+          "type": "string"
+        },
+        "unreachable": {
+          "description": "Locations that could not be reached.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ConnectionProfile": {
+      "id": "ConnectionProfile",
+      "description": "A connection profile definition.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The name of this connection profile resource in the form of\nprojects\/{project}\/locations\/{location}\/instances\/{instance}.",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Output only. The timestamp when the resource was created.\nA timestamp in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.\nExample: \"2014-10-02T15:01:23.045123456Z\".",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. The timestamp when the resource was last updated.\nA timestamp in RFC3339 UTC \"Zulu\" format, accurate to nanoseconds.\nExample: \"2014-10-02T15:01:23.045123456Z\".",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "labels": {
+          "description": "The resource labels for connection profile to use to annotate any related\nunderlying resources such as Compute Engine VMs. An object containing a\nlist of \"key\": \"value\" pairs.\n\nExample: `{ \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "state": {
+          "description": "The current connection profile state (e.g. DRAFT, READY, or FAILED).",
+          "enumDescriptions": [
+            "The state of the connection profile is unknown.",
+            "The connection profile is in draft mode and fully editable.",
+            "The connection profile is being created.",
+            "The connection profile is ready.",
+            "The connection profile is being updated.",
+            "The connection profile is being deleted.",
+            "The connection profile has been deleted.",
+            "The last action on the connection profile failed."
+          ],
+          "type": "string",
+          "enum": [
+            "STATE_UNSPECIFIED",
+            "DRAFT",
+            "CREATING",
+            "READY",
+            "UPDATING",
+            "DELETING",
+            "DELETED",
+            "FAILED"
+          ]
+        },
+        "displayName": {
+          "description": "The connection profile display name.",
+          "type": "string"
+        },
+        "mysql": {
+          "description": "A MySQL database connection profile.",
+          "$ref": "MySqlConnectionProfile"
+        },
+        "postgresql": {
+          "description": "A PostgreSQL database connection profile.",
+          "$ref": "PostgreSqlConnectionProfile"
+        },
+        "cloudsql": {
+          "description": "A CloudSQL database connection profile.",
+          "$ref": "CloudSqlConnectionProfile"
+        },
+        "error": {
+          "description": "Output only. The error details in case of state FAILED.",
+          "$ref": "Status"
+        },
+        "provider": {
+          "description": "The database provider.",
+          "enumDescriptions": [
+            "The database provider is unknown.",
+            "CloudSQL runs the database.",
+            "RDS runs the database."
+          ],
+          "type": "string",
+          "enum": [
+            "DATABASE_PROVIDER_UNSPECIFIED",
+            "CLOUDSQL",
+            "RDS"
+          ]
+        }
+      }
+    },
+    "MySqlConnectionProfile": {
+      "id": "MySqlConnectionProfile",
+      "description": "Specifies connection parameters required specifically for MySQL databases.",
+      "type": "object",
+      "properties": {
+        "host": {
+          "description": "Required. The IP or hostname of the source MySQL database.",
+          "type": "string"
+        },
+        "port": {
+          "description": "Required. The network port of the source MySQL database.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "description": "Required. The username that Database Migration Service will use to connect to the\ndatabase. The value is encrypted when stored in Database Migration Service.",
+          "type": "string"
+        },
+        "password": {
+          "description": "Required. The password for the user that Database Migration Service will be using to\nconnect to the database. This field is not returned on request, and the\nvalue is encrypted when stored in Database Migration Service.",
+          "type": "string"
+        },
+        "ssl": {
+          "description": "SSL configuration for the destination to connect to the source database.",
+          "$ref": "SslConfig"
+        },
+        "cloudSqlId": {
+          "description": "If the source is a Cloud SQL database, use this field to\nprovide the Cloud SQL instance ID of the source.",
+          "type": "string"
+        }
+      }
+    },
+    "SslConfig": {
+      "id": "SslConfig",
+      "description": "SSL configuration information.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Output only. The ssl config type according to 'client_key', 'client_certificate' and\n'ca_certificate'.",
+          "enumDescriptions": [
+            "Unspecified.",
+            "Only 'ca_certificate' specified.",
+            "Both server ('ca_certificate'), and client ('client_key',\n'client_certificate') specified."
+          ],
+          "type": "string",
+          "enum": [
+            "SSL_TYPE_UNSPECIFIED",
+            "SERVER_ONLY",
+            "SERVER_CLIENT"
+          ]
+        },
+        "clientKey": {
+          "description": "The unencrypted PKCS#1 or PKCS#8 PEM-encoded private key associated with\nthe Client Certificate. If this field is used then the 'client_certificate'\nfield is mandatory",
+          "type": "string"
+        },
+        "clientCertificate": {
+          "description": "The x509 PEM-encoded certificate that will be used by the replica to\nauthenticate against the source database server.If this field is used then\nthe 'client_key' field is mandatory",
+          "type": "string"
+        },
+        "caCertificate": {
+          "description": "Required. The x509 PEM-encoded certificate of the CA that signed the source database\nserver's certificate. The replica will use this certificate to verify\nit's connecting to the right host.",
+          "type": "string"
+        }
+      }
+    },
+    "PostgreSqlConnectionProfile": {
+      "id": "PostgreSqlConnectionProfile",
+      "description": "Specifies connection parameters required specifically for PostgreSQL\ndatabases.",
+      "type": "object",
+      "properties": {
+        "host": {
+          "description": "Required. The IP or hostname of the source PostgreSQL database.",
+          "type": "string"
+        },
+        "port": {
+          "description": "Required. The network port of the source PostgreSQL database.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "description": "Required. The username that Database Migration Service will use to connect to the\ndatabase. The value is encrypted when stored in Database Migration Service.",
+          "type": "string"
+        },
+        "password": {
+          "description": "Required. The password for the user that Database Migration Service will be using to\nconnect to the database. This field is not returned on request, and the\nvalue is encrypted when stored in Database Migration Service.",
+          "type": "string"
+        },
+        "ssl": {
+          "description": "SSL configuration for the destination to connect to the source database.",
+          "$ref": "SslConfig"
+        },
+        "cloudSqlId": {
+          "description": "If the source is a Cloud SQL database, use this field to\nprovide the Cloud SQL instance ID of the source.",
+          "type": "string"
+        }
+      }
+    },
+    "CloudSqlConnectionProfile": {
+      "id": "CloudSqlConnectionProfile",
+      "description": "Specifies required connection parameters, and, optionally, the parameters\nrequired to create a Cloud SQL destination database instance.",
+      "type": "object",
+      "properties": {
+        "cloudSqlId": {
+          "description": "Output only. The Cloud SQL instance ID that this connection profile is associated with.",
+          "type": "string"
+        },
+        "settings": {
+          "description": "Immutable. Metadata used to create the destination Cloud SQL database.",
+          "$ref": "CloudSqlSettings"
+        },
+        "privateIp": {
+          "description": "Output only. The Cloud SQL database instance's private IP.",
+          "type": "string"
+        },
+        "publicIp": {
+          "description": "Output only. The Cloud SQL database instance's public IP.",
+          "type": "string"
+        }
+      }
+    },
+    "CloudSqlSettings": {
+      "id": "CloudSqlSettings",
+      "description": "Settings for creating a Cloud SQL database instance.",
+      "type": "object",
+      "properties": {
+        "databaseVersion": {
+          "description": "The database engine type and version (`MYSQL_5_7` or `MYSQL_5_6`).",
+          "enumDescriptions": [
+            "Unspecified version.",
+            "MySQL 5.6.",
+            "MySQL 5.7.",
+            "PostgreSQL 9.6.",
+            "PostgreSQL 11."
+          ],
+          "type": "string",
+          "enum": [
+            "SQL_DATABASE_VERSION_UNSPECIFIED",
+            "MYSQL_5_6",
+            "MYSQL_5_7",
+            "POSTGRES_9_6",
+            "POSTGRES_11"
+          ]
+        },
+        "userLabels": {
+          "description": "The resource labels for a Cloud SQL instance to use to annotate any related\nunderlying resources such as Compute Engine VMs.\nAn object containing a list of \"key\": \"value\" pairs.\n\nExample: `{ \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tier": {
+          "description": "The tier (or machine type) for this instance, for example:\n`db-n1-standard-1` (MySQL instances) or\n`db-custom-1-3840` (PostgreSQL instances).\nFor more information, see\n[Cloud SQL Instance Settings](\/sql\/docs\/db_path\/instance-settings).",
+          "type": "string"
+        },
+        "storageAutoResizeLimit": {
+          "description": "The maximum size to which storage capacity can be automatically increased.\nThe default value is 0, which specifies that there is no limit.",
+          "type": "string",
+          "format": "int64"
+        },
+        "activationPolicy": {
+          "description": "The activation policy specifies when the instance is activated; it is\napplicable only when the instance state is 'RUNNABLE'. Valid values:\n\n'ALWAYS': The instance is on, and remains so even in\nthe absence of connection requests.\n\n`NEVER`: The instance is off; it is not activated, even if a\nconnection request arrives.",
+          "enumDescriptions": [
+            "unspecified policy.",
+            "The instance is always up and running.",
+            "The instance should never spin up."
+          ],
+          "type": "string",
+          "enum": [
+            "SQL_ACTIVATION_POLICY_UNSPECIFIED",
+            "ALWAYS",
+            "NEVER"
+          ]
+        },
+        "ipConfig": {
+          "description": "The settings for IP Management. This allows to enable or disable the\ninstance IP and manage which external networks can connect to the instance.\nThe IPv4 address cannot be disabled.",
+          "$ref": "SqlIpConfig"
+        },
+        "autoStorageIncrease": {
+          "description": "[default: ON] If you enable this setting, Cloud SQL checks your available\nstorage every 30 seconds. If the available storage falls below a threshold\nsize, Cloud SQL automatically adds additional storage capacity. If the\navailable storage repeatedly falls below the threshold size, Cloud SQL\ncontinues to add storage until it reaches the maximum of 30 TB.",
+          "type": "boolean"
+        },
+        "databaseFlags": {
+          "description": "The database flags passed to the Cloud SQL instance at startup.\nAn object containing a list of \"key\": value pairs.\nExample: { \"name\": \"wrench\", \"mass\": \"1.3kg\", \"count\": \"3\" }.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "dataDiskType": {
+          "description": "The type of storage: `PD_SSD` (default) or `PD_HDD`.",
+          "enumDescriptions": [
+            "Unspecified.",
+            "SSD disk.",
+            "HDD disk."
+          ],
+          "type": "string",
+          "enum": [
+            "SQL_DATA_DISK_TYPE_UNSPECIFIED",
+            "PD_SSD",
+            "PD_HDD"
+          ]
+        },
+        "dataDiskSizeGb": {
+          "description": "The storage capacity available to the database, in GB.\nThe minimum (and default) size is 10GB.",
+          "type": "string",
+          "format": "int64"
+        },
+        "zone": {
+          "description": "The Google Cloud Platform zone where your Cloud SQL datdabse instance is\nlocated.",
+          "type": "string"
+        },
+        "sourceId": {
+          "description": "The Database Migration Service source connection profile ID,\nin the format:\n`projects\/my_project_name\/locations\/us-central1\/connectionProfiles\/connection_profile_ID`",
+          "type": "string"
+        }
+      }
+    },
+    "SqlIpConfig": {
+      "id": "SqlIpConfig",
+      "description": "IP Management configuration.",
+      "type": "object",
+      "properties": {
+        "enableIpv4": {
+          "description": "Whether the instance should be assigned an IPv4 address or not.",
+          "type": "boolean"
+        },
+        "privateNetwork": {
+          "description": "The resource link for the VPC network from which the Cloud SQL instance is\naccessible for private IP. For example,\n`\/projects\/myProject\/global\/networks\/default`. This setting can\nbe updated, but it cannot be removed after it is set.",
+          "type": "string"
+        },
+        "requireSsl": {
+          "description": "Whether SSL connections over IP should be enforced or not.",
+          "type": "boolean"
+        },
+        "authorizedNetworks": {
+          "description": "The list of external networks that are allowed to connect to the instance\nusing the IP. See\nhttps:\/\/en.wikipedia.org\/wiki\/CIDR_notation#CIDR_notation, also known as\n'slash' notation (e.g. `192.168.100.0\/24`).",
+          "type": "array",
+          "items": {
+            "$ref": "SqlAclEntry"
+          }
+        }
+      }
+    },
+    "SqlAclEntry": {
+      "id": "SqlAclEntry",
+      "description": "An entry for an Access Control list.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The whitelisted value for the access control list.",
+          "type": "string"
+        },
+        "expireTime": {
+          "description": "The time when this access control entry expires in\n[RFC 3339](https:\/\/tools.ietf.org\/html\/rfc3339) format, for example:\n`2012-11-15T16:19:00.094Z`.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "label": {
+          "description": "A label to identify this entry.",
+          "type": "string"
+        }
+      }
+    },
+    "ListLocationsResponse": {
+      "id": "ListLocationsResponse",
+      "description": "The response message for Locations.ListLocations.",
+      "type": "object",
+      "properties": {
+        "locations": {
+          "description": "A list of locations that matches the specified filter in the request.",
+          "type": "array",
+          "items": {
+            "$ref": "Location"
+          }
+        },
+        "nextPageToken": {
+          "description": "The standard List next-page token.",
+          "type": "string"
+        }
+      }
+    },
+    "Location": {
+      "id": "Location",
+      "description": "A resource that represents Google Cloud Platform location.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Resource name for the location, which may vary between implementations.\nFor example: `\"projects\/example-project\/locations\/us-east1\"`",
+          "type": "string"
+        },
+        "locationId": {
+          "description": "The canonical id for this location. For example: `\"us-east1\"`.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "The friendly name for this location, typically a nearby city name.\nFor example, \"Tokyo\".",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Cross-service attributes for the location. For example\n\n    {\"cloud.googleapis.com\/region\": \"us-east1\"}",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "description": "Service-specific metadata. For example the available capacity at the given\nlocation.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        }
+      }
+    },
+    "GoogleCloudClouddmsV1alpha2OperationMetadata": {
+      "id": "GoogleCloudClouddmsV1alpha2OperationMetadata",
+      "description": "Represents the metadata of the long-running operation.",
+      "type": "object",
+      "properties": {
+        "createTime": {
+          "description": "Output only. The time the operation was created.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "endTime": {
+          "description": "Output only. The time the operation finished running.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "target": {
+          "description": "Output only. Server-defined resource path for the target of the operation.",
+          "type": "string"
+        },
+        "verb": {
+          "description": "Output only. Name of the verb executed by the operation.",
+          "type": "string"
+        },
+        "statusMessage": {
+          "description": "Output only. Human-readable status of the operation, if any.",
+          "type": "string"
+        },
+        "requestedCancellation": {
+          "description": "Output only. Identifies whether the user has requested cancellation\nof the operation. Operations that have successfully been cancelled\nhave Operation.error value with a google.rpc.Status.code of 1,\ncorresponding to `Code.CANCELLED`.",
+          "type": "boolean"
+        },
+        "apiVersion": {
+          "description": "Output only. API version used to start the operation.",
+          "type": "string"
+        }
+      }
+    },
+    "MigrationJobVerificationError": {
+      "id": "MigrationJobVerificationError",
+      "description": "Error message of a verification Migration job.",
+      "type": "object",
+      "properties": {
+        "errorCode": {
+          "description": "An instance of ErrorCode specifying the error that occurred.",
+          "enumDescriptions": [
+            "An unknown error occurred",
+            "We failed to connect to one of the connection profile.",
+            "We failed to authenticate to one of the connection profile.",
+            "One of the involved connection profiles has an invalid configuration.",
+            "The versions of the source and the destination are incompatible.",
+            "The types of the source and the destination are incompatible."
+          ],
+          "type": "string",
+          "enum": [
+            "ERROR_CODE_UNSPECIFIED",
+            "CONNECTION_FAILURE",
+            "AUTHENTICATION_FAILURE",
+            "INVALID_CONNECTION_PROFILE_CONFIG",
+            "VERSION_INCOMPATIBILITY",
+            "CONNECTION_PROFILE_TYPES_INCOMPATIBILITY"
+          ]
+        },
+        "errorMessage": {
+          "description": "A formatted message with further details about the error and a CTA,",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "resources": {
+    "projects": {
+      "resources": {
+        "locations": {
+          "methods": {
+            "list": {
+              "id": "datamigration.projects.locations.list",
+              "path": "v1alpha2/{+name}/locations",
+              "flatPath": "v1alpha2/projects/{projectsId}/locations",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "The resource that owns the locations collection, if applicable.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+$",
+                  "type": "string"
+                },
+                "filter": {
+                  "description": "The standard list filter.",
+                  "location": "query",
+                  "type": "string"
+                },
+                "includeUnrevealedLocations": {
+                  "description": "If true, the returned list will include locations which are not yet\nrevealed.",
+                  "location": "query",
+                  "type": "boolean"
+                },
+                "pageSize": {
+                  "description": "The standard list page size.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "The standard list page token.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "ListLocationsResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform"
+              ],
+              "description": "Lists information about the supported locations for this service."
+            },
+            "get": {
+              "id": "datamigration.projects.locations.get",
+              "path": "v1alpha2/{+name}",
+              "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}",
+              "httpMethod": "GET",
+              "parameters": {
+                "name": {
+                  "description": "Resource name for the location.",
+                  "location": "path",
+                  "required": true,
+                  "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "name"
+              ],
+              "response": {
+                "$ref": "Location"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform"
+              ],
+              "description": "Gets information about a location."
+            }
+          }
+          ,
+          "resources": {
+            "operations": {
+              "methods": {
+                "list": {
+                  "id": "datamigration.projects.locations.operations.list",
+                  "path": "v1alpha2/{+name}/operations",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/operations",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the operation's parent resource.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "filter": {
+                      "description": "The standard list filter.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "pageSize": {
+                      "description": "The standard list page size.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "pageToken": {
+                      "description": "The standard list page token.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "ListOperationsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Lists operations that match the specified filter in the request. If the\nserver doesn't support this method, it returns `UNIMPLEMENTED`.\n\nNOTE: the `name` binding allows API services to override the binding\nto use different resource name schemes, such as `users\/*\/operations`. To\noverride the binding, API services can add a binding such as\n`\"\/v1\/{name=users\/*}\/operations\"` to their service configuration.\nFor backwards compatibility, the default name includes the operations\ncollection id, however overriding users must ensure the name binding\nis the parent resource, without the operations collection id."
+                },
+                "get": {
+                  "id": "datamigration.projects.locations.operations.get",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/operations/{operationsId}",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the operation resource.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/operations\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Gets the latest state of a long-running operation.  Clients can use this\nmethod to poll the operation result at intervals as recommended by the API\nservice."
+                },
+                "delete": {
+                  "id": "datamigration.projects.locations.operations.delete",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/operations/{operationsId}",
+                  "httpMethod": "DELETE",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the operation resource to be deleted.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/operations\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Empty"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Deletes a long-running operation. This method indicates that the client is\nno longer interested in the operation result. It does not cancel the\noperation. If the server doesn't support this method, it returns\n`google.rpc.Code.UNIMPLEMENTED`."
+                },
+                "cancel": {
+                  "id": "datamigration.projects.locations.operations.cancel",
+                  "path": "v1alpha2/{+name}:cancel",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/operations/{operationsId}:cancel",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of the operation resource to be cancelled.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/operations\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "CancelOperationRequest"
+                  },
+                  "response": {
+                    "$ref": "Empty"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Starts asynchronous cancellation on a long-running operation.  The server\nmakes a best effort to cancel the operation, but success is not\nguaranteed.  If the server doesn't support this method, it returns\n`google.rpc.Code.UNIMPLEMENTED`.  Clients can use\nOperations.GetOperation or\nother methods to check whether the cancellation succeeded or whether the\noperation completed despite cancellation. On successful cancellation,\nthe operation is not deleted; instead, it becomes an operation with\nan Operation.error value with a google.rpc.Status.code of 1,\ncorresponding to `Code.CANCELLED`."
+                }
+              }
+            },
+            "migrationJobs": {
+              "methods": {
+                "list": {
+                  "id": "datamigration.projects.locations.migrationJobs.list",
+                  "path": "v1alpha2/{+parent}/migrationJobs",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "parent": {
+                      "description": "The parent, which owns this collection of migrationJobs.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "pageSize": {
+                      "description": "The maximum number of migration jobs to return. The service may return\nfewer than this value. If unspecified, at most 50 migration jobs will be\nreturned. The maximum value is 1000; values above 1000 will be coerced to\n1000.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "pageToken": {
+                      "description": "The nextPageToken value received in the previous call to\nmigrationJobs.list, used in the subsequent request to retrieve the next\npage of results. On first call this should be left blank. When paginating,\nall other parameters provided to migrationJobs.list must match the call\nthat provided the page token.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "filter": {
+                      "description": "A filter expression that filters migration jobs listed in the response.\nThe expression must specify the field name, a comparison operator, and the\nvalue that you want to use for filtering. The value must be a string,\na number, or a boolean. The comparison operator must be\neither =, !=, >, or <. For example, list migration jobs created this year\nby specifying <b>createTime %gt; 2020-01-01T00:00:00.000000000Z.<\/b>\nYou can also filter nested fields. For example, you could specify\n<b>reverseSshConnectivity.vmIp = \"1.2.3.4\"<\/b> to select all migration\njobs connecting through the specific SSH tunnel bastion.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "orderBy": {
+                      "description": "Sort the results based on the migration job name.\nValid values are: \"name\", \"name asc\", and \"name desc\".",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "response": {
+                    "$ref": "ListMigrationJobsResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Lists migration jobs in a given project and location."
+                },
+                "get": {
+                  "id": "datamigration.projects.locations.migrationJobs.get",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to get.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "MigrationJob"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Gets details of a single migration job."
+                },
+                "create": {
+                  "id": "datamigration.projects.locations.migrationJobs.create",
+                  "path": "v1alpha2/{+parent}/migrationJobs",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "parent": {
+                      "description": "The parent, which owns this collection of migration jobs.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "migrationJobId": {
+                      "description": "Required. The ID of the instance to create.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "request": {
+                    "$ref": "MigrationJob"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Creates a new migration job in a given project and location."
+                },
+                "patch": {
+                  "id": "datamigration.projects.locations.migrationJobs.patch",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}",
+                  "httpMethod": "PATCH",
+                  "parameters": {
+                    "name": {
+                      "description": "The name (URI) of this migration job resource, in the form of:\nprojects\/{project}\/locations\/{location}\/instances\/{instance}.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "updateMask": {
+                      "description": "Required. Field mask is used to specify the fields to be overwritten in the\nmigration job resource by the update.",
+                      "location": "query",
+                      "type": "string",
+                      "format": "google-fieldmask"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "MigrationJob"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Updates the parameters of a single migration job."
+                },
+                "delete": {
+                  "id": "datamigration.projects.locations.migrationJobs.delete",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}",
+                  "httpMethod": "DELETE",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to delete.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "force": {
+                      "description": "The destination CloudSQL connection profile is always deleted with the\nmigration job. In case of force delete, the destination CloudSQL replica\ndatabase is also deleted.",
+                      "location": "query",
+                      "type": "boolean"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Deletes a single migration job."
+                },
+                "start": {
+                  "id": "datamigration.projects.locations.migrationJobs.start",
+                  "path": "v1alpha2/{+name}:start",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:start",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to start.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "StartMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Start an already created migration job."
+                },
+                "stop": {
+                  "id": "datamigration.projects.locations.migrationJobs.stop",
+                  "path": "v1alpha2/{+name}:stop",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:stop",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to stop.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "StopMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Stops a running migration job."
+                },
+                "resume": {
+                  "id": "datamigration.projects.locations.migrationJobs.resume",
+                  "path": "v1alpha2/{+name}:resume",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:resume",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to resume.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "ResumeMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Resume a migration job that is currently stopped and is resumable (was\nstopped during CDC phase)."
+                },
+                "promote": {
+                  "id": "datamigration.projects.locations.migrationJobs.promote",
+                  "path": "v1alpha2/{+name}:promote",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:promote",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to promote.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "PromoteMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Promote a migration job, stopping replication to the destination and\npromoting the destination to be a standalone database."
+                },
+                "verify": {
+                  "id": "datamigration.projects.locations.migrationJobs.verify",
+                  "path": "v1alpha2/{+name}:verify",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:verify",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to verify.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "VerifyMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Verify a migration job, making sure the destination can reach the source\nand that all configuration and prerequisites are met."
+                },
+                "restart": {
+                  "id": "datamigration.projects.locations.migrationJobs.restart",
+                  "path": "v1alpha2/{+name}:restart",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:restart",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to restart.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "RestartMigrationJobRequest"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Restart a stopped or failed migration job, resetting the destination\ninstance to its original state and starting the migration process from\nscratch."
+                },
+                "generateSshScript": {
+                  "id": "datamigration.projects.locations.migrationJobs.generateSshScript",
+                  "path": "v1alpha2/{+name}:generateSshScript",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/migrationJobs/{migrationJobsId}:generateSshScript",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the migration job resource to generate the SSH script.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/migrationJobs\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "GenerateSshScriptRequest"
+                  },
+                  "response": {
+                    "$ref": "SshScript"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Generate a SSH configuration script to configure the reverse SSH\nconnectivity."
+                }
+              }
+            },
+            "connectionProfiles": {
+              "methods": {
+                "list": {
+                  "id": "datamigration.projects.locations.connectionProfiles.list",
+                  "path": "v1alpha2/{+parent}/connectionProfiles",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/connectionProfiles",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "parent": {
+                      "description": "The parent, which owns this collection of connection profiles.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "pageSize": {
+                      "description": "The maximum number of connection profiles to return. The service may return\nfewer than this value. If unspecified, at most 50 connection profiles will\nbe returned. The maximum value is 1000; values above 1000 will be coerced\nto 1000.",
+                      "location": "query",
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "pageToken": {
+                      "description": "A page token, received from a previous `ListConnectionProfiles` call.\nProvide this to retrieve the subsequent page.\n\nWhen paginating, all other parameters provided to `ListConnectionProfiles`\nmust match the call that provided the page token.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "filter": {
+                      "description": "A filter expression that filters connection profiles listed in the\nresponse. The expression must specify the field name, a comparison\noperator, and the value that you want to use for filtering. The value must\nbe a string, a number, or a boolean. The comparison operator must be either\n=, !=, >, or <. For example, list connection profiles created this year by\nspecifying <b>createTime %gt; 2020-01-01T00:00:00.000000000Z<\/b>. You can\nalso filter nested fields. For example, you could specify <b>mySql.username\n= %lt;my_username%gt;<\/b> to list all connection profiles configured to\nconnect with a specific username.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "orderBy": {
+                      "description": "the order by fields for the result.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "response": {
+                    "$ref": "ListConnectionProfilesResponse"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Retrieve a list of all connection profiles in a given project and location."
+                },
+                "get": {
+                  "id": "datamigration.projects.locations.connectionProfiles.get",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/connectionProfiles/{connectionProfilesId}",
+                  "httpMethod": "GET",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the connection profile resource to get.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/connectionProfiles\/[^\/]+$",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "ConnectionProfile"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Gets details of a single connection profile."
+                },
+                "create": {
+                  "id": "datamigration.projects.locations.connectionProfiles.create",
+                  "path": "v1alpha2/{+parent}/connectionProfiles",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/connectionProfiles",
+                  "httpMethod": "POST",
+                  "parameters": {
+                    "parent": {
+                      "description": "The parent, which owns this collection of connection profiles.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "connectionProfileId": {
+                      "description": "Required. The connection profile identifier.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "parent"
+                  ],
+                  "request": {
+                    "$ref": "ConnectionProfile"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Creates a new connection profile in a given project and location."
+                },
+                "patch": {
+                  "id": "datamigration.projects.locations.connectionProfiles.patch",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/connectionProfiles/{connectionProfilesId}",
+                  "httpMethod": "PATCH",
+                  "parameters": {
+                    "name": {
+                      "description": "The name of this connection profile resource in the form of\nprojects\/{project}\/locations\/{location}\/instances\/{instance}.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/connectionProfiles\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "updateMask": {
+                      "description": "Required. Field mask is used to specify the fields to be overwritten in the\nconnection profile resource by the update.",
+                      "location": "query",
+                      "type": "string",
+                      "format": "google-fieldmask"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "request": {
+                    "$ref": "ConnectionProfile"
+                  },
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Update the configuration of a single connection profile."
+                },
+                "delete": {
+                  "id": "datamigration.projects.locations.connectionProfiles.delete",
+                  "path": "v1alpha2/{+name}",
+                  "flatPath": "v1alpha2/projects/{projectsId}/locations/{locationsId}/connectionProfiles/{connectionProfilesId}",
+                  "httpMethod": "DELETE",
+                  "parameters": {
+                    "name": {
+                      "description": "Name of the connection profile resource to delete.",
+                      "location": "path",
+                      "required": true,
+                      "pattern": "^projects\/[^\/]+\/locations\/[^\/]+\/connectionProfiles\/[^\/]+$",
+                      "type": "string"
+                    },
+                    "requestId": {
+                      "description": "A unique id used to identify the request. If the server receives two\nrequests with the same id, then the second request will be ignored.\n\nIt is recommended to always set this value to a UUID.\n\nThe id must contain only letters (a-z, A-Z), numbers (0-9), underscores\n(_), and hyphens (-). The maximum length is 40 characters.",
+                      "location": "query",
+                      "type": "string"
+                    },
+                    "force": {
+                      "description": "In case of force delete, the CloudSQL replica database is also deleted\n(only for CloudSQL connection profile).",
+                      "location": "query",
+                      "type": "boolean"
+                    }
+                  },
+                  "parameterOrder": [
+                    "name"
+                  ],
+                  "response": {
+                    "$ref": "Operation"
+                  },
+                  "scopes": [
+                    "https://www.googleapis.com/auth/cloud-platform"
+                  ],
+                  "description": "Deletes a single Database Migration Service connection profile.\nA connection profile can only be deleted if it is not in use by any\nactive migration jobs."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "basePath": ""
+}

@@ -1,0 +1,44 @@
+- release_tracks: [ALPHA, BETA, GA]
+
+  help_text:
+    brief: Update a Compute Engine reservation.
+    description: Update a Compute Engine reservation.
+    examples: |
+      To update a given Compute Enginer reservation with 500 VM instances, run:
+
+        $ {command} my-reservation --zone=ZONE --vm-count=500
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.compute.resources:reservation
+      help_text: The name of the reservation to update.
+    params:
+    - arg_name: vm-count
+      required: true
+      type: int
+      api_field: reservationsResizeRequest.specificSkuCount
+      help_text: |
+        Number of VM instances can be updated. The value of this field must be an int in the
+        range [1, 1000].
+
+  request:
+    collection: compute.reservations
+    method: resize
+    api_version: v1
+    BETA:
+      api_version: beta
+    ALPHA:
+      api_version: alpha
+
+  async:
+    api_version: v1
+    BETA:
+      api_version: beta
+    ALPHA:
+      api_version: alpha
+    method: wait
+    collection: compute.zoneOperations
+    response_name_field: selfLink
+    state:
+      field: status
+      success_values: ['DONE']

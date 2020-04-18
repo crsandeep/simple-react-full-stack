@@ -1,0 +1,33 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      Mark an insight's state as DISMISSED. Can be applied to insights in ACTIVE state.
+    description: |
+      Mark an insight's state as DISMISSED. Can be applied to insights in ACTIVE state.
+    examples: |
+      To mark an insight as DISMISSED:
+
+        $ {command} abcd-1234 --project=project-name --location=global --insight-type=google.compute.firewall.Insight --etag=abc123
+
+  request:
+    collection: recommender.projects.locations.insightTypes.insights
+    method: markDismissed
+    api_version: v1alpha2
+
+  arguments:
+    resource:
+      help_text: The insight to mark as dismissed.
+      spec: !REF googlecloudsdk.command_lib.recommender.resources:insight
+    params:
+    - arg_name: etag
+      api_field: googleCloudRecommenderV1alpha2MarkInsightDismissedRequest.etag
+      help_text: Insight's current etag value.
+      required: true
+    - arg_name: recommendation-change-type
+      api_field: googleCloudRecommenderV1alpha2MarkInsightDismissedRequest.recommendationChangeType
+      help_text: Indicate whether or not dismiss state will apply to associated recommendations.
+      choices:
+      - arg_value: DISMISS
+        enum_value: DISMISS_RECOMMENDATIONS
+      - arg_value: LEAVE_UNCHANGED
+        enum_value: LEAVE_RECOMMENDATIONS_UNCHANGED

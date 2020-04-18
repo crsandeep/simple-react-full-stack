@@ -1,0 +1,42 @@
+- release_tracks: [ALPHA]
+  hidden: true
+  help_text:
+    brief: |
+      Restore a Cloud Filestore instance to a snapshot.
+    description: |
+      Restore an existing Cloud Filestore instance to an existing snapshot.
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.filestore.resources:instance
+      help_text: |
+        Arguments and flags that specify the Filestore instance to restore.
+    params:
+    - arg_name: file-share
+      required: true
+      api_field: restoreInstanceRequest.fileShare
+      help_text: |
+        File share destination of the restored snapshot.
+    - arg_name: source-snapshot
+      required: true
+      help_text: |
+        Name of the Filestore snapshot to restore from.
+    - arg_name: source-snapshot-region
+      required: false
+      help_text: |
+        Region of the Filestore snapshot to restore from. If unspecified, it
+        is assumed that the Filestore snapshot is local.
+
+  request:
+    api_version: v1p1alpha1
+    collection: file.projects.locations.instances
+    method: restore
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.filestore.snapshots.util:AddSnapshotNameToRequest
+
+  async:
+    collection: file.projects.locations.operations
+
+  input:
+    confirmation_prompt: |
+      You are about to override existing data in [{__name__}].

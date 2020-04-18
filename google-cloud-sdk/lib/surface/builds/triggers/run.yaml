@@ -1,0 +1,34 @@
+- release_tracks: [ALPHA, BETA]
+  command_type: GENERIC
+  help_text:
+    brief: Run a build trigger.
+    description: Run a build trigger.
+    examples: |
+      To run a build trigger at the master branch, run:
+
+        $ {command} --branch=master my-trigger
+
+  request:
+    collection: cloudbuild.projects.triggers
+    api_version: v1
+    method: run
+  arguments:
+    resource:
+      help_text: "Build Trigger."
+      spec: !REF googlecloudsdk.command_lib.cloudbuild.resources:trigger
+
+    params:
+    - group:
+        mutex: true
+        required: true
+        help_text: Repository source.
+        params:
+        - api_field: repoSource.branchName
+          arg_name: branch
+          help_text: Git branch to run trigger against.
+        - api_field: repoSource.tagName
+          arg_name: tag
+          help_text: Git tag to run trigger against.
+        - api_field: repoSource.commitSha
+          arg_name: sha
+          help_text: Git commit SHA to run trigger against.

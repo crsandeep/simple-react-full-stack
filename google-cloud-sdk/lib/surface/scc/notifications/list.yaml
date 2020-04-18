@@ -1,0 +1,21 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: List Cloud Security Command Center notification configs.
+    description: List Cloud Security Command Center notification configs.
+    examples: |
+      List notification configs from organization 123456
+
+        $ {command} 123456
+
+        $ {command} organizations/123456
+
+  request:
+    collection: securitycenter.organizations.notificationConfigs
+    disable_resource_check: true
+    api_version: v1
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.notifications.request_hooks:ListNotificationReqHook
+
+  arguments:
+    additional_arguments_hook: googlecloudsdk.command_lib.scc.hooks:AppendOrgArg

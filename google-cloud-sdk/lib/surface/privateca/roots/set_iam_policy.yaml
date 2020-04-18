@@ -1,0 +1,27 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      Set the IAM policy for a root Certificate Authority.
+    description: |
+      Sets the IAM policy for the given root Certificate Authority as defined in a JSON or YAML file.
+
+      See https://cloud.google.com/iam/docs/managing-policies for details of
+      the policy file format and contents.
+    examples: |
+      The following command will read am IAM policy defined in a JSON file
+      'policy.json' and set it for the CA 'prod-root' with the location 'us':
+
+        $ {command} prod-root policy.json --location us
+
+  request:
+    collection: privateca.projects.locations.certificateAuthorities
+    api_version: v1alpha1
+
+  arguments:
+    resource:
+      help_text: The certificate authority for which to update the IAM policy.
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:certificate_authority
+
+  iam:
+    # TODO(b/149315616): Enable iam conditionals
+    enable_condition: false

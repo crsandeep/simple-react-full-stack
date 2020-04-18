@@ -1,0 +1,32 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: |
+      Add IAM policy binding for a subordinate Certificate Authority.
+    description: |
+      Adds a policy binding to the IAM policy of a subordinate Certificate Authority. One binding
+      consists of a member and a role.
+
+      See https://cloud.google.com/iam/docs/managing-policies for details of
+      the policy file format and contents.
+    examples: |
+      To add an IAM policy binding for the role of 'roles/privateca.certificateManager' for the user
+      'test-user@gmail.com' on the CA 'server-tls-1' with the location 'us', run:
+
+        $ {command} server-tls-1 \
+          --location 'us' \
+          --member 'user:test-user@gmail.com' \
+          --role 'roles/privateca.certificateManager'
+
+  request:
+    collection: privateca.projects.locations.certificateAuthorities
+    api_version: v1alpha1
+
+  arguments:
+    resource:
+      help_text: The certificate authority for which to add the IAM policy binding.
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:certificate_authority
+
+  iam:
+    # TODO(b/149315616): Enable iam conditionals
+    enable_condition: false

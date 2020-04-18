@@ -1,0 +1,50 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+title: compute alpha UrlMapTest export schema
+description: A gcloud export/import command YAML validation schema.
+type: object
+additionalProperties: false
+properties:
+  COMMENT:
+    type: object
+    description: User specified info ignored by gcloud import.
+    additionalProperties: false
+    properties:
+      template-id:
+        type: string
+      region:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+      version:
+        type: string
+  UNKNOWN:
+    type: array
+    description: Unknown API fields that cannot be imported.
+    items:
+      type: string
+  backendServiceWeight:
+    description: |-
+      The weight to use for the supplied host and path when using advanced
+      routing rules that involve traffic splitting.
+    type: uint32
+  description:
+    description: Description of this test case.
+    type: string
+  expectedUrlRedirect:
+    description: |-
+      The expected URL that should be redirected to for the host and path being
+      tested.
+    type: string
+  host:
+    description: Host portion of the URL.
+    type: string
+  path:
+    description: Path portion of the URL.
+    type: string
+  service:
+    description: |-
+      Expected BackendService resource the given URL should be mapped to.
+    type: string

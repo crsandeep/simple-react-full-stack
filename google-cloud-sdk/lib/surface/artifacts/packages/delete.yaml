@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: |
+      Delete an Artifact Registry package.
+    description: |
+      Delete an Artifact Registry package.
+
+      This command can fail for the following reasons:
+        * The specified package does not exist.
+        * The active account does not have permission to delete packages.
+
+    examples: |
+      To delete a package named `my-pkg` under the current project, repository, and location, run:
+
+          $ {command} my-repo
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.artifacts.resources:package
+      help_text: |
+        The Artifact Registry package to delete.
+
+  request: &request
+    api_version: v1beta1
+    collection: artifactregistry.projects.locations.repositories.packages
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.artifacts.util:ValidateLocationHook
+
+  async:
+    collection: artifactregistry.projects.locations.operations

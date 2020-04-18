@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: |
+      Delete an Artifact Registry repository.
+    description: |
+      Delete an Artifact Registry repository. Before you delete a repository, ensure that any
+      active dependencies on this repository are adjusted to use a new location.
+
+      This command can fail for the following reasons:
+        * The specified repository does not exist.
+        * The active account does not have permission to delete repositories.
+    examples: |
+      To delete repository named `my-repo` under the current project, run:
+
+        $ {command} my-repo
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.artifacts.resources:repository_without_property
+      help_text: |
+        The Artifact Registry repository to delete.
+
+  async:
+    collection: artifactregistry.projects.locations.operations
+
+  request:
+    api_version: v1beta1
+    collection: artifactregistry.projects.locations.repositories
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.artifacts.util:ValidateLocationHook

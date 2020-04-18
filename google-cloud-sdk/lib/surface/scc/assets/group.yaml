@@ -1,0 +1,78 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Filter an organization's assets and groups them by their specified properties.
+    description: Filter an organization's assets and groups them by their specified properties.
+    examples: |
+      Group assets under organization 123456 by their type (e.g. project, disk, compute instance, service etc):
+
+        $ {command} 123456 --group-by "security_center_properties.resource_type"
+
+      Group compute instances (assets) under organization 123456 by their respective projects:
+
+        $ {command} 123456 --filter "security_center_properties.resource_type=\"google.compute.Instance\"" --group-by "security_center_properties.resource_project"
+
+      Group assets that were updated on or after 2019-01-01T01:00:00 GMT by their types.
+
+        $ {command} 123456 --filter "update_time >= 1546304400000" --group-by "security_center_properties.resource_type"
+
+      Group assets into following 3 state_changes (ADDED/DELETED/ACTIVE) based on the activity during past 24 hours:
+
+        $ {command} 123456 --compare-duration 86400s --group-by "state_change"
+
+  request:
+    collection: securitycenter.organizations.assets
+    api_version: v1
+    method: group
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.assets.request_hooks:GroupAssetsReqHook
+
+  arguments:
+
+    resource:
+      help_text: Refers to the source whose assets should be grouped by.
+      override_resource_collection: true
+      spec: !REF googlecloudsdk.command_lib.scc.resources:organization
+
+    params:
+    - arg_name: group-by
+      api_field: groupAssetsRequest.groupBy
+      help_text: |
+        Expression that defines what asset fields to use for grouping (including 'state').
+        String value should follow SQL syntax: comma separated list of fields.
+        For example: "parent,resource_name". The following fields are supported:
+        * security_center_properties.resource_project
+        * security_center_properties.resource_type
+        * security_center_properties.resource_parent
+        * state_change
+    - arg_name: read-time
+      api_field: groupAssetsRequest.readTime
+      help_text: |
+        Time used as a reference point when filtering assets. Filter is limited
+        to assets existing at the supplied time and their values are those at that
+        specific time. For example: 2019-02-28T07:00:00Z. Absence of this field will
+        default to the API's version of NOW.
+    - arg_name: compare-duration
+      api_field: groupAssetsRequest.compareDuration
+      help_text: |
+        GroupAssetsResult's "state_change" attribute is updated to indicate whether the asset was added, removed, or remained present during the compare_duration period of time that precedes the read_time.
+        Example duration: "100000s"
+    - arg_name: filter
+      api_field: groupAssetsRequest.filter
+      help_text: |
+        Expression is a list of one or more restrictions combined via logical operators
+        'AND' and 'OR'. Parentheses are not supported, and 'OR' has higher precedence than
+        'AND'. For example, 'update_time > 100 AND
+        security_center_properties.resource_type=\"google.cloud.resourcemanager.Organization\"'
+        is a valid filter string.
+    - arg_name: page-size
+      api_field: groupAssetsRequest.pageSize
+      help_text: |
+        The maximum number of results to return in a single response. Default is
+        10, minimum is 1, maximum is 1000.
+    - arg_name: page-token
+      api_field: groupAssetsRequest.pageToken
+      help_text: |
+        Value returned by the last 'GroupAssetsResponse'; indicates
+        that this is a continuation of a prior 'GroupAssets' call, and that the
+        system should return the next page of data.

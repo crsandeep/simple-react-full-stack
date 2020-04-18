@@ -1,0 +1,74 @@
+# Copyright 2019 Google LLC. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- release_tracks: [ALPHA, BETA]
+  help_text:
+    brief: Search groups.
+    description: Search groups.
+    examples: |
+      To Search groups:
+
+        $ {command} --organization="5149234212"  \
+            --labels="cloudidentity.googleapis.com/groups.discussion_forum"  \
+            --page-size=3  \
+            --page-token="ala9glealanal908"
+
+  arguments:
+    params:
+    - arg_name: organization
+      required: true
+      help_text: |
+        The organization the Group being searched.
+
+    - arg_name: labels
+      required: true
+      help_text: |
+        Labels of the group resource.
+        Example of labels "--labels cloudidentity.googleapis.com/groups.discussion_forum"
+
+    - arg_name: view
+      api_field: view
+      help_text: |
+        There are two possible views, 'basic' and 'full', default is 'basic'
+      choices:
+      - enum_value: BASIC
+        arg_value: basic
+        help_text: |
+          Response only basic information of the groups.
+      - enum_value: FULL
+        arg_value: full
+        help_text: |
+          Response includes all the fields of the groups.
+      default: basic
+
+    - arg_name: page-token
+      api_field: pageToken
+      help_text: |
+        The next_page_token value returned from a previous search request, if any.
+
+    - arg_name: page-size
+      type: int
+      api_field: pageSize
+      help_text: |
+        The default page size is 200 (max 1000) for the BASIC view, and 50 (max 500)
+        for the FULL view.
+
+  request:
+    collection: cloudidentity.groups
+    method: search
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.identity.groups.hooks:GenerateQuery
+    ALPHA:
+      api_version: v1alpha1
+    BETA:
+      api_version: v1beta1

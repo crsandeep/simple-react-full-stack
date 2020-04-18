@@ -1,0 +1,69 @@
+- release_tracks: [BETA]
+
+  help_text:
+    brief: |
+      Searches all IAM policies under a given scope (i.e., an organization, a folder, or a project)
+      with `cloudasset.assets.searchAllIamPolicies` permission.
+    description: |
+      Searches all IAM policies under a given scope (i.e., an organization, a folder, or a project)
+      with `cloudasset.assets.searchAllIamPolicies` permission.
+    examples: |
+      To search all the IAM policies that contains `amy@mycompany.com` under the organization
+      (organizations/123), which you have `cloudasset.assets.searchAllIamPolicies` permission, run:
+
+          $ {command} --scope='organizations/123' --query='policy : "amy@mydomain.com"'
+
+  request:
+    collection: cloudasset.iamPolicies
+    method: searchAll
+    api_version: v1p1beta1
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.asset.utils:SetDefaultScopeIfEmpty
+
+  arguments:
+    params:
+    - api_field: query
+      arg_name: query
+      help_text: |
+        The query statement. To learn how to construct a query, see
+        https://cloud.google.com/asset-inventory/docs/searching-iam-policies#how_to_construct_a_query.
+
+        Examples:
+          * To find all Cloud IAM policy bindings in your organization that contain
+            amy@mycompany.com: ```policy : "amy@mydomain.com"```
+          * To find all Cloud IAM policy bindings in your organization that contain the Owner role:
+            ```policy : "roles/owner"```
+          * To find all Cloud IAM policy bindings in your organization that have
+            myuser@mycompany.com in the Owner role:
+            ```policy : ("roles/owner" "myuser@mycompany.com")```
+          * To find all Cloud IAM policy bindings in your organization that have
+            myuser@mycompany.com in the owner role or youruser@mycompany.com in the Viewer role:
+            ```policy : (("roles/owner" "myuser@mycompany.com") OR ("roles/viewer" "youruser@mycompany.com"))```
+          * To find all Cloud IAM policy bindings that are set on a resource:
+            ```resource : "projects/123"```
+          * To find all Cloud IAM policy bindings that are set on resources whose names contain
+            substring "proj":
+            ```resource : "*proj*"```
+    - api_field: scope
+      arg_name: scope
+      help_text: |
+        The search result scope is limited within a project, folder, or organization. You must have
+        the cloudasset.assets.searchAllIamPolicies permission granted to the caller for the desired
+        scope. The allowed value must be one of the following:
+          * Organization number (i.e. "organizations/123")
+          * Folder number(i.e. "folders/1234")
+          * Project number (i.e. "projects/12345")
+        If not specified, it will use your configured project in `$ gcloud config list project`. You
+        can change this setting by running `$ gcloud config set project PROJECT_ID`.
+    - api_field: pageSize
+      arg_name: page-size
+      help_text: |
+        The page size for search result pagination. The number of matching results may be fewer than
+        requested based on the query. The maximum page size is 2000. If page-size is not given the
+        back end will pick an appropriate default page size.
+    - api_field: pageToken
+      arg_name: page-token
+      help_text: |
+        If present, retrieve the next batch of results from the preceding call to this method.
+        `page_token` must be the value of `next_page_token` from the previous response. The values
+        of all other method parameters must be identical to those in the previous call.

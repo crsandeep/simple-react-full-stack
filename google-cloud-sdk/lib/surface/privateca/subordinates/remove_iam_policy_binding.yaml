@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      Remove IAM policy binding for a subordinate Certificate Authority.
+    description: |
+      Removes a policy binding from the IAM policy of a subordinate Certificate Authority.
+      One binding consists of a member and a role.
+
+      See https://cloud.google.com/iam/docs/managing-policies for details of
+      policy role and member types.
+    examples: |
+      To remove an IAM policy binding for the role of 'roles/privateca.certManager' for the user
+      'test-user@gmail.com' on the CA 'server-tls-1' with the location 'us', run:
+
+        $ {command} server-tls-1 \
+          --location 'us' \
+          --member 'user:test-user@gmail.com' \
+          --role='roles/privateca.certManager'
+
+  request:
+    collection: privateca.projects.locations.certificateAuthorities
+    api_version: v1alpha1
+
+  arguments:
+    resource:
+      help_text: The certificate authority for which to update the IAM policy.
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:certificate_authority
+
+  iam:
+    # TODO(b/149315616): Enable iam conditionals
+    enable_condition: false

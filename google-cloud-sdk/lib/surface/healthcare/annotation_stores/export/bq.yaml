@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief:  Export Cloud Healthcare API Annotation records to BigQuery.
+    description: Export Cloud Healthcare API Annotation records to BigQuery.
+    examples: |
+      To export the annotation-store 'test-annotation-store' to the BigQuery table 'bqtable' in the
+      BigQuery dataset `bqdataset`, run:
+
+        $ {command} test-annotation-store --bq-table=bq://my-project.bqdataset.bqtable --dataset=test-dataset
+
+  request:
+    collection: healthcare.projects.locations.datasets.annotationStores
+    method: export
+    api_version: v1alpha2
+
+  arguments:
+    resource:
+      help_text: Cloud Healthcare API Annotation store to export annotations from.
+      spec: !REF googlecloudsdk.command_lib.healthcare.resources:annotation_store
+
+
+    params:
+    - arg_name: bq-table
+      api_field: exportAnnotationsRequest.bigqueryDestination.tableUri
+      required: true
+      help_text: |
+        BigQuery table that annotation records will be exported to.
+
+  async:
+    collection: healthcare.projects.locations.datasets.operations

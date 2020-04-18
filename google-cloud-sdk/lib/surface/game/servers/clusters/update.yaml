@@ -1,0 +1,56 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Update a Game Server Cluster.
+    description: |
+      Update a Cloud Game Server Cluster.
+
+      ## EXAMPLES
+
+      To update labels for Game Server Cluster 'my-cluster' in project 'my-project', realm 'my-realm', and location in 'my-location' run:
+
+        $ {command} my-cluster --project=my-project --realm=my-realm --location=my-location \
+            --update-labels="key1=val1"  --no-dry-run
+
+      To preview Game Server Cluster label update for 'my-cluster' in project 'my-project', realm 'my-realm', and location in 'my-location' run:
+
+        $ {command} my-cluster --project=my-project --realm=my-realm --location=my-location \
+            --update-labels="key1=val1"  --dry-run
+
+
+  request:
+    collection: gameservices.projects.locations.realms.gameServerClusters
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+    method: previewUpdate
+    modify_method_hook:
+      googlecloudsdk.command_lib.game.servers.clusters.update_hooks:ChooseUpdateOrPreviewMethod
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.game.servers.clusters.update_hooks:SetUpdateMask
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Cluster to update.
+      spec: !REF googlecloudsdk.command_lib.game.resources:cluster
+    params:
+    - arg_name: dry-run
+      type: bool
+      required: true
+      help_text: |
+        Validate the changes, but do not execute it.
+    - arg_name: preview-time
+      api_field: previewTime
+      help_text: |
+        This attribute is only relevant for preview (--dry-run). It is used to validate
+        the state for a future time.
+    labels:
+      api_field: gameServerCluster.labels
+
+  response:
+    modify_response_hooks:
+    - googlecloudsdk.command_lib.game.servers.clusters.update_hooks:ConvertOutput
+
+  update:
+    read_modify_update: true

@@ -1,0 +1,136 @@
+- release_tracks: [GA, BETA]
+  help_text:
+    brief: |
+      Update an existing connectivity test.
+    description: |
+      Update an existing connectivity test with the given name.
+    examples: |
+      The following command updates a connectivity test with the name my-test,
+      modifying the description and destination IP address.
+
+        $ {command} my-test \
+            --description='update dst addr' --destination-ip-address='10.142.0.3'
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.network_management.resources:connectivityTest
+      help_text: |
+        Name of the connectivity test you want to update.
+    params:
+    - group:
+        mutex: true
+        params:
+        - arg_name: source-instance
+          api_field: connectivityTest.source.instance
+          help_text: |
+            A Compute Engine instance URI as the source endpoint.
+        - arg_name: clear-source-instance
+          type: bool
+          help_text: |
+            Clear existing source instance.
+    - arg_name: source-network
+      api_field: connectivityTest.source.network
+      help_text: |
+        A VPC network URI where the source is located.
+    - arg_name: source-network-type
+      api_field: connectivityTest.source.networkType
+      help_text: |
+        Type of the network where the source is located.
+      choices:
+      - enum_value: gcp-network
+        arg_value: gcp-network
+        help_text: Network in Google Cloud Platform.
+      - enum_value: non-gcp-network
+        arg_value: non-gcp-network
+        help_text: Network outside Google Cloud Platform.
+      default: gcp-network
+    - group:
+        mutex: true
+        params:
+        - arg_name: source-ip-address
+          api_field: connectivityTest.source.ipAddress
+          help_text: |
+            The IP address of the source which can be an external or internal IP.
+            An IPv6 address is only allowed when the test's destination is a global load balancer VIP.
+        - arg_name: clear-source-ip-address
+          type: bool
+          help_text: |
+            Clear existing source IP address.
+    - arg_name: source-project
+      api_field: connectivityTest.source.projectId
+      help_text: |
+        Project ID of the source endpoint.
+    - group:
+        mutex: true
+        params:
+        - arg_name: destination-instance
+          api_field: connectivityTest.destination.instance
+          help_text: |
+            A Compute Engine instance URI as the destination endpoint.
+        - arg_name: clear-destination-instance
+          type: bool
+          help_text:
+            Clear existing destination instance.
+    - arg_name: destination-network
+      api_field: connectivityTest.destination.network
+      help_text: |
+        A VPC network URI where the destination is located.
+    - arg_name: destination-port
+      api_field: connectivityTest.destination.port
+      help_text: |
+        The IP protocol port of the destination. Only applicable when protocol is
+        TCP or UDP.
+    - group:
+        mutex: true
+        params:
+        - arg_name: destination-ip-address
+          api_field: connectivityTest.destination.ipAddress
+          help_text: |
+            The IP address of the destination which can be an external or internal IP.
+            An IPv6 address is only allowed when the test's destination is a global load balancer VIP.
+        - arg_name: clear-destination-ip-address
+          type: bool
+          help_text: |
+            Clear existing destination IP address.
+    - arg_name: destination-project
+      api_field: connectivityTest.destination.projectId
+      help_text: |
+        Project ID of the destination endpoint.
+    - arg_name: description
+      api_field: connectivityTest.description
+      help_text: |
+        The description of the connectivity test.
+    - arg_name: protocol
+      api_field: connectivityTest.protocol
+      help_text: |
+        Type of protocol for the test. When not provided, "TCP" is assumed.
+    - arg_name: other-projects
+      api_field: connectivityTest.relatedProjects
+      repeated: true
+      help_text: |
+        IDs of other projects involved in the connectivity test, besides
+        the source and destination project.
+    - arg_name: labels
+      api_field: connectivityTest.labels.additionalProperties
+      metavar: KEY=VALUE
+      help_text: |
+        List of label KEY=VALUE pairs to add.
+      type:
+        arg_dict:
+          spec:
+          - api_field: key
+          - api_field: value
+
+  async:
+    collection: networkmanagement.projects.locations.global.operations
+
+  request:
+    api_version: v1
+    method: patch
+    collection: networkmanagement.projects.locations.global.connectivityTests
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.network_management.util:ValidateInstanceNames
+    - googlecloudsdk.command_lib.network_management.util:ValidateNetworkURIs
+    - googlecloudsdk.command_lib.network_management.util:ClearEndpointAttrs
+
+  update:
+    read_modify_update: true

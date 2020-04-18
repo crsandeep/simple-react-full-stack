@@ -1,0 +1,36 @@
+- release_tracks: [ALPHA, BETA, GA]
+
+  help_text:
+    brief: List memberships.
+    description: List memberships in Hub.
+    examples: |
+      List memberships in Hub:
+
+        $ {command}
+
+  request:
+    collection: gkehub.projects.locations.memberships
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.container.hub.memberships.util:SetParentCollection
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+    GA:
+      api_version: v1
+
+  arguments:
+    resource:
+      help_text: The project to list cluster memberships for.
+      spec: !REF googlecloudsdk.command_lib.container.hub.memberships.resources:project
+      override_resource_collection: true
+
+  response:
+    id_field: name
+
+  output:
+    format: |
+        table(
+           name.basename():label=NAME,
+           externalId:label=EXTERNAL_ID
+         )

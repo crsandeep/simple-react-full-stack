@@ -1,0 +1,89 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: Create a budget.
+    description: Create a budget.
+    examples: |
+      To create a budget with the display name 'BUDGET1' in the amount of 100.75 in the default
+      currency ('USD'), to receive notifications when 50% of the current budget or 75% of the
+      forecasted budget is spent in the account '123', run:
+
+        $ {command} --billing-account=123 --display-name="BUDGET1" --budget-amount=100.75USD --threshold-rule=percent=50 --threshold-rule=percent=75,basis=forecasted-spend
+  request:
+    api_version: v1beta1
+    collection: billingbudgets.billingAccounts.budgets
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.billingbudgets.hooks:CreateAllUpdatesRule
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.billingbudgets.resources:billing-account
+      is_parent_resource: true
+      is_positional: false
+      help_text: |
+        Billing account under which to create the budget.
+    params:
+    - arg_name: display-name
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.displayName
+      required: true
+      help_text: |
+        User data for display name in UI. Must be less than or equal to 60 characters.
+    - group:
+        mutex: true
+        required: true
+        params:
+        - arg_name: budget-amount
+          help_text: |
+            Specify the amount of the budget. If a currency type is included, it must be the
+            currency associated with the billing account. If excluded, the currency used will be the
+            currency associated with the billing account.
+          api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.amount.specifiedAmount
+          processor: googlecloudsdk.command_lib.billingbudgets.hooks:ParseToMoneyType
+        - arg_name: last-period-amount
+          api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.amount.lastPeriodAmount
+          processor: googlecloudsdk.command_lib.billingbudgets.hooks:LastPeriodAmount
+          action: store_true
+          default: false
+          help_text: |
+            Use the amount of last period's budget.
+    - arg_name: threshold-rule
+      repeated: true
+      help_text: |
+        Rule that triggers alerts (notifications of thresholds being crossed) when spend
+        exceeds the specified percentages of the budget. This flag can be repeated to provide
+        multiple thresholds above which an alert is sent.
+
+        *percent*::: Integer between 0 and 100 above which an alert is sent.
+
+        *basis*::: type of basis used to determine if spend has passed the threshold. Must be one
+        of: 'current-spend' or 'forecasted-spend'. Behavior defaults to 'current-spend' if not set.
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.thresholdRules
+      type:
+        arg_dict:
+          spec:
+          - api_field: spendBasis
+            arg_name: basis
+            required: false
+          - api_field: thresholdPercent
+            arg_name: percent
+    - arg_name: filter-projects
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.budgetFilter.projects
+      help_text: |
+        A set of projects in the form `projects/{project_id}`, specifying that usage from only this
+        set of projects should be included in the budget. If omitted, all projects will be included.
+    - arg_name: credit-types-treatment
+      repeated: false
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.budgetFilter.creditTypesTreatment
+      help_text: |
+        Whether to include all credit types include when calculating the actual spend against
+        the budget. If this is not specified, then all credit types are used in the calculation.
+    - arg_name: filter-services
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.budgetFilter.services
+      help_text: |
+        A set of services of the form `services/{service_id}`, specifying that usage from only this
+        set of services should be included in the budget. If omitted, the report will include usage
+        for all services. The service names are available through the Catalog API:
+        https://cloud.google.com/billing/v1/how-tos/catalog-api.
+    - arg_name: all-updates-rule-pubsub-topic
+      api_field: googleCloudBillingBudgetsV1beta1CreateBudgetRequest.budget.allUpdatesRule.pubsubTopic
+      help_text: |
+        The name of the Cloud Pub/Sub topic where budget related messages will be published, in
+        the form `projects/{project_id}/topics/{topic_id}`.

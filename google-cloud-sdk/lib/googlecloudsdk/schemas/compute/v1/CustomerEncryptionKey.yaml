@@ -1,0 +1,41 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+title: compute v1 CustomerEncryptionKey export schema
+description: A gcloud export/import command YAML validation schema.
+type: object
+additionalProperties: false
+properties:
+  COMMENT:
+    type: object
+    description: User specified info ignored by gcloud import.
+    additionalProperties: false
+    properties:
+      template-id:
+        type: string
+      region:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+      version:
+        type: string
+  UNKNOWN:
+    type: array
+    description: Unknown API fields that cannot be imported.
+    items:
+      type: string
+  kmsKeyName:
+    description: |-
+      The name of the encryption key that is stored in Google Cloud KMS.
+    type: string
+  rawKey:
+    description: |-
+      Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648
+      base64 to either encrypt or decrypt this resource.
+    type: string
+  sha256:
+    description: |-
+      [Output only] The RFC 4648 base64 encoded SHA-256 hash of the customer-
+      supplied encryption key that protects this resource.
+    type: string

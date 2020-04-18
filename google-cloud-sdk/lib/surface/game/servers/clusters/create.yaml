@@ -1,0 +1,95 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Create a Game Server Cluster.
+    description: |
+      Create a Cloud Game Server Cluster.
+
+      ## EXAMPLES
+
+      To create Game Server Cluster 'my-cluster' in project 'my-project', realm 'my-realm', and location in 'my-location' run:
+
+        $ {command} my-cluster --project=my-project --realm=my-realm --location=my-location \
+            --gke-cluster=projects/my-project/locations/my-location/clusters/my-gke-cluster \
+            --namespace=default --labels=a=x,b=y --no-dry-run
+
+      To preview Game Server Cluster creation for 'my-cluster' in project 'my-project', realm 'my-realm', and location in 'my-location' run:
+
+        $ {command} my-cluster --project=my-project --realm=my-realm --location=my-location \
+            --gke-cluster=projects/my-project/locations/my-location/clusters/my-gke-cluster \
+            --namespace=default --labels=a=x,b=y --dry-run
+
+
+  request:
+    collection: gameservices.projects.locations.realms.gameServerClusters
+    method: previewCreate
+    modify_method_hook:
+      googlecloudsdk.command_lib.game.servers.clusters.update_hooks:ChooseCreateOrPreviewMethod
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Cluster to create.
+      spec: !REF googlecloudsdk.command_lib.game.resources:cluster
+
+    params:
+    - group:
+        release_tracks: [ALPHA]
+        required: true
+        mutex: true
+        params:
+        - arg_name: gke-cluster
+          api_field: gameServerCluster.connectionInfo.gkeClusterReference.cluster
+          help_text: |
+            Full or partial name of a cluster in Google Kubernetes Engine (GKE) where the game server
+            cluster is installed, using the format: 'projects/*/locations/*/clusters/*'.
+            Note, the location of the GKE cluster can be either a region or a zone.
+            Example: 'projects/my-project/locations/us-central1/clusters/test'. If project and location
+            are not specified, the project and location of the Game Server Cluster resource are used to
+            generate the full name of the GKE cluster.
+        - arg_name: hub-membership
+          api_field: gameServerCluster.connectionInfo.gkeHubClusterReference.membership
+          help_text: |
+            Full or partial name of a GKE Hub membership where the game server cluster is registered,
+            using the format: 'projects/{project_id}/locations/global/memberships/{membership_id}' or
+            {membership_id}. If project is not specified, the project of the Game Server Cluster resource
+            is used to generate the full name of the GKE Hub membership.
+    - arg_name: gke-cluster
+      release_tracks: [BETA]
+      api_field: gameServerCluster.connectionInfo.gkeClusterReference.cluster
+      required: true
+      help_text: |
+        Full or partial name of a cluster in Google Kubernetes Engine (GKE) where the game server
+        cluster is installed, using the format: 'projects/*/locations/*/clusters/*'.
+        Note, the location of the GKE cluster can be either a region or a zone.
+        Example: 'projects/my-project/locations/us-central1/clusters/test'. If project and location
+        are not specified, the project and location of the Game Server Cluster resource are used to
+        generate the full name of the GKE cluster.
+    - arg_name: description
+      api_field: gameServerCluster.description
+      help_text: |
+        Game server cluster description.
+    - arg_name: namespace
+      api_field: gameServerCluster.connectionInfo.namespace
+      required: true
+      help_text: |
+        Namespace for Kubernetes API server endpoint.
+    - arg_name: dry-run
+      type: bool
+      required: true
+      help_text: |
+        Validate the creation, but do not execute it.
+    - arg_name: preview-time
+      api_field: previewTime
+      help_text: |
+        This attribute is only relevant for preview (--dry-run). It is used to validate
+        the state for a future time.
+    labels:
+      api_field: gameServerCluster.labels
+
+  response:
+    modify_response_hooks:
+    - googlecloudsdk.command_lib.game.servers.clusters.update_hooks:ConvertOutput

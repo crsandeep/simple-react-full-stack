@@ -1,0 +1,49 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Create a Cloud Security Command Center notification config.
+    description: Create a Cloud Security Command Center notification config.
+    examples: |
+      Create a notification config test-config under organization 123456 for findings for pubsub-topic projects/test-project/topics/notification-test with a filter on resource name:
+
+        $ {command} test-config --organization=123456 --pubsub-topic=projects/test-project/topics/notification-test --filter="resource_name: \"a\""
+
+        $ {command} organizations/123456/notificationConfigs/test-config --pubsub-topic=projects/test-project/topics/notification-test --filter="resource_name: \"a\""
+
+  request:
+    collection: securitycenter.organizations.notificationConfigs
+    disable_resource_check: true
+    api_version: v1
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.notifications.request_hooks:CreateNotificationReqHook
+
+  arguments:
+
+    params:
+    - arg_name: notificationConfigId
+      is_positional: true
+      required: true
+      api_field: notificationConfig.name
+      help_text: |
+        The ID of the notification config. Formatted as "organizations/123/notificationConfigs/456" or just "456".
+
+    - arg_name: organization
+      required: false
+      api_field: parent
+      help_text: |
+        The organization where the notification config resides. Formatted as "organizations/123" or just "123". Required if notificationConfigId does not contain organization information.
+
+    - arg_name: filter
+      required: false
+      api_field: notificationConfig.streamingConfig.filter
+      help_text: |
+        Filter to be used for notification config.
+
+    - arg_name: pubsub-topic
+      api_field: notificationConfig.pubsubTopic
+      required: true
+      help_text: |
+        The Pub/Sub topic which will receive notifications. Its format is
+        "projects/[project_id]/topics/[topic]".
+
+    - !REF googlecloudsdk.command_lib.scc.notifications.flags:description

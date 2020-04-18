@@ -1,0 +1,27 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Delete a Realm.
+    description: |
+      Delete a Cloud Game Server Realm.
+
+      ## EXAMPLES
+
+      To delete Realm 'my-realm' in project 'my-project' and location 'my-location', run:
+
+        $ {command} my-realm --project=my-project --location=my-location
+
+  request:
+    collection: gameservices.projects.locations.realms
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Realm to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:realm
+
+  async:
+    collection: gameservices.projects.locations.operations

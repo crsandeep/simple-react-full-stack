@@ -1,0 +1,108 @@
+- help_text:
+    brief: |
+      Update a Memorystore Memcached instance.
+    description: |
+      Update the metadata and/or configuration parameters of a Memcached instance.
+    examples: |
+      The following command updates a Memcached instance with the name
+      'my-memcache-instance' in region 'us-central1' to have the display name
+      "Cache for Foo Service", and the two labels, 'env' and 'service'.
+
+        $ {command} my-memcache-instance --display-name="Cache for Foo Service" \
+            --labels=env=test,service=foo
+
+      The following command updates a Memcached instance with the name
+      'my-memcache-instance' in region 'us-central1' to have parameters
+      'protocol' and 'track-sizes'.
+
+        $ {command} my-memcache-instance \
+            --parameters=protocol=ascii,track-sizes=true \
+            --region=us-central1
+
+  release_tracks: [ALPHA, BETA]
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.memcache.resources:instance
+      help_text: |
+        Arguments and flags that specify the Memcached instance you want
+        to update.
+    params:
+    - group:
+        mutex: true
+        required: true
+        params:
+        - group:
+            params:
+            - arg_name: display-name
+              api_field: instance.displayName
+              help_text: An arbitrary and optional user provided name for the instance.
+            - arg_name: labels
+              api_field: instance.labels.additionalProperties
+              metavar: KEY=VALUE
+              help_text: |
+                A list of label KEY=VALUE pairs to add.
+              type:
+                arg_dict:
+                  flatten: true
+                  spec:
+                  - api_field: key
+                  - api_field: value
+            - arg_name: node-count
+              api_field: instance.nodeCount
+              help_text: |
+                Number of memcache nodes in this instance.
+        - arg_name: parameters
+          api_field: instance.parameters.params
+          metavar: KEY=VALUE
+          help_text: |
+            User defined parameters to apply to the memcached process on each node. Possible attributes include:
+
+            *listen-backlog*::: The backlog queue limit for the instance.
+
+            *disable-flush-all*::: If enabled, flush_all command will be disabled. Applicable to
+            1.4.24 and higher.
+
+            *max-item-size*::: Max bytes of the instnace. Must at least be equal to slab_chunk_max
+            (which defaults to 524288 bytes) and less than 134217728 bytes. Additionally it must
+            be a multiple of slab_chunk_max.
+
+            *slab-min-size*::: This is an integer in the range [1, 1024].
+
+            *slab-growth-factor*::: This is a float in the range [1.01, 100].
+
+            *protocol*::: This is an enum with acceptable values of ["ascii", "auto"].
+
+            *disable-cas*::: This is a boolean value.
+
+            *disable-evictions*::: This is a boolean value.
+
+            *max-reqs-per-event*::: This is an integer in the range [1, 1000].
+
+            *track-sizes*::: This is a boolean value.
+
+            *worker-logbuf-size*::: This is an integer in the range [48, 524288].
+
+            *watcher-logbuf-size*::: This is an integer in the range [0, 2097151].
+
+            *lru-crawler*::: This is a boolean value.
+
+            *idle-timeout*::: This is an integer in the range [1,86400].
+
+            *lru-maintainer*::: This is a boolean value.
+
+            *maxconns-fast*::: This is a boolean value.
+
+            *hash-algorithm*::: This is an enum with accepted values of ["jenkins", "murmur3"].
+          type: "googlecloudsdk.command_lib.memcache.instances_util:Parameters"
+
+  async:
+    collection: memcache.projects.locations.operations
+
+  request: &request
+    collection: memcache.projects.locations.instances
+    method: patch
+    # --parameters flag uses the method `updateParameters`, all other flags use method `patch`
+    modify_method_hook: googlecloudsdk.command_lib.memcache.instances_util:ChooseUpdateMethod
+    # The two update methods uses different API calls with incompatible fields so we must create the
+    # requests
+    create_request_hook: googlecloudsdk.command_lib.memcache.instances_util:CreateUpdateRequest

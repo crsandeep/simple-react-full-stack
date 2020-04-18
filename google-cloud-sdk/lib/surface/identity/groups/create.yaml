@@ -1,0 +1,93 @@
+# Copyright 2019 Google LLC. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Create a new group.
+    description: Create a new group.
+    examples: |
+      To create a new group:
+
+        $ {command} eng-discuss@foo.com  \
+            --organization="5149234212"  \
+            --with-initial-owner=WITH_INITIAL_OWNER  \
+            --display-name="Engineer Discuss"  \
+            --description="Group for engineering discussions"  \
+            --labels="cloudidentity.googleapis.com/groups.discussion_forum"
+
+
+  arguments:
+    params:
+    - arg_name: email
+      is_positional: true
+      required: true
+      help_text: |
+        The email address of the group to be created.
+
+    - arg_name: organization
+      api_field: group.parent
+      required: true
+      help_text: |
+        The organization the Group being created belongs to.
+
+    - arg_name: with-initial-owner
+      api_field: initialGroupConfig
+      help_text: |
+        If specified the user making the request will be added as the initial owner of the group being
+        created.
+
+    - arg_name: display-name
+      api_field: group.displayName
+      help_text: |
+        The Group's display name.
+
+    - arg_name: description
+      api_field: group.description
+      help_text: |
+        An extended description to help users determine the purpose of a Group. For
+        example, you can include information about who should join the Group, the
+        types of messages to send to the Group, links to FAQs about the Group, or
+        related Groups. Maximum length is 4,096 characters.
+
+    - arg_name: dynamic-user-query
+      type: str
+      help_text: |
+        Query that determines the memberships of the dynamic group.
+
+        Example of a query:
+        --dynamic-user-query="user.organizations.exists(org,org.title=='SWE')"
+
+    - arg_name: labels
+      required: true
+      type: str
+      help_text: |
+        Labels for group resource.
+        Example of labels "--labels cloudidentity.googleapis.com/groups.discussion_forum"
+
+  request:
+    collection: cloudidentity.groups
+    disable_resource_check: true
+    method: create
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.identity.groups.hooks:SetParent
+    - googlecloudsdk.command_lib.identity.groups.hooks:SetEntityKey
+    - googlecloudsdk.command_lib.identity.groups.hooks:SetLabels
+    - googlecloudsdk.command_lib.identity.groups.hooks:SetDynamicUserQuery
+    ALPHA:
+      api_version: v1alpha1
+    BETA:
+      api_version: v1beta1
+
+  response:
+    result_attribute: response

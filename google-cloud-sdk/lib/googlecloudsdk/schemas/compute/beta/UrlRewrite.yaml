@@ -1,0 +1,39 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+title: compute beta UrlRewrite export schema
+description: A gcloud export/import command YAML validation schema.
+type: object
+additionalProperties: false
+properties:
+  COMMENT:
+    type: object
+    description: User specified info ignored by gcloud import.
+    additionalProperties: false
+    properties:
+      template-id:
+        type: string
+      region:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+      version:
+        type: string
+  UNKNOWN:
+    type: array
+    description: Unknown API fields that cannot be imported.
+    items:
+      type: string
+  hostRewrite:
+    description: |-
+      Prior to forwarding the request to the selected service, the request's
+      host header is replaced with contents of hostRewrite. The value must be
+      between 1 and 255 characters.
+    type: string
+  pathPrefixRewrite:
+    description: |-
+      Prior to forwarding the request to the selected backend service, the
+      matching portion of the request's path is replaced by pathPrefixRewrite.
+      The value must be between 1 and 1024 characters.
+    type: string

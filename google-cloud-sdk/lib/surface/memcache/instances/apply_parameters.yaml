@@ -1,0 +1,39 @@
+- release_tracks: [ALPHA, BETA]
+  help_text:
+    brief: |
+      Apply updated parameters to a Memorystore Memcached instance.
+    description: |
+      Apply updated parameters to the nodes of a Memorystore Memcached instance with the given name.
+    examples: |
+      The following command applies updated parameters to nodes 'node-1' and 'node-2' of a Memcached
+      instance with the name 'my-memcache-instance' in region 'us-central1'
+
+        $ {command} my-memcache-instance --node-ids=node-1,node-2 \
+            --region=us-central1
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.memcache.resources:instance
+      help_text: |
+        Arguments and flags that specify the Memcached instance you want to apply parameters to.
+    params:
+    - group:
+        mutex: true
+        required: true
+        params:
+        - arg_name: node-ids
+          api_field: applyParametersRequest.nodeIds
+          type: "googlecloudsdk.calliope.arg_parsers:ArgList:"
+          help_text: |
+            The nodes on which to apply the updated parameters.
+        - arg_name: apply-all
+          api_field: applyParametersRequest.applyAll
+          help_text: |
+            Apply the updated parameters onto all nodes.
+
+  async:
+    collection: memcache.projects.locations.operations
+
+  request: &request
+    collection: memcache.projects.locations.instances
+    method: applyParameters

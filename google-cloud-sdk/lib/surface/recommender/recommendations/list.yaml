@@ -1,0 +1,39 @@
+- release_tracks: [ALPHA, BETA, GA]
+  help_text:
+    brief: |
+      Lists recommendations for a Cloud project.
+    description: |
+      Lists recommendations for a Cloud project.
+    examples: |
+      To list recommendations:
+
+        $ {command} --project=project-name --location=global --recommender=google.iam.policy.google.compute.instance.MachineTypeRecommender
+
+  request:
+    collection: recommender.projects.locations.recommenders.recommendations
+    method: list
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+    GA:
+      api_version: v1
+
+  response:
+    id_field: name
+
+  arguments:
+    resource:
+      help_text: The Cloud Recommender to list recommendations for.
+      spec: !REF googlecloudsdk.command_lib.recommender.resources:recommender
+
+  output:
+    format: |
+      table(
+        name.basename(): label=ID,
+        name.segment(3): label=LOCATION,
+        name.segment(5): label=RECOMMENDER,
+        primaryImpact.category: label=PRIMARY_IMPACT_CATEGORY,
+        stateInfo.state: label=STATE,
+        lastRefreshTime: label=LAST_REFRESH_TIME
+      )

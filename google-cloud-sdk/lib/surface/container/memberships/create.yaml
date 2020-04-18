@@ -1,0 +1,37 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Create a new membership.
+    description: Create a new membership in Google Kubernetes Hub.
+    examples: |
+      Create a membership for a cluster:
+
+        $ {command} a-membership --description="Description of a-membership."
+
+  request:
+    collection: gkehub.projects.locations.memberships
+    api_version: v1beta1
+
+  async:
+    collection: gkehub.projects.locations.operations
+
+  arguments:
+    resource:
+      help_text: membership resource representing a cluster in Google Kubernetes Hub.
+      spec: !REF googlecloudsdk.command_lib.container.memberships.resources:membership
+    params:
+    - api_field: membership.description
+      arg_name: description
+      required: true
+      help_text: Description of the membership resource.
+    - api_field: membership.endpoint.gkeCluster.resourceLink
+      arg_name: gke-cluster-self-link
+      help_text: |
+        GKE cluster self-link of the cluster represented by this membership;
+        for example,
+        '//container.googleapis.com/projects/my-project/locations/us-central1-a/clusters/my-cluster.'
+        This is only valid if the represented cluster is a GKE cluster. The
+        provided self-link will be validated to confirm that it maps to the
+        cluster represented by this membership.
+    labels:
+      api_field: membership.labels

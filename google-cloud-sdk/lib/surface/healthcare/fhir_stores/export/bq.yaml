@@ -1,0 +1,61 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief:  Export Cloud Healthcare API FHIR resources to BigQuery.
+    description: Export Cloud Healthcare API FHIR resources to BigQuery.
+    examples: |
+      To export the fhir-store 'test-fhir-store' to the BigQuery dataset 'bqdataset', run:
+
+        $ {command} test-fhir-store --bq-dataset=bq://my-project.bqdataset --dataset=test-dataset
+
+      To perform the same export, but with the 'ANALYTICS' schema and the recursive structure depth of 3, run:
+
+        $ {command} test-fhir-store --bq-dataset=bq://my-project.bqdataset --dataset=test-dataset --schema-type=analytics --recursive-depth=3
+
+  request:
+    collection: healthcare.projects.locations.datasets.fhirStores
+    method: export
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+
+  arguments:
+    resource:
+      help_text: Cloud Healthcare API FHIR store to export resources from.
+      spec: !REF googlecloudsdk.command_lib.healthcare.resources:fhir_store
+
+
+    params:
+    - arg_name: bq-dataset
+      api_field: exportResourcesRequest.bigqueryDestination.datasetUri
+      required: true
+      help_text: |
+        BigQuery dataset that houses the BigQuery tables.
+    - arg_name: schema-type
+      api_field: exportResourcesRequest.bigqueryDestination.schemaConfig.schemaType
+      help_text: |
+        Specifies the output schema type. If unspecified, the default
+        is `LOSSLESS`.
+      type: str
+      choices:
+      - arg_value: analytics
+        enum_value: ANALYTICS
+        help_text: |
+          Analytics schema defined by the FHIR community.
+          See https://github.com/rbrush/sql-on-fhir/blob/master/sql-on-fhir.md.
+      - arg_value: lossless
+        enum_value: LOSSLESS
+        help_text: |
+          Schema generated from original FHIR data.
+    - arg_name: recursive-depth
+      api_field: exportResourcesRequest.bigqueryDestination.schemaConfig.recursiveStructureDepth
+      help_text: |
+        The depth for all recursive structures in the output analytics schema. For example,
+        concept in the CodeSystem resource is a recursive structure; when the depth
+        is 2, the CodeSystem table will have a column called concept.concept but not
+        concept.concept.concept. If not specified or set to 0, the server will use the
+        default value 2.
+
+  async:
+    collection: healthcare.projects.locations.datasets.operations

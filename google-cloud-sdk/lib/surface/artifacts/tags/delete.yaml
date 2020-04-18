@@ -1,0 +1,30 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: |
+      Delete an Artifact Registry tag.
+    description: |
+      Delete an Artifact Registry tag.
+
+      This command can fail for the following reasons:
+        * The specified tag does not exist.
+        * The specified version or package does not exist.
+        * The active account does not have permission to delete tags.
+        * The specified package format doesn't support tag operations (e.g. maven).
+    examples: |
+      To delete tag `my-tag` in package `my-pkg` under the current project,
+      repository, and location, run:
+
+        $ {command} my-tag --package=my-pkg
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.artifacts.resources:tag
+      help_text: |
+        The Artifact Registry tag to delete.
+
+  request:
+    api_version: v1beta1
+    collection: artifactregistry.projects.locations.repositories.packages.tags
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.artifacts.util:ValidateLocationHook

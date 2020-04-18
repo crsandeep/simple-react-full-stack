@@ -1,0 +1,36 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief:  |
+      Remove an IAM policy binding from the IAM policy of an Artifact Registry repository.
+    description: |
+      *{command}* removes an IAM policy binding from the IAM policy of an Artifact Registry
+      repository. One binding consists of a member, a role, and an optional condition.
+
+      This command can fail for the following reasons:
+        * The repository specified does not exist.
+        * The active account does not have permission to access the given
+          repository's IAM policies.
+    examples: |
+      To remove an IAM policy binding for the role of 'roles/editor' for the user
+      'test-user@gmail.com' with repository 'my-repo', run:
+
+        $ {command} my-repo --member='user:test-user@gmail.com' --role='roles/editor'
+
+      See https://cloud.google.com/iam/docs/managing-policies for details of
+      policy role and member types.
+
+  request: &request
+    api_version: v1beta1
+    collection: artifactregistry.projects.locations.repositories
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.artifacts.util:ValidateLocationHook
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.artifacts.resources:repository_without_property
+      help_text: |
+        Name of the Artifact Registry repository.
+
+  iam:
+    enable_condition: true

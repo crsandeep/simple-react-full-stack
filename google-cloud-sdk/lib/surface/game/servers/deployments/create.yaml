@@ -1,0 +1,36 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Create a Deployment.
+    description: |
+      Create a Cloud Game Server Deployment.
+
+      ## EXAMPLES
+
+      To create Game Server Deployment 'my-deployment' in project 'my-project' and location in 'global'(deployments only support the 'global' location) run:
+
+        $ {command} my-deployment --project=my-project --location=global --description=description \
+        --labels=a=x,b=y
+
+  request:
+    collection: gameservices.projects.locations.gameServerDeployments
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Deployment to create.
+      spec: !REF googlecloudsdk.command_lib.game.resources:deployment
+
+    params:
+    - arg_name: description
+      api_field: gameServerDeployment.description
+      help_text: |
+        Game server deployment description.
+    labels:
+      api_field: gameServerDeployment.labels
+
+  async:
+    collection: gameservices.projects.locations.operations

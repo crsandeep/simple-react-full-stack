@@ -1,0 +1,54 @@
+- release_tracks: [ALPHA, BETA, GA]
+  help_text:
+    brief: |
+      Mark the Recommendation State as CLAIMED. Can only be performed on recommendations in CLAIMED
+      or ACTIVE state.
+    description: |
+      Mark the Recommendation State as CLAIMED. Users can use this method to.
+      indicate to the Recommender API that they are starting to apply the
+      recommendation themselves. This stops the recommendation content from being
+      updated. mark-claimed can be applied to recommendations in CLAIMED or ACTIVE state.
+    examples: |
+      To mark a recommendation as CLAIMED:
+
+        $ {command} abcd-1234 --project=project-name --location=global --recommender=google.compute.instance.MachineTypeRecommender --etag=abc123 --state-metadata=key1=value1,key2=value2
+
+  request:
+    collection: recommender.projects.locations.recommenders.recommendations
+    method: markClaimed
+    ALPHA:
+      api_version: v1alpha2
+    BETA:
+      api_version: v1beta1
+    GA:
+      api_version: v1
+
+  arguments:
+    resource:
+      help_text: The Cloud Recommendation to mark as claimed.
+      spec: !REF googlecloudsdk.command_lib.recommender.resources:recommendation
+    params:
+    - arg_name: etag
+      ALPHA:
+        api_field: googleCloudRecommenderV1alpha2MarkRecommendationClaimedRequest.etag
+      BETA:
+        api_field: googleCloudRecommenderV1beta1MarkRecommendationClaimedRequest.etag
+      GA:
+        api_field: googleCloudRecommenderV1MarkRecommendationClaimedRequest.etag
+      help_text: The fingerprint of the recommendation.
+      required: true
+    - arg_name: state-metadata
+      metavar: KEY=VALUE
+      ALPHA:
+        api_field: googleCloudRecommenderV1alpha2MarkRecommendationClaimedRequest.stateMetadata.additionalProperties
+      BETA:
+        api_field: googleCloudRecommenderV1beta1MarkRecommendationClaimedRequest.stateMetadata.additionalProperties
+      GA:
+        api_field: googleCloudRecommenderV1MarkRecommendationClaimedRequest.stateMetadata.additionalProperties
+      type:
+        arg_dict:
+          flatten: true
+          spec:
+          - api_field: key
+          - api_field: value
+      help_text: A comma-separated list of key-value pairs to include in request. This fully replaces the current state_metadata for this recommendation.

@@ -1,0 +1,45 @@
+project:
+  name: project
+  collection: networkservices.projects
+  attributes:
+  - &project
+    parameter_name: projectsId
+    attribute_name: project
+    help: |
+      The project Id.
+    property: core/project
+
+location:
+  name: location
+  collection: networkservices.projects.locations
+  attributes:
+  - *project
+  - &location
+    parameter_name: locationsId
+    attribute_name: location
+    help: |
+      The location Id.
+
+httpFilter:
+  name: http filter
+  collection: networkservices.projects.locations.httpFilters
+  request_id_field: httpFilterId
+  attributes:
+  - *project
+  - *location
+  - &httpFilter
+    parameter_name: httpFiltersId
+    attribute_name: http_filter
+    help: Id of the http filter.
+
+endpointConfigSelector:
+  name: endpoint config selector
+  collection: networkservices.projects.locations.endpointConfigSelectors
+  request_id_field: endpointConfigSelectorId
+  attributes:
+  - *project
+  - *location
+  - &endpointConfigSelector
+    parameter_name: endpointConfigSelectorsId
+    attribute_name: endpoint_config_selector
+    help: Id of the endpoint config selector.

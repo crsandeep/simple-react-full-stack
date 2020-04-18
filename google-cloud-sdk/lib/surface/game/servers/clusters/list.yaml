@@ -1,0 +1,44 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: List Game Server Clusters.
+    description: |
+      List Cloud Game Server Clusters.
+
+      ## EXAMPLES
+
+      To see the list of all Game Server Clusters in project 'my-project', realm 'my-realm', and location 'my-location', run:
+
+        $ {command} --project=my-project --realm=my-realm --location=my-location
+
+
+  request:
+    collection: gameservices.projects.locations.realms.gameServerClusters
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.game.servers.hooks:AddDefaultLocationAndRealmToListRequest
+
+  response:
+    id_field: name
+
+  arguments:
+    resource:
+      help_text: Cloud Game Servers Realm of the Game Server Cluster to list.
+      spec: !REF googlecloudsdk.command_lib.game.resources:default_realm
+
+  output:
+    format: |
+      table(
+         name.basename():label=NAME,
+         name.scope("locations").segment(0):label=LOCATION,
+         name.scope("realms").segment(0):label=REALM,
+         description:label=DESCRIPTION,
+         createTime,
+         updateTime,
+         connectionInfo.namespace:label=NAMPESPACE,
+         connectionInfo.gkeClusterReference.cluster:label=GKE_CLUSTER,
+         labels
+       )

@@ -1,0 +1,25 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      Mark an insight's state as ACTIVE. Can be applied to insights in DISMISSED state.
+    description: |
+      Mark an insight's state as ACTIVE. Can be applied to insights in DISMISSED state.
+    examples: |
+      To mark an insight as ACTIVE:
+
+        $ {command} abcd-1234 --project=project-name --location=global --insight-type=google.compute.firewall.Insight --etag=abc123
+
+  request:
+    collection: recommender.projects.locations.insightTypes.insights
+    method: markActive
+    api_version: v1alpha2
+
+  arguments:
+    resource:
+      help_text: The insight to mark as active.
+      spec: !REF googlecloudsdk.command_lib.recommender.resources:insight
+    params:
+    - arg_name: etag
+      api_field: googleCloudRecommenderV1alpha2MarkInsightActiveRequest.etag
+      help_text: Insight's current etag value.
+      required: true

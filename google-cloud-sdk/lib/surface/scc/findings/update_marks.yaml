@@ -1,0 +1,50 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Update Cloud Security Command Center finding's security marks.
+    description: Update Cloud Security Command Center finding's security marks.
+    examples: |
+      Selectively update security mark (Key1) with value (v1) on my-finding. Note that other security marks on my-finding are untouched:
+
+        $ {command} my-finding --organization=123456 --source=5678 --security-marks "key1=v1" --update-mask "marks.markKey1"
+
+      Update all security marks on my-finding, under organization 123456 and source 5678:
+
+        $ {command} my-finding --organization=123456 --source=5678 --security-marks "key1=v1,key2=v2"
+
+      Delete all security marks on my-finding:
+
+        $ {command} my-finding --organization=123456 --source=5678 --security-marks ""
+
+  request:
+    collection: securitycenter.organizations.sources.findings
+    api_version: v1
+    method: updateSecurityMarks
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.findings.request_hooks:UpdateFindingSecurityMarksReqHook
+
+  arguments:
+
+    resource:
+      help_text: The finding you want to update.
+      spec: !REF googlecloudsdk.command_lib.scc.resources:finding
+
+    params:
+    - arg_name: security-marks
+      api_field: securityMarks
+      help_text: |
+        SecurityMarks resource to be passed as the request body. It's a key=value pair separated
+        by comma (,). For example: --security-marks "key1=val1,key2=val2".
+      type: "googlecloudsdk.calliope.arg_parsers:ArgDict:"
+      processor: googlecloudsdk.command_lib.scc.hooks:SecurityMarksHook
+    - arg_name: start-time
+      api_field: startTime
+      help_text: |
+        Time at which the updated SecurityMarks take effect. For example: 2019-02-28T07:00:00Z
+    - arg_name: update-mask
+      api_field: updateMask
+      help_text: |
+        Use update-mask if you want to selectively update marks represented by --security-marks
+        flag. For example: --update-mask "marks.key1,marks.key2". If you want to override all the
+        marks for the given finding either skip the update-mask flag or provide an empty value
+        (--update-mask '') for it.

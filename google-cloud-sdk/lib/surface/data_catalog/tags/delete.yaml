@@ -1,0 +1,36 @@
+- release_tracks: [GA]
+  help_text:
+    brief: Delete a Cloud Data Catalog entry tag.
+    description: Delete a Cloud Data Catalog entry tag.
+
+    examples: |
+      Delete a Cloud Data Catalog entry tag:
+
+        $ {command} TAG
+
+  request:
+    api_version: v1
+    collection: datacatalog.projects.locations.entryGroups.entries.tags
+
+  arguments:
+    resource:
+      help_text: Entry tag to delete. The arguments in this group can be used to specify the attributes of this resource.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:tag
+
+- release_tracks: [ALPHA, BETA]
+  help_text:
+    brief: Delete a Cloud Data Catalog entry tag.
+    description: Delete a Cloud Data Catalog entry tag.
+
+    examples: |
+      Delete a Cloud Data Catalog entry tag:
+
+        $ {command} TAG
+
+  request:
+    collection: datacatalog.projects.locations.entryGroups.entries.tags
+
+  arguments:
+    resource:
+      help_text: Entry tag to delete. The arguments in this group can be used to specify the attributes of this resource.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:tag

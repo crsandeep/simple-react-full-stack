@@ -1,0 +1,31 @@
+- release_tracks: [ALPHA]
+
+  help_text:
+    brief: Describe a Cloud Security Command Center notification config.
+    description: Describe a Cloud Security Command Center notification config.
+    examples: |
+      Describe notification config 'my-config' from organization 123456
+
+        $ {command} my-config --organization=123456
+
+        $ {command} organizations/123456/notificationConfigs/my-config
+
+  request:
+    collection: securitycenter.organizations.notificationConfigs
+    disable_resource_check: true
+    api_version: v1
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.scc.notifications.request_hooks:DescribeNotificationReqHook
+
+  arguments:
+    params:
+    - arg_name: notificationConfigId
+      is_positional: true
+      required: true
+      help_text: |
+        The ID of the notification config. Formatted as "organizations/123/notificationConfigs/456" or just "456".
+
+    - arg_name: organization
+      required: false
+      help_text: |
+        The organization where the notification config resides. Formatted as "organizations/123" or just "123". Required if notificationConfigId does not contain organization information.

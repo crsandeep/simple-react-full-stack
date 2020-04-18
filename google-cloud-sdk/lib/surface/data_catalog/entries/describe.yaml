@@ -1,0 +1,36 @@
+- release_tracks: [GA]
+  help_text:
+    brief: Describe a Cloud Data Catalog entry.
+    description: Describe a Cloud Data Catalog entry.
+    examples: |-
+      To describe the entry 'entry1' in the group 'group1', run:
+
+        $ {command} entry1 \
+            --entry-group=group1 --location=us-central1
+
+  request:
+    api_version: v1
+    collection: datacatalog.projects.locations.entryGroups.entries
+
+  arguments:
+    resource:
+      help_text: Entry to describe.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:entry
+
+- release_tracks: [ALPHA, BETA]
+  help_text:
+    brief: Describe a Cloud Data Catalog entry.
+    description: Describe a Cloud Data Catalog entry.
+    examples: |-
+      To describe the entry 'entry1' in the group 'group1', run:
+
+        $ {command} entry1 \
+            --entry-group=group1 --location=us-central1
+
+  request:
+    collection: datacatalog.projects.locations.entryGroups.entries
+
+  arguments:
+    resource:
+      help_text: Entry to describe.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:entry

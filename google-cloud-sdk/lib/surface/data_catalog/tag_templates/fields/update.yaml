@@ -1,0 +1,84 @@
+- release_tracks: [GA]
+
+  help_text:
+    brief: Update a Cloud Data Catalog tag template field.
+    description: Update a Cloud Data Catalog tag template field.
+
+    examples: |
+      Update the display name of a tag template field:
+
+        $ {command} FIELD --display-name=NAME
+
+      Add enum values 'A' and 'B' to tag template field:
+
+        $ {command} FIELD --add-enum-values=A,B
+
+      Set a tag template field to be optional:
+
+        $ {command} FIELD --no-required
+
+  request:
+    api_version: v1
+    collection: datacatalog.projects.locations.tagTemplates.fields
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.data_catalog.tag_templates.util:UpdateUpdateTagTemplateFieldRequestWithInputV1
+
+  arguments:
+    resource:
+      help_text: Tag template field to update.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:tag_template_field
+
+    params:
+    - api_field: googleCloudDatacatalogV1TagTemplateField.displayName
+      arg_name: display-name
+      help_text: Display name of the tag template field.
+    - arg_name: add-enum-values
+      type: "googlecloudsdk.calliope.arg_parsers:ArgList:"
+      help_text: |
+        Comma-separated list of enum values to add to the tag template field.
+    - api_field: googleCloudDatacatalogV1TagTemplateField.isRequired
+      arg_name: required
+      help_text: |
+        Indicates if the tag template field is required. Updating from FALSE (optional) to TRUE (required) is NOT allowed.
+
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Update a Cloud Data Catalog tag template field.
+    description: Update a Cloud Data Catalog tag template field.
+
+    examples: |
+      Update the display name of a tag template field:
+
+        $ {command} FIELD --display-name=NAME
+
+      Add enum values 'A' and 'B' to tag template field:
+
+        $ {command} FIELD --add-enum-values=A,B
+
+      Set a tag template field to be optional:
+
+        $ {command} FIELD --no-required
+
+  request:
+    collection: datacatalog.projects.locations.tagTemplates.fields
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.data_catalog.tag_templates.util:UpdateUpdateTagTemplateFieldRequestWithInput
+
+  arguments:
+    resource:
+      help_text: Tag template field to update.
+      spec: !REF googlecloudsdk.command_lib.data_catalog.resources:tag_template_field
+
+    params:
+    - api_field: googleCloudDatacatalogV1beta1TagTemplateField.displayName
+      arg_name: display-name
+      help_text: Display name of the tag template field.
+    - arg_name: add-enum-values
+      type: "googlecloudsdk.calliope.arg_parsers:ArgList:"
+      help_text: |
+        Comma-separated list of enum values to add to the tag template field.
+    - api_field: googleCloudDatacatalogV1beta1TagTemplateField.isRequired
+      arg_name: required
+      help_text: |
+        Indicates if the tag template field is required. Updating from FALSE (optional) to TRUE (required) is NOT allowed.

@@ -1,0 +1,24 @@
+- release_tracks: [ALPHA, BETA]
+
+  help_text:
+    brief: Describe a Game Server Cluster.
+    description: |
+      Describe a Cloud Game Server Cluster.
+
+      ## EXAMPLES
+
+      To describe Game Server Cluster 'my-cluster' in project 'my-project', realm 'my-realm', and location 'my-location', run:
+
+        $ {command} my-cluster --project=my-project --realm=my-realm --location=my-location
+
+  request:
+    collection: gameservices.projects.locations.realms.gameServerClusters
+    ALPHA:
+      api_version: v1alpha
+    BETA:
+      api_version: v1beta
+
+  arguments:
+    resource:
+      help_text: Cloud Game Server Cluster to describe.
+      spec: !REF googlecloudsdk.command_lib.game.resources:cluster

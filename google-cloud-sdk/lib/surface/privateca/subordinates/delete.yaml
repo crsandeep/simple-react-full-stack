@@ -1,0 +1,30 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      Permanently delete a subordinate certificate authority.
+    description: |
+      Permanently deletes a subordinate certificate authority.
+
+      Note that the KMS key will not be affected by this operation. You will need to delete the KMS
+      key separately once the CA is deleted.
+    examples: |
+      To delete a subordinate CA:
+
+        $ {command} server-tls-1 --location 'us-west1'
+
+      To delete a subordinate CA while skipping the confirmation input:
+
+        $ {command} server-tls-1 --location 'us-west1' --quiet
+
+  request:
+    collection: privateca.projects.locations.certificateAuthorities
+    api_version: v1alpha1
+    modify_request_hooks:
+    - googlecloudsdk.command_lib.privateca.hooks:CheckRequestSubordinateTypeHook
+    - googlecloudsdk.command_lib.privateca.hooks:AddRequestIdHook
+
+
+  arguments:
+    resource:
+      help_text: The certificate authority to delete.
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:certificate_authority

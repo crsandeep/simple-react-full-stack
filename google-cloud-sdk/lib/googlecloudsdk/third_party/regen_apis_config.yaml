@@ -1,0 +1,873 @@
+# Copyright 2016 Google LLC. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# This file lists apis used by gcloud (CloudSDK).
+# It is configuration for regen_apis.py script, which needs to be rerun
+# everytime some input discovery doc is added/updated or apitools generation
+# code has been changed.
+
+# To add new api simply add an entry with its api name and version
+# pointing to its discovery doc file which should be checked into root_dir.
+
+# api version can have the following fields:
+# api_name:
+#   api_version:
+#     discovery_doc: <relative path wrt root_dir>
+#     unelidable_request_methods: <list of request method id>
+#     default: <true|false in case there more that one api version>
+#     version: <actual private version of this api,
+#               defaults to public api_version>
+#     resources:
+#       resource_collection_name: <parsing_template>
+
+root_dir: googlecloudsdk/third_party/apis
+
+apis:
+  accessapproval:
+    v1:
+      discovery_doc: accessapproval_v1.json
+      default: true
+  accesscontextmanager:
+    v1alpha:
+      discovery_doc: accesscontextmanager_v1alpha.json
+      default: false
+    v1beta:
+      discovery_doc: accesscontextmanager_v1beta.json
+      default: false
+    v1:
+      discovery_doc: accesscontextmanager_v1.json
+      default: true
+  admin:
+    v1:
+      discovery_doc: admin_v1.json
+      default: true
+      resources:
+        customer:
+          path: customer/{customerId}
+  apikeys:
+    v2alpha1:
+      discovery_doc: apikeys_v2alpha1.json
+      default: true
+  apigateway:
+    v1alpha1:
+      discovery_doc: apigateway_v1alpha1.json
+      default: true
+  appengine:
+    v1alpha:
+      discovery_doc: appengine_v1alpha.json
+      default: false
+    v1beta:
+      discovery_doc: appengine_v1beta.json
+      default: false
+    v1:
+      discovery_doc: appengine_v1.json
+      default: true
+      resources:
+        projects:
+          path: projects/{projectId}
+  artifactregistry:
+    v1beta1:
+      discovery_doc: artifactregistry_v1beta1.json
+      default: true
+  bigtableadmin:
+    v2:
+      discovery_doc: bigtableadmin_v2.json
+      resources:
+        projects:
+          path: projects/{projectId}
+  binaryauthorization:
+    v1alpha2:
+      default: true
+      discovery_doc: binaryauthorization_v1alpha2.json
+      resources:
+        projects.policy:
+          path: projects/{projectsId}/policy
+    v1beta1:
+      default: false
+      discovery_doc: binaryauthorization_v1beta1.json
+      resources:
+        projects.policy:
+          path: projects/{projectsId}/policy
+    v1:
+      default: false
+      discovery_doc: binaryauthorization_v1.json
+      resources:
+        projects.policy:
+          path: projects/{projectsId}/policy
+  billingbudgets:
+    v1alpha1:
+      discovery_doc: billingbudgets_v1alpha1.json
+    v1beta1:
+      discovery_doc: billingbudgets_v1beta1.json
+      default: true
+  cloudasset:
+    v1beta1:
+      default: true
+      discovery_doc: cloudasset_v1beta1.json
+    v1:
+      discovery_doc: cloudasset_v1.json
+    v1p1alpha1:
+      discovery_doc: cloudasset_v1p1alpha1.json
+      resources:
+        iamPolicies:
+          path: iamPolicies
+    v1p1beta1:
+      discovery_doc: cloudasset_v1p1beta1.json
+      resources:
+        iamPolicies:
+          path: iamPolicies
+        resources:
+          path: resources
+    v1p2beta1:
+      discovery_doc: cloudasset_v1p2beta1.json
+    v1p4alpha1:
+      discovery_doc: cloudasset_v1p4alpha1.json
+    v1p4beta1:
+      discovery_doc: cloudasset_v1p4beta1.json
+    v1p5alpha1:
+      discovery_doc: cloudasset_v1p5alpha1.json
+  cloudbilling:
+    v1:
+      discovery_doc: cloudbilling_v1.json
+      unelidable_request_methods:
+      - cloudbilling.projects.updateBillingInfo
+      resources:
+        projects:
+          path: projects/{projectsId}
+  cloudbuild:
+    v1:
+      discovery_doc: cloudbuild_v1.json
+      default: true
+      # The following stanza is a workaround for b/24867445. It prevents elision
+      # of a request containing (project_id + xyz) into just an Xyz object.
+      unelidable_request_methods:
+      - cloudbuild.projects.builds.create
+    v1alpha1:
+      discovery_doc: cloudbuild_v1alpha1.json
+      resources:
+        projects:
+          path: projects/{projectId}
+      # The following stanza is a workaround for b/24867445. It prevents elision
+      # of a request containing (project_id + xyz) into just an Xyz object.
+      unelidable_request_methods:
+      - cloudbuild.projects.builds.create
+      - cloudbuild.projects.workerPools.patch
+    v1alpha2:
+      discovery_doc: cloudbuild_v1alpha2.json
+      resources:
+        projects:
+          path: projects/{projectId}
+  clouddebugger:
+    v2:
+      discovery_doc: clouddebugger_v2.json
+  clouderrorreporting:
+    v1beta1:
+      discovery_doc: clouderrorreporting_v1beta1.json
+      resources:
+        projects:
+          path: projects/{projectId}
+  cloudfunctions:
+    v1:
+      discovery_doc: cloudfunctions_v1.json
+      default: true
+      resources:
+        providers.event_types:
+          path: providers/{triggerProvider}/eventTypes/{triggerEvent}
+        projects.buckets:
+          path: projects/_/buckets/{bucketId}
+  cloudidentity:
+    v1alpha1:
+      discovery_doc: cloudidentity_v1alpha1.json
+      resources:
+    v1beta1:
+      discovery_doc: cloudidentity_v1beta1.json
+      default: true
+      resources:
+        groups:
+          path: groups/{groupId}
+        groups.memberships:
+          path: groups/{groupId}/memberships/{membershipId}
+  cloudiot:
+    v1:
+      discovery_doc: cloudiot_v1.json
+      default: true
+      resources:
+        projects.locations.registries.devices.states:
+          path: projects/{projectsId}/locations/{locationsId}/registries/{registriesId}/devices/{devicesId}/states/{statesId}
+        projects.locations.registries.devices.configVersions:
+          path: projects/{projectsId}/locations/{locationsId}/registries/{registriesId}/devices/{devicesId}/configVersions/{configVersion}
+  cloudkms:
+    v1:
+      discovery_doc: cloudkms_v1.json
+      enable_mtls: true
+      default: true
+  cloudresourcemanager:
+    v1beta1:
+      discovery_doc: cloudresourcemanager_v1beta1.json
+    v1:
+      discovery_doc: cloudresourcemanager_v1.json
+      default: true
+      # Explicitly specifying the Liens service because it does not expose a
+      # Get method.
+      resources:
+        liens:
+          path: liens/{liensId}
+    v2alpha1:
+      discovery_doc: cloudresourcemanager_v2alpha1.json
+    v2beta1:
+      discovery_doc: cloudresourcemanager_v2beta1.json
+    v2:
+      discovery_doc: cloudresourcemanager_v2.json
+  cloudresourcesearch:
+    v1:
+      discovery_doc: cloudresourcesearch_v1.json
+  cloudshell:
+    v1alpha1:
+      discovery_doc: cloudshell_v1alpha1.json
+      default: true
+    v1:
+      discovery_doc: cloudshell_v1.json
+  cloudtasks:
+    v2beta2:
+      discovery_doc: cloudtasks_v2beta2.json
+    v2beta3:
+      discovery_doc: cloudtasks_v2beta3.json
+    v2:
+      discovery_doc: cloudtasks_v2.json
+      default: true
+  cloudtrace:
+    v2beta1:
+      discovery_doc: cloudtrace_v2beta1.json
+  cloudscheduler:
+    v1alpha1:
+      discovery_doc: cloudscheduler_v1alpha1.json
+    v1beta1:
+      discovery_doc: cloudscheduler_v1beta1.json
+    v1:
+      discovery_doc: cloudscheduler_v1.json
+      default: true
+  composer:
+    v1alpha2:
+      discovery_doc: composer_v1alpha2.json
+    v1beta1:
+      discovery_doc: composer_v1beta1.json
+    v1:
+      discovery_doc: composer_v1.json
+      default: true
+  composerflex:
+    v1alpha1:
+      discovery_doc: composerflex_v1alpha1.json
+  compute:
+    alpha:
+      discovery_doc: compute_alpha.json
+      resources:
+        nextHopGateways:
+          path: projects/{project}/global/gateways/{nextHopGateway}
+        securityPolicyRules:
+          path: projects/{project}/global/securityPolicies/{securityPolicy}/securityPolicyRules/{securityPolicyRule}
+    beta:
+      discovery_doc: compute_beta.json
+      unelidable_request_methods:
+        - compute.disks.resize
+      resources:
+        nextHopGateways:
+          path: projects/{project}/global/gateways/{nextHopGateway}
+        securityPolicyRules:
+          path: projects/{project}/global/securityPolicies/{securityPolicy}/securityPolicyRules/{securityPolicyRule}
+    v1:
+      discovery_doc: compute_v1.json
+      default: true
+      resources:
+        nextHopGateways:
+          path: projects/{project}/global/gateways/{nextHopGateway}
+        securityPolicyRules:
+          path: projects/{project}/global/securityPolicies/{securityPolicy}/securityPolicyRules/{securityPolicyRule}
+  container:
+    v1:
+      discovery_doc: container_v1.json
+      default: true
+      enable_mtls: true
+      resources:
+        projects.zones:
+          path: projects/{projectId}/zones/{zoneId}
+    v1beta1:
+      discovery_doc: container_v1beta1.json
+      resources:
+        projects.zones:
+          path: projects/{projectId}/zones/{zoneId}
+    v1alpha1:
+      discovery_doc: container_v1alpha1.json
+      resources:
+        projects.zones:
+          path: projects/{projectId}/zones/{zoneId}
+  containeranalysis:
+    v1alpha1:
+      discovery_doc: containeranalysis_v1alpha1.json
+      default: true
+    v1beta1:
+      discovery_doc: containeranalysis_v1beta1.json
+    v1:
+      discovery_doc: containeranalysis_v1.json
+  datacatalog:
+    v1alpha3:
+      discovery_doc: datacatalog_v1alpha3.json
+    v1beta1:
+      discovery_doc: datacatalog_v1beta1.json
+      default: true
+      resources:
+        catalog:
+          path: catalog
+        entries:
+          path: entries
+        projects.locations.tagTemplates.fields:
+          path: projects/{projectsId}/locations/{locationsId}/tagTemplates/{tagTemplatesId}/fields/{fieldsId}
+        projects.locations.entryGroups.entries.tags:
+          path: projects/{projectsId}/locations/{locationsId}/entryGroups/{entryGroupsId}/entries/{entriesId}/tags/{tagsId}
+    v1:
+      discovery_doc: datacatalog_v1.json
+      resources:
+        catalog:
+          path: catalog
+        entries:
+          path: entries
+        projects.locations.tagTemplates.fields:
+          path: projects/{projectsId}/locations/{locationsId}/tagTemplates/{tagTemplatesId}/fields/{fieldsId}
+        projects.locations.entryGroups.entries.tags:
+          path: projects/{projectsId}/locations/{locationsId}/entryGroups/{entryGroupsId}/entries/{entriesId}/tags/{tagsId}
+  dataflow:
+    v1b3:
+      discovery_doc: dataflow_v1b3.json
+  datafusion:
+    v1beta1:
+      discovery_doc: datafusion_v1beta1.json
+  datamigration:
+    v1alpha2:
+      discovery_doc: datamigration_v1alpha2.json
+  dataproc:
+    v1:
+      discovery_doc: dataproc_v1.json
+      resources:
+        projects.regions:
+          path: projects/{projectId}/regions/{regionId}
+        projects.regions.operations_list:
+          path: projects/{projectId}/regions/{regionId}/operations
+      default: true
+    v1beta2:
+      discovery_doc: dataproc_v1beta2.json
+      resources:
+        projects.regions:
+          path: projects/{projectId}/regions/{regionId}
+        projects.regions.operations_list:
+          path: projects/{projectId}/regions/{regionId}/operations
+  datastore:
+    v1beta1:
+      discovery_doc: datastore_v1beta1.json
+    v1:
+      discovery_doc: datastore_v1.json
+      default: true
+      resources:
+        projects:
+          path: projects/{projectId}
+        projects.indexes:
+          path: projects/{projectId}/indexes/{indexId}
+
+  deploymentmanager:
+    alpha:
+      discovery_doc: deploymentmanager_alpha.json
+    v2:
+      discovery_doc: deploymentmanager_v2.json
+      default: true
+    v2beta:
+      discovery_doc: deploymentmanager_v2beta.json
+  dialogflow:
+    v2:
+      discovery_doc: dialogflow_v2.json
+      resources:
+        projects.agent:
+          path: projects/{projectsId}/agent
+  discovery:
+    v1:
+      discovery_doc: discovery_v1.json
+      resources:
+        apis.versions:
+          path: '{api}/{version}'
+  dns:
+    v1:
+      discovery_doc: dns_v1.json
+      default: true
+    v1beta2:
+      discovery_doc: dns_v1beta2.json
+    v1alpha2:
+      discovery_doc: dns_v1alpha2.json
+  domains:
+    v1alpha1:
+      discovery_doc: domains_v1alpha1.json
+      default: true
+  eventflow:
+    v1beta2:
+      discovery_doc: eventflow_v1beta2.json
+  file:
+    v1p1alpha1:
+      discovery_doc: file_v1p1alpha1.json
+      default: true
+    v1beta1:
+      discovery_doc: file_v1beta1.json
+    v1:
+      discovery_doc: file_v1.json
+  firestore:
+    v1beta2:
+      discovery_doc: firestore_v1beta2.json
+      resources:
+        projects.databases.operations:
+          path: projects/{projectsId}/databases/{databasesId}/operations/{operationsId}
+    v1beta1:
+      discovery_doc: firestore_v1beta1.json
+    v1:
+      discovery_doc: firestore_v1.json
+      default: true
+  genomics:
+    v1:
+      discovery_doc: genomics_v1.json
+      default: true
+    v1alpha2:
+      discovery_doc: genomics_v1alpha2.json
+    v2alpha1:
+      discovery_doc: genomics_v2alpha1.json
+  gkehub:
+    v1alpha1:
+      discovery_doc: gkehub_v1alpha1.json
+    v1alpha2:
+      discovery_doc: gkehub_v1alpha2.json
+    v1beta1:
+      discovery_doc: gkehub_v1beta1.json
+    v1:
+      discovery_doc: gkehub_v1.json
+      default: true
+      resources:
+        projects.locations.memberships:
+          path: projects/{projectsId}/locations/{locationsId}/memberships/{membershipsId}
+  healthcare:
+    v1alpha2:
+      discovery_doc: healthcare_v1alpha2.json
+    v1beta1:
+      discovery_doc: healthcare_v1beta1.json
+    v1:
+      discovery_doc: healthcare_v1.json
+      default: true
+  oslogin:
+    v1alpha:
+      discovery_doc: oslogin_v1alpha.json
+      resources:
+        users.projects:
+          path: users/{user}/projects/{project}
+    v1beta:
+      discovery_doc: oslogin_v1beta.json
+      resources:
+        users.projects:
+          path: users/{user}/projects/{project}
+    v1:
+      discovery_doc: oslogin_v1.json
+      default: true
+      resources:
+        users.projects:
+          path: users/{user}/projects/{project}
+  osconfig:
+    v1alpha1:
+      discovery_doc: osconfig_v1alpha1.json
+    v1alpha2:
+      discovery_doc: osconfig_v1alpha2.json
+    v1beta:
+      discovery_doc: osconfig_v1beta.json
+    v1:
+      discovery_doc: osconfig_v1.json
+      default: true
+  iam:
+    v1:
+      discovery_doc: iam_v1.json
+      resources:
+        iamPolicies:
+          path: iamPolicies
+  iamassist:
+    v1alpha2:
+      resources:
+        simulator:
+          path: simulator
+      discovery_doc: iamassist_v1alpha2.json
+    v1alpha3:
+      default: true
+      resources:
+        simulator:
+          path: simulator
+      discovery_doc: iamassist_v1alpha3.json
+  iamcredentials:
+    v1:
+      discovery_doc: iamcredentials_v1.json
+      resources:
+        serviceAccounts:
+          path: projects/{projectsId}/serviceAccounts/{serviceAccountsId}
+  iap:
+    v1beta1:
+      discovery_doc: iap_v1beta1.json
+      resources:
+        projects:
+          path: projects/{project}/iap_web
+        projects.iap_web:
+          path: projects/{project}/iap_web/{iapWebId}
+        projects.iap_web.services:
+          path: projects/{project}/iap_web/{iapWebId}/services/{serviceId}
+        projects.iap_web.services.versions:
+          path: projects/{project}/iap_web/{iapWebId}/services/{serviceId}/versions/{versionId}
+    v1:
+      discovery_doc: iap_v1.json
+      default: true
+      resources:
+        projects.iap_web:
+          path: projects/{project}/iap_web/{iapWebId}
+        projects.iap_web.services:
+          path: projects/{project}/iap_web/{iapWebId}/services/{serviceId}
+        projects.iap_web.services.versions:
+          path: projects/{project}/iap_web/{iapWebId}/services/{serviceId}/versions/{versionId}
+  labelmanager:
+    v1alpha1:
+      discovery_doc: labelmanager_v1alpha1.json
+  language:
+    v1beta2:
+      discovery_doc: language_v1beta2.json
+      resources:
+        documents:
+          path: documents
+    v1:
+      discovery_doc: language_v1.json
+      default: true
+      resources:
+        documents:
+          path: documents
+  lifesciences:
+    v2beta:
+      discovery_doc: lifesciences_v2beta.json
+      default: true
+  managedidentities:
+    v1alpha1:
+      discovery_doc: managedidentities_v1alpha1.json
+    v1beta1:
+      discovery_doc: managedidentities_v1beta1.json
+    v1:
+      discovery_doc: managedidentities_v1.json
+      default: true
+  logging:
+    v2:
+      discovery_doc: logging_v2.json
+      default: true
+  memcache:
+    v1beta2:
+      discovery_doc: memcache_v1beta2.json
+      default: true
+  ml:
+    v1:
+      discovery_doc: ml_v1.json
+  monitoring:
+    v3:
+      discovery_doc: monitoring_v3.json
+      default: true
+      resources:
+        projects.alertPolicies.conditions:
+          path: projects/{projectsId}/alertPolicies/{alertPoliciesId}/conditions/{conditionsId}
+      unelidable_request_methods:
+        - monitoring.projects.alertPolicies.create
+        - monitoring.projects.notificationChannels.create
+    v1:
+      discovery_doc: monitoring_v1.json
+      default: false
+      unelidable_request_methods:
+        # This is required in order to properly generate a PatchRequest message. Without this, the
+        # generated client will simply use the Dashboard message as the request message for PATCH.
+        - monitoring.projects.dashboards.patch
+  networkmanagement:
+    v1:
+      discovery_doc: networkmanagement_v1.json
+      default: true
+    v1beta1:
+      discovery_doc: networkmanagement_v1beta1.json
+  networkservices:
+    v1alpha1:
+      discovery_doc: networkservices_v1alpha1.json
+  notebooks:
+    v1beta1:
+      discovery_doc: notebooks_v1beta1.json
+      default: true
+  orgpolicy:
+    v2alpha1:
+      discovery_doc: orgpolicy_v2alpha1.json
+  policytroubleshooter:
+    v1beta:
+      resources:
+        iam:
+          path: iam
+      discovery_doc: policytroubleshooter_v1beta.json
+    v1:
+      default: true
+      resources:
+        iam:
+          path: iam
+      discovery_doc: policytroubleshooter_v1.json
+  privateca:
+    v1alpha1:
+      discovery_doc: privateca_v1alpha1.json
+  pubsub:
+    v1:
+      discovery_doc: pubsub_v1.json
+      enable_mtls:  true
+      resources:
+        projects.snapshots:
+          path: projects/{projectsId}/snapshots/{snapshotsId}
+  pubsublite:
+    v1:
+      discovery_doc: pubsublite_v1.json
+      resources:
+        admin.projects.locations.topics.subscriptions:
+          path: admin/projects/{projectsId}/locations/{locationsId}/topics/{topicsId}/subscriptions
+  recaptchaenterprise:
+    v1:
+      discovery_doc: recaptchaenterprise_v1.json
+      default: true
+  redis:
+    v1alpha1:
+      discovery_doc: redis_v1alpha1.json
+    v1beta1:
+      discovery_doc: redis_v1beta1.json
+    v1:
+      discovery_doc: redis_v1.json
+      default: true
+  run:
+    v1alpha1:
+      discovery_doc: run_v1alpha1.json
+      default: true
+    v1beta1:
+      discovery_doc: run_v1beta1.json
+    v1:
+      discovery_doc: run_v1.json
+  runtimeconfig:
+    v1beta1:
+      discovery_doc: runtimeconfig_v1beta1.json
+  secretmanager:
+    v1beta1:
+      discovery_doc: secretmanager_v1beta1.json
+    v1:
+      discovery_doc: secretmanager_v1.json
+      default: true
+  securitycenter:
+    v1beta1:
+      discovery_doc: securitycenter_v1beta1.json
+      resources:
+        organizations.sources.findings:
+          path: organizations/{organizationsId}/sources/{sourcesId}/findings/{findingId}
+        organizations.assets:
+          path: organizations/{organizationsId}/assets/{assetsId}
+    v1:
+      discovery_doc: securitycenter_v1.json
+      resources:
+        organizations.sources.findings:
+          path: organizations/{organizationsId}/sources/{sourcesId}/findings/{findingId}
+        organizations.assets:
+          path: organizations/{organizationsId}/assets/{assetsId}
+        organizations.notificationConfigs:
+          path: organizations/{organizationsId}/notificationConfigs/{notificationConfigsId}
+      default: true
+    v1p1beta1:
+      discovery_doc: securitycenter_v1p1beta1.json
+      resources:
+        organizations.sources.findings:
+          path: organizations/{organizationsId}/sources/{sourcesId}/findings/{findingId}
+        organizations.assets:
+          path: organizations/{organizationsId}/assets/{assetsId}
+        organizations.notificationConfigs:
+          path: organizations/{organizationsId}/notificationConfigs/{notificationConfigsId}
+  serviceconsumermanagement:
+    v1beta1:
+      discovery_doc: serviceconsumermanagement_v1beta1.json
+      default: true
+  servicedirectory:
+    v1beta1:
+      discovery_doc: servicedirectory_v1beta1.json
+  servicemanagement:
+    v1:
+      discovery_doc: servicemanagement_v1.json
+  servicenetworking:
+    v1beta:
+      discovery_doc: servicenetworking_v1beta.json
+      default: false
+    v1:
+      discovery_doc: servicenetworking_v1.json
+      default: true
+  serviceusage:
+    v1alpha:
+      discovery_doc: serviceusage_v1alpha.json
+    v1beta1:
+      discovery_doc: serviceusage_v1beta1.json
+    v1:
+      discovery_doc: serviceusage_v1.json
+      default: true
+  serviceuser:
+    v1:
+      discovery_doc: serviceuser_v1.json
+  source:
+    v1:
+      discovery_doc: source_v1.json
+  sourcerepo:
+    v1:
+      discovery_doc: sourcerepo_v1.json
+  spanner:
+    v1:
+      discovery_doc: spanner_v1.json
+      enable_mtls: true
+  speech:
+    v1:
+      discovery_doc: speech_v1.json
+      resources:
+        speech:
+          path: speech
+      default: true
+    v1p1beta1:
+      discovery_doc: speech_v1p1beta1.json
+      resources:
+        speech:
+          path: speech
+  sql:
+    v1beta4:
+      discovery_doc: sql_v1beta4.json
+  storage:
+    v1:
+      discovery_doc: storage_v1.json
+      resources:
+        projects:
+          path: projects/{project}
+  testing:
+    v1:
+      discovery_doc: testing_v1.json
+      # Methods in generated apis that should not have their requests elided.
+      # Currently if a request body has fields with the same names as all of the
+      # url parameters for a given method, then no request object is created for
+      # these methods. In some cases this is undesired because the value in the
+      # url and the value in the request body should be different and the
+      # request message is still needed.
+      unelidable_request_methods:
+        - testing.projects.testMatrices.create
+  toolresults:
+    v1beta3:
+      discovery_doc: toolresults_v1beta3.json
+  tpu:
+    v1alpha1:
+      discovery_doc: tpu_v1alpha1.json
+      default: true
+    v1:
+      discovery_doc: tpu_v1.json
+  videointelligence:
+    v1:
+      discovery_doc: videointelligence_v1.json
+      default: true
+      resources:
+        videos:
+          path: videos
+  vision:
+    v1:
+      discovery_doc: vision_v1.json
+      resources:
+        images:
+          path: images
+        projects.locations.productSets.products:
+          path: projects/{projectsId}/locations/{locationsId}/productSets/{productSetsId}/products
+        files:
+          path: files
+  dlp:
+    v2:
+      discovery_doc: dlp_v2.json
+      resources:
+        projects.content:
+          path: projects/{projectsId}
+          enable_uri_parsing: false
+        projects.image:
+          path: projects/{projectsId}
+          enable_uri_parsing: false
+        infoTypes:
+          path: infoTypes
+          enable_uri_parsing: false
+  vpcaccess:
+    v1alpha1:
+      discovery_doc: vpcaccess_v1alpha1.json
+    v1beta1:
+      discovery_doc: vpcaccess_v1beta1.json
+    v1:
+      discovery_doc: vpcaccess_v1.json
+      default: true
+  remotebuildexecution:
+    v1alpha:
+      discovery_doc: remotebuildexecution_v1alpha.json
+  bigquery:
+    v2:
+      discovery_doc: bigquery_v2.json
+      resources:
+        tabledata:
+          path: projects/{projectId}/datasets/{datasetId}/tables/{tableId}
+          enable_uri_parsing: false
+  bigquerydatatransfer:
+    v1:
+      discovery_doc: bigquerydatatransfer_v1.json
+  websecurityscanner:
+    v1beta:
+      discovery_doc: websecurityscanner_v1beta.json
+      resources:
+        projects.scanConfigs.scanRuns.crawledUrls:
+          path: projects/{projectsId}/scanConfigs/{scanConfigsId}/scanRuns/{scanRunsId}
+          enable_uri_parsing: false
+  recommender:
+    v1alpha1:
+      discovery_doc: recommender_v1alpha1.json
+      default: true
+      resources:
+        projects.locations:
+          path: projects/{projectsId}/locations/{locationsId}
+          enable_uri_parsing: false
+        projects.locations.recommenders:
+          path: projects/{projectsId}/locations/{locationsId}/recommenders/{recommendersId}
+          enable_uri_parsing: false
+        projects.locations.recommenders.recommendations:
+          path: projects/{projectsId}/locations/{locationsId}/recommenders/{recommendersId}/recommendations/{recommendationsId}
+          enable_uri_parsing: false
+        operations:
+          path: operations/{+operationId}
+    v1alpha2:
+      discovery_doc: recommender_v1alpha2.json
+    v1beta1:
+      discovery_doc: recommender_v1beta1.json
+    v1:
+      discovery_doc: recommender_v1.json
+  gameservices:
+    v1alpha:
+      discovery_doc: gameservices_v1alpha.json
+    v1beta:
+      discovery_doc: gameservices_v1beta.json
+      default: true
+  translate:
+    v3beta1:
+      discovery_doc: translate_v3beta1.json
+      default: true
+    v3:
+      discovery_doc: translate_v3.json
+  workflowexecutions:
+    v1alpha1:
+      discovery_doc: workflowexecutions_v1alpha1.json
+  workflows:
+    v1alpha1:
+      discovery_doc: workflows_v1alpha1.json

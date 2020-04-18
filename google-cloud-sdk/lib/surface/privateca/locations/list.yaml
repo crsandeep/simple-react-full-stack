@@ -1,0 +1,21 @@
+- release_tracks: [ALPHA]
+  help_text:
+    brief: |
+      List valid Private CA locations.
+    description: |
+      Returns valid locations to use for interaction with privateca
+
+
+  request:
+    collection: privateca.projects.locations
+    api_version: v1alpha1
+
+  arguments:
+    resource:
+      spec: !REF googlecloudsdk.command_lib.privateca.resources:project
+      help_text: |
+          The project for which to list locations.
+
+  output:
+    format: |
+      table(locationId:label=LOCATION_ID)
