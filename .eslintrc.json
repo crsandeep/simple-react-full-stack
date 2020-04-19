@@ -3,11 +3,23 @@
   "extends": ["airbnb"],
   "env": {
     "browser": true,
+    "commonjs": true,
+    "es6": true,
     "node": true
   },
   "rules": {
     "no-console": "off",
-    "comma-dangle": "off",
-    "react/jsx-filename-extension": "off"
+    "comma-dangle": ["error","never"],
+    "react/jsx-filename-extension": "off",
+    "semi":"warn",
+    "linebreak-style": ["warn", "windows"],
+    "class-methods-use-this":"off",
+    "no-param-reassign": ["warn", { "props": false}],
+    "react/destructuring-assignment":"off",
+    "guard-for-in":"off",
+    "no-restricted-syntax":"off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/label-has-for":"off",
+    "no-nested-ternary":"off"
   }
 }

@@ -1,19 +1,19 @@
-import React from "react";
+import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from "react-router";
-
-import { SpaceList,SpaceGrid } from '../components';
-import * as Actions from '../actions/Space';
-import * as Constants from '../constants/Space';
+import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
 
 import SplitPane from 'react-split-pane';
-import _ from "lodash";
+import _ from 'lodash';
+import { SpaceList, SpaceGrid } from '../components';
+import * as Actions from '../actions/Space';
+import * as Constants from '../constants/Space';
 
 export class Space extends React.Component {
   constructor(props) {
     super(props);
 
-    //space list 
+    // space list
     this.handleNew = this.handleNew.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -23,13 +23,13 @@ export class Space extends React.Component {
     this.handleFormSave = this.handleFormSave.bind(this);
     this.handleRemoveSpaceImg = this.handleRemoveSpaceImg.bind(this);
 
-    //space grid
+    // space grid
 
     this.state = {
-        gridLayout: {},
-        gridList: [],
-        itemCount: 0,
-    }
+      gridLayout: {},
+      gridList: [],
+      itemCount: 0
+    };
     this.handleGridNew = this.handleGridNew.bind(this);
     this.handleGridSave = this.handleGridSave.bind(this);
     this.handleGridCancel = this.handleGridCancel.bind(this);
@@ -37,13 +37,13 @@ export class Space extends React.Component {
     this.handleGridSelect = this.handleGridSelect.bind(this);
     this.handleGridToggleMode = this.handleGridToggleMode.bind(this);
     this.handleGridRemove = this.handleGridRemove.bind(this);
-  };
-
-  componentDidMount() {
-    this.getSpaceList()
   }
 
-  //space list start
+  componentDidMount() {
+    this.getSpaceList();
+  }
+
+  // space list start
   getSpaceList() {
     this.props.sagaGetSpaceList(this.props.userId);
   }
@@ -51,27 +51,27 @@ export class Space extends React.Component {
   handleFormSave(values) {
     let fileMap = null;
 
-    if(values.imgFile!=null && values.imgFile.size>0){
-      //add img into file map
+    if (values.imgFile != null && values.imgFile.size > 0) {
+      // add img into file map
       fileMap = new Map();
-      fileMap.set('imgFile',values.imgFile);
+      fileMap.set('imgFile', values.imgFile);
     }
 
-    //add current user id
+    // add current user id
     values.userId = this.props.userId;
 
-    //clean up unecessary data fields
-    delete values.imgFile;  //to be passed by fileMap
+    // clean up unecessary data fields
+    delete values.imgFile; // to be passed by fileMap
     delete values.formMode;
 
     if (values.spaceId != null) {
-      //update
+      // update
       this.props.sagaUpdateSpace(values, fileMap);
     } else {
-      //add new
+      // add new
       this.props.sagaAddSpace(values, fileMap);
     }
-  };
+  }
 
   handleDelete(spaceId) {
     this.props.sagaDeleteSpace(this.props.userId, spaceId);
@@ -82,175 +82,173 @@ export class Space extends React.Component {
   }
 
   handleSelect(spaceId) {
-    console.log('Select space '+ spaceId)
+    console.log(`Select space ${spaceId}`);
     // this.props.history.push('/grid');
-  };
+  }
 
   handleRemoveSpaceImg(spaceId) {
     this.props.sagaRemoveSpaceImg(spaceId);
   }
 
-  handleReloadList(event){
-    this.getSpaceList()
+  handleReloadList() {
+    this.getSpaceList();
   }
 
-  //UI only
-  handleNew(event) {
+  // UI only
+  handleNew() {
     this.props.updateFormMode(Constants.FORM_EDIT_MODE);
-  };
-  
-  handleCancel(event) {
+  }
+
+  handleCancel() {
     this.props.updateFormMode(Constants.FORM_READONLY_MODE);
     this.handleReloadList();
-  };
-  //space list end
+  }
+  // space list end
 
-  //space grid start
-  handleGridCancel(event) {
+  // space grid start
+  handleGridCancel() {
     // this.props.updateFormMode(Constants.FORM_READONLY_MODE);
     // this.handleReloadList();
-    this.setState({ 
+    this.setState({
       gridLayout: {},
       gridList: []
     });
-    console.log("handleGridCancel: "+ JSON.stringify(this.state.gridList.length) + " ---- "+ JSON.stringify(this.state.gridLayout));
-  };
-
-  handleGridUpdateLayout(currLayout,allLayouts) {
-    this.setState({ gridLayout: allLayouts});
-    console.log("handleGridUpdateLayout: "+ JSON.stringify(allLayouts));
+    console.log(`handleGridCancel: ${JSON.stringify(this.state.gridList.length)} ---- ${JSON.stringify(this.state.gridLayout)}`);
   }
-  
-  handleGridNew(event) {
-    let nextId = this.state.itemCount + 1;
+
+  handleGridUpdateLayout(currLayout, allLayouts) {
+    this.setState({ gridLayout: allLayouts });
+    console.log(`handleGridUpdateLayout: ${JSON.stringify(allLayouts)}`);
+  }
+
+  handleGridNew() {
+    const nextId = this.state.itemCount + 1;
     const newGrid = {
       w: 1,
       h: 1,
       x: 0,
       y: Infinity, // puts it at the bottom
-      i: '' + nextId,
-      minW: 1, 
+      i: `${nextId}`,
+      minW: 1,
       maxW: 6,
-      minH: 1, 
+      minH: 1,
       maxH: 6,
-      moved:false,
-      static:false
+      moved: false,
+      static: false
     };
 
 
-    this.setState({
-        itemCount: nextId
-        , gridList: this.state.gridList.concat(newGrid)
-    })
-    console.log("handleGridNew: " + JSON.stringify(this.state.gridList))
+    this.setState(prevState => ({
+      itemCount: nextId,
+      gridList: prevState.gridList.concat(newGrid)
+    }));
+    console.log(`handleGridNew: ${JSON.stringify(this.state.gridList)}`);
   }
 
-  handleGridSelect(gridId){
-    console.log("handleGridSelect: "+ JSON.stringify(gridId));
+  handleGridSelect(gridId) {
+    console.log(`handleGridSelect: ${JSON.stringify(gridId)}`);
   }
 
-  handleGridRemove(itemKey){
-    event.stopPropagation();
+  handleGridRemove(itemKey) {
+    // event.stopPropagation();
     this.setState({
-        gridList:  _.reject(this.state.gridList, { i: itemKey }),
-        // itemCount: this.state.itemCount - 1
+      // eslint-disable-next-line react/no-access-state-in-setstate
+      gridList: _.reject(this.state.gridList, { i: itemKey })
+      // itemCount: this.state.itemCount - 1
     });
-    console.log('handleGridRemove, ' + itemKey )
+    console.log(`handleGridRemove, ${itemKey}`);
   }
 
-  handleGridToggleMode(isReadMode){
-    //update each grid layout
-    let list = []
-    let obj = {};
-    for (var attr in this.state.gridLayout) {
-      this.state.gridLayout[attr].map(el => {
+  handleGridToggleMode(isReadMode) {
+    // update each grid layout
+    let list = [];
+    const obj = {};
+    for (const attr in this.state.gridLayout) {
+      list = (this.state.gridLayout[attr].map((el) => {
         el.static = isReadMode;
-        list.push(el)
-      })
+        return el;
+      }));
       obj[attr] = list;
     }
 
-    this.setState({
-      gridLayout: obj
-    })
 
-    //gridlist
-    list = []
-    this.state.gridList.map(grid => {
+    // gridlist
+    let list2 = [];
+    list2 = this.state.gridList.map((grid) => {
       grid.static = isReadMode;
-      list.push(grid)
-    })
+      return grid;
+    });
+
     this.setState({
-      gridList: list
-    })
+      gridLayout: obj,
+      gridList: list2
+    });
   }
 
-  handleGridSave(event) {
-    const gridLayout = this.state.gridLayout;
-    console.log("handleGridSave: "+ JSON.stringify(gridLayout));
-  };
+  handleGridSave() {
+    console.log(`handleGridSave: ${JSON.stringify(this.state.gridLayout)}`);
+  }
 
-  //space grid end
+  // space grid end
 
   render() {
-    let splitType = 'vertical';
-    let initSize = 400;
-    let spaceId = 1;
+    const splitType = 'vertical';
+    const initSize = 400;
+    const spaceId = 1;
 
-    const spaceList = this.props.spaceList;
-    const editStatus = this.props.editStatus;
-    const formState = this.props.formState;
+    const { gridList } = this.state;
+    const { spaceList, editStatus, formState } = this.props;
     return (
       <div>
         <SplitPane split={splitType} defaultSize={initSize}>
-        <div>
-          {/* Left side bar */}
-          <SpaceList
-            handleFormSave={this.handleFormSave}
-            handleCancel={this.handleCancel}
-            handleNew={this.handleNew}
-            handleEdit={this.handleEdit}
-            handleSelect={this.handleSelect}
-            handleDelete={this.handleDelete}
-            handleReloadList={this.handleReloadList}
-            handleRemoveSpaceImg={this.handleRemoveSpaceImg}
+          <div>
+            {/* Left side bar */}
+            <SpaceList
+              handleFormSave={this.handleFormSave}
+              handleCancel={this.handleCancel}
+              handleNew={this.handleNew}
+              handleEdit={this.handleEdit}
+              handleSelect={this.handleSelect}
+              handleDelete={this.handleDelete}
+              handleReloadList={this.handleReloadList}
+              handleRemoveSpaceImg={this.handleRemoveSpaceImg}
 
-            spaceList={spaceList}
-            editStatus={editStatus}
-            formState={formState}
-          />
-        </div>
-        <div>
-          {/* Right side content */}
-          <SpaceGrid
-            handleNew={this.handleGridNew}
-            handleToggleMode={this.handleGridToggleMode}
-            handleSave={this.handleGridSave}
-            handleCancel={this.handleGridCancel}
-            handleUpdateLayout={this.handleGridUpdateLayout}
-            handleRemove={this.handleGridRemove}
-            handleSelect={this.handleGridSelect}
+              spaceList={spaceList}
+              editStatus={editStatus}
+              formState={formState}
+            />
+          </div>
+          <div>
+            {/* Right side content */}
+            <SpaceGrid
+              handleNew={this.handleGridNew}
+              handleToggleMode={this.handleGridToggleMode}
+              handleSave={this.handleGridSave}
+              handleCancel={this.handleGridCancel}
+              handleUpdateLayout={this.handleGridUpdateLayout}
+              handleRemove={this.handleGridRemove}
+              handleSelect={this.handleGridSelect}
 
-            gridList={this.state.gridList}
-            // gridLayout={this.state.gridLayout}
-            spaceId={spaceId}
-            formState={formState}
-          />
-        </div>
+              gridList={gridList}
+              // gridLayout={this.state.gridLayout}
+              spaceId={spaceId}
+              formState={formState}
+            />
+          </div>
         </SplitPane>
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   // //TODO: testing
-  let userId = 1;
+  const userId = 1;
 
-  let {spaceList, editStatus} = state.Space;
+  const { spaceList, editStatus } = state.Space;
 
   const inState = state.Space;
-  let formState = {
+  const formState = {
     formMode: inState.formMode,
     spaceId: inState.spaceId,
     name: inState.name,
@@ -261,45 +259,58 @@ const mapStateToProps = (state) => {
     sizeUnit: inState.sizeUnit,
     sizeWidth: inState.sizeWidth,
     sizeHeight: inState.sizeHeight,
-    sizeDepth: inState.sizeDepth,
+    sizeDepth: inState.sizeDepth
   };
 
   return {
-    userId: userId,
-    spaceList: spaceList,
-    editStatus: editStatus,
-    formState: formState
-  }
-}
+    userId,
+    spaceList,
+    editStatus,
+    formState
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    sagaGetSpaceList: (userId) => {
-      dispatch(Actions.sagaGetSpaceList(userId));
-    },
-    sagaUpdateSpace: (space,fileMap) =>{
-      dispatch(Actions.sagaUpdateSpace(space, fileMap));
-    },
-    sagaAddSpace: (space,fileMap) =>{
-      dispatch(Actions.sagaAddSpace(space, fileMap));
-    },
-    sagaDeleteSpace: (userId, spaceId) =>{
-      dispatch(Actions.sagaDeleteSpace(userId, spaceId));
-    },
-    sagaGetSpace: (spaceId) =>{
-      dispatch(Actions.sagaGetSpace(spaceId));
-    },
-    sagaRemoveSpaceImg:(spaceId) =>{
-      dispatch(Actions.sagaRemoveSpaceImg(spaceId));
-    },
-    updateFormMode: (mode) => {
-      dispatch(Actions.updateFormMode(mode));
-    }
+const mapDispatchToProps = dispatch => ({
+  sagaGetSpaceList: (userId) => {
+    dispatch(Actions.sagaGetSpaceList(userId));
+  },
+  sagaUpdateSpace: (space, fileMap) => {
+    dispatch(Actions.sagaUpdateSpace(space, fileMap));
+  },
+  sagaAddSpace: (space, fileMap) => {
+    dispatch(Actions.sagaAddSpace(space, fileMap));
+  },
+  sagaDeleteSpace: (userId, spaceId) => {
+    dispatch(Actions.sagaDeleteSpace(userId, spaceId));
+  },
+  sagaGetSpace: (spaceId) => {
+    dispatch(Actions.sagaGetSpace(spaceId));
+  },
+  sagaRemoveSpaceImg: (spaceId) => {
+    dispatch(Actions.sagaRemoveSpaceImg(spaceId));
+  },
+  updateFormMode: (mode) => {
+    dispatch(Actions.updateFormMode(mode));
   }
-}
+});
+
+Space.propTypes = {
+  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  spaceList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userId: PropTypes.number.isRequired,
+
+  sagaGetSpaceList: PropTypes.func.isRequired,
+  sagaUpdateSpace: PropTypes.func.isRequired,
+  sagaAddSpace: PropTypes.func.isRequired,
+  sagaDeleteSpace: PropTypes.func.isRequired,
+  sagaGetSpace: PropTypes.func.isRequired,
+  sagaRemoveSpaceImg: PropTypes.func.isRequired,
+  updateFormMode: PropTypes.func.isRequired
+};
 
 export default withRouter(
   connect(
     mapStateToProps, mapDispatchToProps
   )(Space)
-)
+);
