@@ -1,5 +1,8 @@
 # simple-react-full-stack
 
+<!-- https://medium.com/@jpqo9508/building-a-simple-game-with-react-part-1-3d7df620678d
+ -->
+
 [![Build Status](https://travis-ci.org/crsandeep/simple-react-full-stack.svg?branch=master)](https://travis-ci.org/crsandeep/simple-react-full-stack)
 [![Greenkeeper badge](https://badges.greenkeeper.io/crsandeep/simple-react-full-stack.svg)](https://greenkeeper.io/)
 
