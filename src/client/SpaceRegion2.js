@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import Square from "./Square";
 import initialSpaceRegionState from "./initialSpaceRegionState";
 import "./SpaceRegion.css";
-
+import { droneAction } from "./drone-action";
+import DroneStates from "./DroneState";
 const DIRS_MOVES = [
   { north: [0, -1] },
   { south: [0, 1] },
@@ -14,9 +15,9 @@ const DIRS_MOVES = [
   { southwest: [-1, 1] },
 ];
 const SpaceRegion = () => {
-  const width = 10;
-  const height = 10;
-  const suns = [{ x: 7, y: 8 }];
+  const width = 5;
+  const height = 5;
+  const suns = [{ x: 2, y: 3 }];
   const [drones, updateDrones] = useState([
     {
       x: 1,
@@ -24,22 +25,21 @@ const SpaceRegion = () => {
       dir: "north",
       state: 1,
     },
-    // {
-    //   x: 0,
-    //   y: 0,
-    //   dir: 'south',
-    //   state: 1
-    // }
+    {
+      x: 0,
+      y: 0,
+      dir: "south",
+      state: 1,
+    },
   ]);
 
   const [spaceRegionState, updateSpaceRegionState] = useState([]);
   const initialStarNumber = width * height - suns.length;
+  const [currrentDroneState, setCurrentDroneState] = useState();
   // const [ remainStarNumber, updateRemainingStartNumber] = useState(10)
   // const [ remainDroneNumber, updateRemainingDroneNumber] = useState(20)
 
   useEffect(() => {
-    // console.log('-rendered', suns, width)
-
     const defaultSpaceRegionState = initialSpaceRegionState(
       width,
       height,
@@ -87,264 +87,218 @@ const SpaceRegion = () => {
     );
   };
 
-  // const handleUpdateDrones = (val) => {
-  //   setDronesString(val)
-  //   // console.log('--val', val)
-  //   const drones = val.split(';').map(drone => {
-  //     const [x, y, dir] = drone.split(',')
-  //     // console.log('---spaceRegionState', spaceRegionState)
+  // const droneAction = (drone, spaceRegionState, move) => {
+  //   const unvisitedSquare = spaceRegionState.filter((s) => !s.explored);
+  //   const path = [];
+  //   const queues = [drone];
+  //   path.push([drone.x, drone.y]);
 
-  //     return {
-  //       x,
-  //       y,
-  //       dir,
-  //       state: 1
+  //   let curDroneState = drone.state;
+  //   console.log(
+  //     "curDroneState !== 0 && move < 100 && unvisitedSquare.length",
+  //     curDroneState !== 0,
+  //     move < 100,
+  //     unvisitedSquare.length
+  //   );
+  //   while (curDroneState !== 0 && move < 100 && unvisitedSquare.length) {
+  //     curDroneState = drone.state;
+  //     console.log(
+  //       "current drone",
+  //       drone,
+  //       "curDroneState",
+  //       curDroneState,
+  //       "x",
+  //       drone.x,
+  //       drone.y
+  //     );
+  //     const { x, y, dir, state } = drone;
+
+  //     const curState = drone;
+  //     let curLocation = [curState.x, curState.y];
+
+  //     // const id = `${x}-${y}`;
+
+  //     // const visitingSquare = document.getElementById(id);
+  //     // visitingSquare.style.backgroundColor = "yellow";
+
+  //     const nextDir = DIRS_MOVES[Math.floor(Math.random() * 8)];
+  //     const dirName = Object.keys(nextDir)[0];
+  //     const dirXY = nextDir[dirName];
+  //     // drone.dir = dirName;
+
+  //     const newX = Number(curLocation[0]) + Number(dirXY[0]);
+  //     const newY = Number(curLocation[1]) + Number(dirXY[1]);
+
+  //     // console.log("newX----", newX, "newY", newY);
+  //     // console.log('drone.state', drone.state, 'drone', drone)
+  //     if (
+  //       newY >= spaceRegionState.length ||
+  //       newY < 0 ||
+  //       newX >= spaceRegionState[0].length ||
+  //       newX < 0 ||
+  //       spaceRegionState[newX][newY].explored
+  //     ) {
+  //       console.log("exit2");
+  //       continue;
   //     }
-  //   })
 
-  //   console.log('--drones', drones)
-  //   updateDrones(drones)
-  //   drones.forEach(({x, y}) => {
-  //     spaceRegionState[x][y].hasDrone = true
-  //   })
-  //   // console.log('-------spaceRegionState', spaceRegionState)
-  //   updateSpaceRegionState(spaceRegionState)
-  // }
+  //     setTimeout(
+  //       (function (move) {
+  //         const { x, y, dir, state } = drone;
 
-  // const handleUpdateSuns = (val) => {
+  //         const curState = drone;
+  //         let curLocation = [curState.x, curState.y];
 
-  //   updateSunString(val)
-  //   // console.log('--valsss', val)
-  //   const suns = val.split(';').map(sun => {
-  //     const [x, y] = sun.split(',')
-  //     spaceRegionState[x][y].hasSun = true
-  //     return {
-  //       x,
-  //       y
-  //     }
+  //         const id = `${x}-${y}`;
 
-  //   })
-  //   updateSuns(suns)
-  //   suns.forEach(({x, y}) => {
-  //     spaceRegionState[x][y].hasSun = true
-  //   })
-  //   updateSpaceRegionState(spaceRegionState)
+  //         const visitingSquare = document.getElementById(id);
+  //         visitingSquare.style.backgroundColor = "yellow";
 
-  // }
+  //         const nextDir = DIRS_MOVES[Math.floor(Math.random() * 8)];
+  //         const dirName = Object.keys(nextDir)[0];
+  //         const dirXY = nextDir[dirName];
+  //         drone.dir = dirName;
 
-  // const animatePath = (path) => {
-  //   for (let i = 0; i < path.length; i++) {
-  //     setTimeout(() => {
-  //       const node = path[i];
-  //       document.getElementById(`${node[0]}-${node[1]}`).className =
-  //         'visited';
-  //     }, 50 * i);
+  //         const newX = Number(curLocation[0]) + Number(dirXY[0]);
+  //         const newY = Number(curLocation[1]) + Number(dirXY[1]);
+
+  //         console.log("---move", move, path);
+  //         path.push([newX, newY]);
+
+  //         // const curLocation = path[move];
+  //         console.log(" spaceRegionState", spaceRegionState, newX, newY);
+  //         const square = spaceRegionState[newX][newY];
+
+  //         // come to the new  square
+  //         const droneId = `drone-${curLocation[0]}-${curLocation[1]}`;
+  //         const leavingDrone = document.getElementById(droneId);
+  //         // document.getElementById(droneId).className = 'visited'
+  //         leavingDrone.style.display = "none";
+  //         spaceRegionState[curLocation[0]][curLocation[1]].hasDrone = false;
+  //         console.log("leavingDrone.style.display", leavingDrone.style.display);
+  //         spaceRegionState[newX][newY].hasDrone = true;
+  //         console.log("leavingDrone", leavingDrone);
+  //         drone.x = newX;
+  //         drone.y = newY;
+
+  //         spaceRegionState[x][y].hasDrone = false;
+  //         const newDroneId = `drone-${newX}-${newY}`;
+  //         const newDrone = document.getElementById(newDroneId);
+  //         newDrone.style.display = "block";
+
+  //         const nextId = `${newX}-${newY}`;
+  //         const nextVisitingSquare = document.getElementById(nextId);
+  //         console.log("nextVisitingSquare", nextVisitingSquare);
+  //         nextVisitingSquare.style.backgroundColor = "yellow";
+
+  //         console.log("---square", square);
+  //         if (square.hasSun) {
+  //           const sunId = `sun-${newX}-${newY}`;
+  //           const visitingSun = document.getElementById(sunId);
+  //           visitingSun.style.display = "block";
+
+  //           const explosionId = `explosion-${newX}-${newY}`;
+  //           const visitingExplosion = document.getElementById(explosionId);
+  //           visitingExplosion.style.display = "block";
+
+  //           console.log("suuuuu exsit ");
+  //           drone.state = 0; // crashed
+  //           return;
+  //         } else if (square.hasDrone) {
+  //           const explosionId = `explosion-${newX}-${newY}`;
+  //           const visitingExplosion = document.getElementById(explosionId);
+  //           visitingExplosion.style.display = "block";
+
+  //           drone.state = 0; // crashed
+  //           return;
+  //         } else if (square.hasStar) {
+  //           const starId = `star-${newX}-${newY}`;
+  //           const visitingStar = document.getElementById(starId);
+  //           visitingStar.style.display = "block";
+
+  //           square.hasDrone = true;
+  //           square.explored = true;
+
+  //           spaceRegionState[newX][newY].explored = true;
+
+  //           updateSpaceRegionState(spaceRegionState);
+  //           console.log("mew drone", drone);
+  //         } else {
+  //           console.log("nothing here continuye", drone);
+  //         }
+  //       })(move),
+  //       move * 50
+  //     );
+  //     move++;
   //   }
-  // }
+  //   console.log("out of while loop");
+  // };
 
-  // const animateExplorationPath = (visitedSquares, nodesInShortestPathOrder) => {
-  //   for (let i = 0; i <= visitedSquares.length; i++) {
-  //     if (i === visitedSquares.length) {
-  //       setTimeout(() => {
-  //         animatePath(visitedSquares);
-  //       }, 10 * i);
-  //       return;
-  //     }
-  //     setTimeout(() => {
-  //       const node = visitedSquares[i];
-  //       document.getElementById(`${node.row}-${node.col}`).className =
-  //         'visited';
-  //     }, 10 * i);
-  //   }
-  // }
-  const allExplored = (spaceRegionState) => {
-    return spaceRegionState.every((square) => square.explored);
-  };
+  const visualizePathNodes = (pathNodes, droneStates) => {
+    console.log("----------------------here");
+    for (let i = 0; i < pathNodes.length; i++) {
+      setTimeout(() => {
+        console.log("hereiiiiiiiiiiiii", i);
+        const [x, y] = pathNodes[i];
+        const droneState = droneStates[i];
+        console.log(
+          "-----------x here",
+          x,
+          y,
+          "---------droneState",
+          droneState
+        );
+        const droneX = droneState.x;
+        const droneY = droneState.y;
+        if (i > 0) {
+          const prevDroneX = droneStates[i - 1].x;
+          const prevDroneY = droneStates[i - 1].y;
+          const prevDroneId = `drone-${prevDroneX}-${prevDroneY}`;
+          const visitingDrone = document.getElementById(prevDroneId);
+          visitingDrone.style.display = "none";
+        }
+        const droneId = `drone-${droneX}-${droneY}`;
+        const visitingDrone = document.getElementById(droneId);
+        visitingDrone.style.display = "block";
 
-  const getDronePath = (drone, spaceRegionState) => {
-    const exploreNext = (spaceRegionState, newX, newY, move, queues, path) => {
-      // get a new dir
-      const newDir = DIRS_MOVES[Math.floor(Math.random() * 8)];
-      const dirName = Object.keys(newDir)[0];
-      drone.dir = dirName;
-      // push to path
-      queues.push([newX, newY]);
+        switch (droneState.status) {
+          case "SUN":
+            console.log("hiiiiiiiiii");
+            const sunId = `sun-${droneX}-${droneY}`;
+            const visitingSun = document.getElementById(sunId);
+            visitingSun.style.display = "block";
 
-      path.push([newX, newY]);
-      drone.x = newX;
-      drone.y = newY;
-      const square = spaceRegionState[newX][newY];
-      console.log("---square", square);
-      spaceRegionState[newX][newY].explored = true;
-      move++;
+          case "STAR":
+            const starId = `star-${droneX}-${droneY}`;
+            const visitingStar = document.getElementById(starId);
+            visitingStar.style.display = "block";
+          case "WALL":
 
-      if (square.hasSun) {
-        console.log("suuuuu");
-        // updateSpaceRegionState(spaceRegionState)
-        drone.state = 0; // crashed
-        return;
-      } else if (square.hasDrone) {
-        drone.state = 0; // crashed
-        // updateSpaceRegionState(spaceRegionState)
-        return;
-      } else if (square.hasStar) {
-        console.log("sttar");
-        // updateSpaceRegionState(spaceRegionState)
-        // square.hasDrone= true
-        // square.explored = trues
-      }
-    };
+          case "DRONE":
 
-    const { x, y, dir, state } = drone;
-    const path = [[x, y]];
-    console.log("drone", drone);
-    let queues = [[x, y]];
-    let move = 0;
+          // const explosionId = `explosion-${droneX}-${droneY}`;
+          // const visitingExplosion = document.getElementById(explosionId);
+          // visitingExplosion.style.display = "block";
+          // const sunId = `sun-${droneX}-${droneY}`;
+          // const visitingSun = document.getElementById(sunId);
+          // visitingSun.style.display = "block";
 
-    const dirXY = DIRS_MOVES.find((move) => Object.keys(move)[0] === dir)[dir];
-    console.log("---dirXy", dir, DIRS_MOVES, dirXY);
+          // const explosionId = `explosion-${droneX}-${droneY}`;
+          // const visitingExplosion = document.getElementById(explosionId);
+          // visitingExplosion.style.display = "block";
 
-    while (drone.state === 1 && move < 500 && !allExplored(spaceRegionState)) {
-      const cur = [drone.x, drone.y];
-      const newX = Number(cur[0]) + Number(dirXY[0]);
-      const newY = Number(cur[1]) + Number(dirXY[1]);
+          case "PASS":
+        }
 
-      if (
-        newY >= spaceRegionState.length ||
-        newY < 0 ||
-        newX >= spaceRegionState[0].length ||
-        newX < 0 ||
-        spaceRegionState[newX][newY].explored
-      ) {
-        // barrier
-        continue;
-      }
-      exploreNext(spaceRegionState, newX, newY, move, queues, path);
-      // spaceRegionState[x][y].hasDrone = false
+        const id = `${x}-${y}`;
+
+        const visitingSquare = document.getElementById(id);
+        visitingSquare.style.backgroundColor = "yellow";
+      }, i * 500);
     }
-
-    return path;
-  };
-
-  const droneAction = (drone, spaceRegionState, i) => {
-    const { x, y, dir, state } = drone;
-    // console.log('action', spaceRegionState)
-    const startNode = [x, y];
-    const queues = [startNode];
-    let move = 0;
-    const id = `${x}-${y}`;
-    const visitingSquare = document.getElementById(id);
-    // console.log('visitingSquare', visitingSquare, 'id', id)
-    visitingSquare.style.backgroundColor = "yellow";
-    const dronePaths = getDronePath(drone, spaceRegionState);
-    console.log("dronepaths", dronePaths);
-
-    // while(drone.state === 1 && move < 500) {
-    //   const dir = DIRS_MOVES[Math.floor(Math.random() * 8)]
-    //   const dirName = Object.keys(dir)[0]
-    //   const dirXY = dir[dirName]
-    //   const cur = queues.shift()
-
-    //   const newX = Number(cur[0]) + Number(dirXY[0])
-    //   const newY = Number(cur[1]) + Number(dirXY[1])
-
-    //   queues.push([newX, newY])
-    //   // update drone dir
-    //   drone.dir = dirName
-    //   // console.log('drone.state', drone.state, 'drone', drone)
-    //   move ++
-
-    //     if (newY >= spaceRegionState.length || newY < 0 || newX >= spaceRegionState[0].length || newX < 0) {
-    //       // barrier
-    //       continue
-    //     }
-
-    //     // leaving the current square
-
-    //     setTimeout(() => {
-    //       const square = spaceRegionState[newX][newY]
-    //               // come to the new  square
-    //               const droneId = `drone-${drone.x}-${drone.y}`
-    //               const leavingDrone = document.getElementById(droneId)
-    //               // document.getElementById(droneId).className = 'visited'
-
-    //               leavingDrone.style.display = 'none'
-    //               console.log('leavingDrone.style.display', leavingDrone.style.display)
-    //               // spaceRegionState[newX][newY].hasDrone = true
-    //               console.log('leavingDrone', leavingDrone)
-
-    //       if (square.explored) {
-    //         // next step
-    //         square.hasDrone = false
-    //         return
-    //       } else {
-
-    //         drone.x = newX
-    //         drone.y = newY
-
-    //                   // come to the new  square
-    //         // const droneId = `drone-${cur[0]}-${cur[1]}`
-    //         // const leavingDrone = document.getElementById(droneId)
-    //         // // document.getElementById(droneId).className = 'visited'
-
-    //         // leavingDrone.style.display = 'none'
-    //         // console.log('leavingDrone.style.display', leavingDrone.style.display)
-    //         // // spaceRegionState[newX][newY].hasDrone = true
-    //         // console.log('leavingDrone', leavingDrone)
-
-    //         spaceRegionState[x][y].hasDrone = false
-
-    //         const newDroneId = `drone-${newX}-${newY}`
-    //         const newDrone = document.getElementById(newDroneId)
-
-    //         newDrone.style.display = 'block'
-    //         const id = `${newX}-${newY}`
-    //         const visitingSquare = document.getElementById(id)
-    //         console.log('visitingSquare', visitingSquare)
-    //         visitingSquare.style.backgroundColor = 'yellow'
-
-    //         console.log('---square', square)
-    //         if (square.hasSun) {
-    //           const sunId = `sun-${newX}-${newY}`
-    //           const visitingSun = document.getElementById(sunId)
-    //           visitingSun.style.display = 'block'
-
-    //           const explosionId = `explosion-${newX}-${newY}`
-    //           const visitingExplosion = document.getElementById(explosionId)
-    //           visitingExplosion.style.display = 'block'
-
-    //           console.log('suuuuu')
-    //           drone.state = 0 // crashed
-    //           return
-    //         } else if (square.hasDrone) {
-    //           const explosionId = `explosion-${newX}-${newY}`
-    //           const visitingExplosion = document.getElementById(explosionId)
-    //           visitingExplosion.style.display = 'block'
-
-    //           drone.state = 0 // crashed
-    //           return
-    //         } else if (square.hasStar){
-    //           const starId = `star-${newX}-${newY}`
-    //           const visitingStar = document.getElementById(starId)
-    //           visitingStar.style.display = 'block'
-
-    //           square.hasDrone= true
-    //           square.explored = true
-
-    //         }
-    //       }
-
-    //       spaceRegionState[newX][newY].explored = true
-
-    //       updateSpaceRegionState(spaceRegionState)
-
-    //     }, move * 50)
-
-    // }
   };
 
   const eachRun = (spaceRegionState) => {
-    console.log("---drones", drones);
     drones.forEach((drone) => {
       const droneId = `drone-${drone.x}-${drone.y}`;
       const Drone = document.getElementById(droneId);
@@ -352,12 +306,21 @@ const SpaceRegion = () => {
     });
 
     for (let i = 0; i < drones.length; i++) {
-      droneAction(drones[i], spaceRegionState, i);
+      const { path, droneStates } = droneAction(drones[i], spaceRegionState, 0);
+      console.log(
+        "PathNodes",
+        path,
+        "-----dronestate",
+        drones[i].state,
+        "---------droneStates",
+        droneStates
+      );
+      setCurrentDroneState(droneStates);
+      visualizePathNodes(path, droneStates);
     }
   };
 
   const startSimulation = () => {
-    console.log("here", spaceRegionState);
     eachRun(spaceRegionState);
   };
 
@@ -366,6 +329,7 @@ const SpaceRegion = () => {
       <div id="header">
         <span className="bombs-remaining digital">{initialStarNumber}</span>
         {/* <Timer isRunning={isRunning} /> */}
+        {currrentDroneState && <DroneStates droneStates={currrentDroneState} />}
       </div>
       <table>
         <tbody>{spaceRegionState && getRows(spaceRegionState)}</tbody>
