@@ -1,5 +1,5 @@
-  
-  export default interface ItemTrans {
+
+export default interface ItemTrans {
     spaceId: number;
     itemId: number;
     name: string;
@@ -10,5 +10,4 @@
     category: string;
     reminderDtm: Date;
     reminderComplete: boolean;
-  }
-  
+}

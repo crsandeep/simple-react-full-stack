@@ -531,9 +531,12 @@ function SpaceList(props) {
     </div>
   );
 }
+SpaceList.defaultProps = {
+  spaceList: []
+};
 
 SpaceList.propTypes = {
-  spaceList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  spaceList: PropTypes.arrayOf(PropTypes.object),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleFormSave: PropTypes.func.isRequired,

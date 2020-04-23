@@ -24,12 +24,11 @@ export class Space extends React.Component {
     this.handleRemoveSpaceImg = this.handleRemoveSpaceImg.bind(this);
 
     // space grid
-
     this.state = {
-      gridLayout: {},
-      gridList: [],
-      itemCount: 0
+      itemCount: 0,
+      tempLayouts: { md: [] }
     };
+
     this.handleGridNew = this.handleGridNew.bind(this);
     this.handleGridSave = this.handleGridSave.bind(this);
     this.handleGridCancel = this.handleGridCancel.bind(this);
@@ -41,6 +40,14 @@ export class Space extends React.Component {
 
   componentDidMount() {
     this.getSpaceList();
+
+    const originalLayouts = this.getFromLS('layouts');
+    const counter = this.calItemCount(originalLayouts);
+
+    this.setState({
+      itemCount: counter,
+      tempLayouts: originalLayouts
+    });
   }
 
   // space list start
@@ -106,89 +113,138 @@ export class Space extends React.Component {
   // space list end
 
   // space grid start
+  getFromLS(key) {
+    const empty = { };
+    empty[key] = { lg: [] };
+
+    let ls = { };
+    if (global.localStorage) {
+      try {
+        ls = JSON.parse(global.localStorage.getItem('rgl-8')) || empty;
+      } catch (e) {
+        // null
+      }
+    }
+    return ls[key];
+  }
+
+  saveToLS(key, value) {
+    if (global.localStorage) {
+      global.localStorage.setItem(
+        'rgl-8',
+        JSON.stringify({
+          [key]: value
+        })
+      );
+    }
+  }
+
   handleGridCancel() {
     // this.props.updateFormMode(Constants.FORM_READONLY_MODE);
     // this.handleReloadList();
+    const originalLayouts = this.getFromLS('layouts');
+    const counter = this.calItemCount(originalLayouts);
+
     this.setState({
-      gridLayout: {},
-      gridList: []
+      itemCount: counter,
+      tempLayouts: originalLayouts
     });
-    console.log(`handleGridCancel: ${JSON.stringify(this.state.gridList.length)} ---- ${JSON.stringify(this.state.gridLayout)}`);
   }
+
 
   handleGridUpdateLayout(currLayout, allLayouts) {
-    this.setState({ gridLayout: allLayouts });
-    console.log(`handleGridUpdateLayout: ${JSON.stringify(allLayouts)}`);
-  }
-
-  handleGridNew() {
-    const nextId = this.state.itemCount + 1;
-    const newGrid = {
-      w: 1,
-      h: 1,
-      x: 0,
-      y: Infinity, // puts it at the bottom
-      i: `${nextId}`,
-      minW: 1,
-      maxW: 6,
-      minH: 1,
-      maxH: 6,
-      moved: false,
-      static: false
-    };
-
-
-    this.setState(prevState => ({
-      itemCount: nextId,
-      gridList: prevState.gridList.concat(newGrid)
-    }));
-    console.log(`handleGridNew: ${JSON.stringify(this.state.gridList)}`);
+    console.log(`currLayout: ${JSON.stringify(currLayout)}`);
+    this.setState({ tempLayouts: allLayouts });
   }
 
   handleGridSelect(gridId) {
     console.log(`handleGridSelect: ${JSON.stringify(gridId)}`);
   }
 
-  handleGridRemove(itemKey) {
-    // event.stopPropagation();
+  handleGridSave() {
+    this.saveToLS('layouts', this.state.tempLayouts);
+    console.log(`Save: ${JSON.stringify(this.state.tempLayouts)}`);
+  }
+  // ------------------------------------------
+
+  handleGridNew() {
+    let nextId = this.state.itemCount;
+    nextId += 1;
+
+    const newGrid = {
+      w: 1,
+      h: 1,
+      x: 0,
+      y: 999, // puts it at the bottom
+      i: `${nextId}`,
+      minW: 1,
+      maxW: 6,
+      minH: 1,
+      maxH: 6
+    };
+
+    let tempList = [];
+    const obj = {};
+    for (const attr in this.state.tempLayouts) {
+      tempList = [...this.state.tempLayouts[attr]];
+      tempList.push(newGrid);
+      obj[attr] = tempList;
+    }
+
     this.setState({
-      // eslint-disable-next-line react/no-access-state-in-setstate
-      gridList: _.reject(this.state.gridList, { i: itemKey })
-      // itemCount: this.state.itemCount - 1
+      itemCount: nextId,
+      tempLayouts: obj
     });
+  }
+
+
+  handleGridRemove(itemKey) {
+    let tempList = [];
+    const obj = {};
+    for (const attr in this.state.tempLayouts) {
+      tempList = [...this.state.tempLayouts[attr]];
+      tempList = tempList.filter(el => el.i !== itemKey);
+      obj[attr] = tempList;
+    }
+
+    this.setState({
+      tempLayouts: obj
+    });
+
     console.log(`handleGridRemove, ${itemKey}`);
   }
 
   handleGridToggleMode(isReadMode) {
-    // update each grid layout
-    let list = [];
+    let tempList = [];
     const obj = {};
-    for (const attr in this.state.gridLayout) {
-      list = (this.state.gridLayout[attr].map((el) => {
+    for (const attr in this.state.tempLayouts) {
+      tempList = (this.state.tempLayouts[attr].map((el) => {
         el.static = isReadMode;
         return el;
       }));
-      obj[attr] = list;
+      obj[attr] = tempList;
     }
 
-
-    // gridlist
-    let list2 = [];
-    list2 = this.state.gridList.map((grid) => {
-      grid.static = isReadMode;
-      return grid;
-    });
-
     this.setState({
-      gridLayout: obj,
-      gridList: list2
+      tempLayouts: obj
     });
+    console.log(`handleGridToggleMode: ${JSON.stringify(this.state.tempLayouts)}`);
   }
 
-  handleGridSave() {
-    console.log(`handleGridSave: ${JSON.stringify(this.state.gridLayout)}`);
-  }
+  calItemCount(layouts) {
+    let counter = 0;
 
+    for (const attr in layouts) {
+      for (const el of layouts[attr]) {
+        if (parseInt(el.i, 10) > counter) {
+          counter = parseInt(el.i, 10);
+        }
+      }
+      break;
+    }
+
+    return counter;
+  }
   // space grid end
 
   render() {
@@ -196,7 +252,7 @@ export class Space extends React.Component {
     const initSize = 400;
     const spaceId = 1;
 
-    const { gridList } = this.state;
+    const { tempLayouts } = this.state;
     const { spaceList, editStatus, formState } = this.props;
     return (
       <div>
@@ -229,10 +285,10 @@ export class Space extends React.Component {
               handleRemove={this.handleGridRemove}
               handleSelect={this.handleGridSelect}
 
-              gridList={gridList}
-              // gridLayout={this.state.gridLayout}
               spaceId={spaceId}
               formState={formState}
+
+              tempLayouts={tempLayouts}
             />
           </div>
         </SplitPane>
@@ -294,10 +350,14 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
+Space.defaultProps = {
+  spaceList: []
+};
+
 Space.propTypes = {
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  spaceList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  spaceList: PropTypes.arrayOf(PropTypes.object),
   userId: PropTypes.number.isRequired,
 
   sagaGetSpaceList: PropTypes.func.isRequired,

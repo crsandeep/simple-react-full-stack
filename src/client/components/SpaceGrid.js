@@ -19,7 +19,12 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 function SpaceGrid(props) {
   const [mode, setMode] = React.useState('edit');
+  let layoutAttr = null;
 
+  for (const attr in props.tempLayouts) {
+    layoutAttr = attr;
+    break;
+  }
   return (
     <div>
       {
@@ -54,7 +59,7 @@ function SpaceGrid(props) {
           </ButtonToolbar>
         </Col>
         <Col xs={12} md={3}>
-          {props.gridList != null && props.gridList.length > 0 && (
+          {props.tempLayouts != null && layoutAttr != null && (
             <div>
               Current Mode:
               <select
@@ -73,14 +78,14 @@ function SpaceGrid(props) {
       </Row>
       <Row>
         <Col xs={12} md={12}>
-          {props.gridList != null && props.gridList.length > 0 ? (
-            <ResponsiveReactGridLayout
-              // layouts={props.gridLayout}
-              onLayoutChange={
-                (currLayout, allLayouts) => props.handleUpdateLayout(currLayout, allLayouts)
-              }
-            >
-              {props.gridList.map(grid => (
+          <ResponsiveReactGridLayout
+            layouts={props.tempLayouts}
+            onLayoutChange={
+              (currLayout, allLayouts) => props.handleUpdateLayout(currLayout, allLayouts)
+            }
+          >
+            {props.tempLayouts != null && layoutAttr != null ? (
+              props.tempLayouts[layoutAttr].map(grid => (
                 <div
                   key={grid.i}
                   className={
@@ -104,13 +109,14 @@ function SpaceGrid(props) {
                     </IconButton>
                   </ButtonToolbar>
                 </div>
-              ))}
-            </ResponsiveReactGridLayout>
-          ) : (
-            <Alert variant="info">
-              Please add new grid to start manage your space!
-            </Alert>
-          )}
+              ))) : (
+                <Alert variant="info">
+                  Please add new grid to start manage your space!
+                </Alert>
+
+            )}
+
+          </ResponsiveReactGridLayout>
         </Col>
       </Row>
     </div>
@@ -118,12 +124,8 @@ function SpaceGrid(props) {
 }
 
 SpaceGrid.propTypes = {
-  gridList: PropTypes.arrayOf(PropTypes.object).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
-
-  // gridLayout: PropTypes.array,
-  // spaceId: PropTypes.number,
-  // formState: PropTypes.object,
+  tempLayouts: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleNew: PropTypes.func.isRequired,
   handleToggleMode: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,

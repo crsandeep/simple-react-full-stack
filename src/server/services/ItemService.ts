@@ -182,6 +182,9 @@ export default class ItemService {
         if (itemRecord.imgPath != null) {
           fileUtil.clearUploadFile(itemRecord.imgPath);
         }
+      }else{
+        this.logger.error('Fail to delete item, itemId %o ', itemId);
+        throw new Error('Fail to delete item');
       }
       return itemRecord;
     } catch (e) {

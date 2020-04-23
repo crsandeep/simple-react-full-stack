@@ -152,6 +152,9 @@ export default class SpaceService {
         if (spaceRecord.imgPath != null) {
           fileUtil.clearUploadFile(spaceRecord.imgPath);
         }
+      }else{
+        this.logger.error('Fail to delete space, spaceId %o ', spaceId);
+        throw new Error('Fail to delete space');
       }
       return spaceRecord;
     } catch (e) {

@@ -1,5 +1,8 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "extends": ["airbnb"],
   "env": {
     "browser": true,
@@ -12,7 +15,7 @@
     "comma-dangle": ["error","never"],
     "react/jsx-filename-extension": "off",
     "semi":"warn",
-    "linebreak-style": ["warn", "windows"],
+    "linebreak-style": ["warn", "window"],
     "class-methods-use-this":"off",
     "no-param-reassign": ["warn", { "props": false}],
     "react/destructuring-assignment":"off",
