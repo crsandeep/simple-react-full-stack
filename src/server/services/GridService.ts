@@ -1,88 +1,157 @@
 import { Sequelize, Repository } from 'sequelize-typescript';
-import { Service, Container } from 'typedi';
-import GridTrans from '../interfaces/GridTrans';
-import winston from 'winston';
 
-//test for postgresql and sequelize
-import Grid from '../models/Grid'
+import { Service, Container } from 'typedi';
+
+import winston from 'winston';
+import GridTrans from '../interfaces/GridTrans';
+
+// test for postgresql and sequelize
+
+import Grid from '../models/Grid';
+import SpaceService from './SpaceService';
 
 @Service()
 export default class GridService {
-  private logger:winston.Logger;
-  private gridRepo:Repository<Grid>;
-  constructor() {  
+  private logger: winston.Logger;
+
+  private gridRepo: Repository<Grid>;
+
+  constructor() {
     this.logger = Container.get<winston.Logger>('logger');
-    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(Grid);
+
+    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(
+      Grid
+    );
   }
 
   public async getGridBySpaceId(spaceId: number): Promise<Grid[]> {
-    try{
+    try {
       const gridRecordList = await this.gridRepo.findAll({
-        where:{spaceId: spaceId},
-        order: [
-          ['gridId', 'ASC'],
-        ]
+        where: { spaceId },
+
+        order: [['gridId', 'ASC']]
       });
+
+
       return gridRecordList;
     } catch (e) {
       this.logger.error('Fail to get grid list, reason: %o ', e.message);
+
       throw e;
     }
   }
 
-  public async addGrid(gridTrans: GridTrans): Promise<Grid> {
+  public async saveGrid(gridTrans: GridTrans): Promise<Grid[]> {
+    try {
+      this.logger.debug('save grid record');
+
+      let gridItem: any;
+      let result = null;
+      const gridList: Promise<Grid>[] = [];
+
+      // add all grids to db
+      for (const layout of gridTrans.layouts) {
+        // prepare grid by for each layout
+        gridItem = {
+          spaceId: gridTrans.spaceId,
+          layout
+        };
+
+        if (layout.i < 0) {
+          // new grid
+          result = this.addGrid(gridItem);
+        } else {
+          // existing grid
+          gridItem.gridId = layout.i; // take i as grid id
+          result = this.updateGrid(gridItem);
+        }
+
+        if (!result) {
+          this.logger.error('Fail to save grid');
+          throw new Error('Grid cannot be saved');
+        }
+
+        // store as list for return
+        gridList.push(result);
+      }
+
+      // wait for all complete
+      return await Promise.all(gridList);
+
+      // return gridList;
+    } catch (e) {
+      this.logger.error('Fail to save grid, reason: %o ', e.message);
+
+      throw e;
+    }
+  }
+
+  public async addGrid(grid: any): Promise<Grid> {
     try {
       this.logger.debug('add grid record');
 
-      const gridRecord = await this.gridRepo.create(gridTrans);
+      if (grid.layout != null) {
+        grid.layout = JSON.stringify(grid.layout);// convert json to string for storing purpose
+      }
 
-      if (!gridRecord) {
+      const result = await this.gridRepo.create(grid);
+
+      if (!result) {
         this.logger.error('Fail to create grid');
         throw new Error('Grid cannot be created');
       }
 
-      return gridRecord;
+      return result;
     } catch (e) {
       this.logger.error('Fail to add grid, reason: %o ', e.message);
+
       throw e;
     }
   }
 
-  public async updateGrid(gridTrans: GridTrans): Promise<Grid> {
+  public async updateGrid(grid: any): Promise<Grid> {
     try {
       const filter = {
-        where: {gridId:gridTrans.gridId}
-      }
+        where: { gridId: grid.gridId }
+      };
 
-      this.logger.debug('update grid record, gridId: %o', gridTrans.gridId);
+      this.logger.debug('update grid record, gridId: %o', grid.gridId);
+
       const gridRecord = await this.gridRepo.findOne(filter);
 
       if (!gridRecord) {
-        this.logger.error('Fail to find grid, gridId %o ', gridTrans.gridId);
+        this.logger.error('Fail to find grid, gridId %o ', grid.gridId);
+
         throw new Error('Grid not found');
       }
 
       const update = {
-        name: gridTrans.name,
+        layout: JSON.stringify(grid.layout) // convert json to string for storing purpose
       };
 
-      //update record
+      // update record
       const options = {
-        where: {gridId:gridTrans.gridId},
+        where: { gridId: grid.gridId },
         returning: true,
         plain: true
       };
 
-      let updResult:any = await this.gridRepo.update(update, options);
+      const updResult: any = await this.gridRepo.update(update, options);
 
       if (!updResult) {
         this.logger.error('Fail to update grid');
+
         throw new Error('Grid cannot be updated');
       }
 
       return updResult[1];
     } catch (e) {
-      this.logger.error('Fail to update grid, gridId: %o, reason: %o ', gridTrans.gridId, e.message);
+      this.logger.error(
+        'Fail to update grid, gridId: %o, reason: %o ',
+        grid.gridId,
+        e.message
+      );
+
       throw e;
     }
   }
@@ -90,20 +159,21 @@ export default class GridService {
   public async deleteGrid(gridId: number): Promise<Grid> {
     try {
       this.logger.debug('delete grid record, gridId: %o', gridId);
-      const gridRecord = await this.gridRepo.findOne({where: {gridId: gridId}});
+
+      const gridRecord = await this.gridRepo.findOne({ where: { gridId } });
 
       if (!gridRecord) {
         this.logger.error('Fail to find grid, gridId %o ', gridId);
+
         throw new Error('Grid not found');
       }
 
       const options = {
-        where: {gridId:gridId},
-        limit: 1,
+        where: { gridId },
+        limit: 1
       };
 
-      
-      let delOper = await this.gridRepo.destroy(options);
+      const delOper = await this.gridRepo.destroy(options);
 
       if (!delOper) {
         this.logger.error('Fail to delete grid, gridId %o ', gridId);
@@ -112,7 +182,12 @@ export default class GridService {
 
       return gridRecord;
     } catch (e) {
-      this.logger.error('Fail to delete grid, gridId: %o, reason: %o ', gridId, e.message);
+      this.logger.error(
+        'Fail to delete grid, gridId: %o, reason: %o ',
+        gridId,
+        e.message
+      );
+
       throw e;
     }
   }

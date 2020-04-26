@@ -1,5 +1,5 @@
-  
-  export default interface SpaceTrans {
+
+export default interface SpaceTrans {
     userId: number;
     spaceId: number;
     name: string;
@@ -11,5 +11,4 @@
     sizeWidth: number;
     sizeHeight: number;
     sizeDepth: number;
-  }
-  
+  };

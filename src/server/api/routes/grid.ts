@@ -6,7 +6,6 @@ import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import GridTrans from '../../interfaces/GridTrans';
 import GridService from '../../services/GridService';
-import config from '../../config';
 import Grid from '../../models/Grid';
 
 const route = Router();
@@ -16,47 +15,33 @@ export default (app: Router) => {
   const logger: winston.Logger = Container.get('logger');
   const gridService = Container.get(GridService);
 
-  function formatGrid(gridRecord: Grid): GridTrans {
-    logger.debug('format grid');
-    const outputGrid: any = {};
-
-    const excludeAttr: string[] = ['creationDate', 'updatedOn'];
-
-    if (gridRecord == null) {
-      const empty: any = {};
-      return empty;
-    }
-
-    try {
-      // copy value from db object to transmission object
-      for (const [key, value] of Object.entries(gridRecord['dataValues'])) {
-        if (excludeAttr.indexOf(key) < 0) {
-          // non exclude field
-          outputGrid[key] = value;
-        }
-      }
-
-      return outputGrid;
-    } catch (e) {
-      logger.error('Fail to prepare output grid , reason: %o ', e.message);
-      throw e;
-    }
-  }
-
-  function formatGridList(gridRecordList: Grid[]): GridTrans[] {
+  function formatGridList(gridRecordList: Grid[]): GridTrans {
     logger.debug('format grid list');
 
-    if (gridRecordList == null) {
+    if (gridRecordList == null || gridRecordList.length === 0) {
       const empty: any = {};
       return empty;
     }
 
     try {
-      let outputGridList: GridTrans[] = [];
-      if (gridRecordList != null) {
-        outputGridList = gridRecordList.map(grid => formatGrid(grid));
+      const gridTrans: any = { layouts: [] };
+      let layoutObj: any;
+
+      // copy space id
+      gridTrans.spaceId = gridRecordList[0].spaceId;
+
+      // copy all layout into gridTrans.layout
+      for (const grid of gridRecordList) {
+        // convert as json object
+        layoutObj = JSON.parse(grid.layout);
+
+        // copy grid id into i as key
+        layoutObj.i = grid.gridId;
+
+        gridTrans.layouts.push(layoutObj);
       }
-      return outputGridList;
+
+      return gridTrans;
     } catch (e) {
       logger.error(
         'Fail to prepare output grid list , reason: %o ',
@@ -67,6 +52,7 @@ export default (app: Router) => {
   }
 
   function formatSuccess(payload: any, message: string = null): object {
+    // eslint-disable-next-line object-shorthand
     return { isSuccess: true, payload, message };
   }
 
@@ -87,7 +73,7 @@ export default (app: Router) => {
         const gridRecordList: Grid[] = await gridService.getGridBySpaceId(
           spaceId
         );
-        const result: GridTrans[] = formatGridList(gridRecordList);
+        const result: GridTrans = formatGridList(gridRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -101,8 +87,19 @@ export default (app: Router) => {
     celebrate({
       body: Joi.object({
         spaceId: Joi.number().required(),
-        gridId: Joi.number().allow(null),
-        name: Joi.string().required()
+        layouts: Joi.array().items(Joi.object({
+          x: Joi.number().required(),
+          y: Joi.number().required(),
+          w: Joi.number().required(),
+          h: Joi.number().required(),
+          i: Joi.number().required(),
+          minW: Joi.number().required(),
+          maxW: Joi.number().required(),
+          minH: Joi.number().required(),
+          maxH: Joi.number().required(),
+          moved: Joi.boolean().required(),
+          static: Joi.boolean().required()
+        }))
       })
     }),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -110,33 +107,8 @@ export default (app: Router) => {
 
       try {
         const input: GridTrans = req.body;
-        const gridRecord: Grid = await gridService.addGrid(input);
-        const result: GridTrans = formatGrid(gridRecord);
-        return res.status(201).json(formatSuccess(result));
-      } catch (e) {
-        logger.error('🔥 error: %o', e);
-        return next(e);
-      }
-    }
-  );
-
-  route.put(
-    '/:gridId',
-    celebrate({
-      body: Joi.object({
-        spaceId: Joi.number().required(),
-        gridId: Joi.number().required(),
-        name: Joi.string().required()
-      })
-    }),
-    async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling updateGrid endpoint');
-
-      try {
-        const input: GridTrans = req.body;
-        input.gridId = parseInt(req.params.gridId, 10);
-        const updResult: Grid = await gridService.updateGrid(input);
-        const result: GridTrans = formatGrid(updResult);
+        const gridRecord: Grid[] = await gridService.saveGrid(input);
+        const result: GridTrans = formatGridList(gridRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -158,7 +130,7 @@ export default (app: Router) => {
       try {
         const gridId: number = parseInt(req.params.gridId, 10);
         const gridRecord: Grid = await gridService.deleteGrid(gridId);
-        const result: GridTrans = formatGrid(gridRecord);
+        const result: GridTrans = formatGridList([gridRecord]); // pass in as list
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);

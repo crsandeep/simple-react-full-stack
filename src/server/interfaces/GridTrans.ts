@@ -1,7 +1,12 @@
 
 export default interface GridTrans {
   spaceId: number;
-  gridId: number;
-  name: string;
-  itemTags: string[];
+
+  // for display
+  tagsMap: Map<string, string[]>;
+
+  // for batch display/insert/update
+  layouts: any[];
+
+  gridId: number; // for delete only
 }

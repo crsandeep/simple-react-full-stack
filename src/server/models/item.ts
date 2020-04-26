@@ -1,9 +1,10 @@
-import {Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, ForeignKey, BelongsTo} from 'sequelize-typescript';
-import Space from './Space';
- 
+import {
+  Table, Column, Model, CreatedAt, UpdatedAt, DataType, AutoIncrement, PrimaryKey, Unique, AllowNull, Index, ForeignKey, BelongsTo
+} from 'sequelize-typescript';
+import Grid from './Grid';
+
 @Table
 export default class Item extends Model<Item> {
- 
     @Index
     @AutoIncrement
     @PrimaryKey
@@ -42,22 +43,21 @@ export default class Item extends Model<Item> {
     @AllowNull(true)
     @Column(DataType.BOOLEAN)
     reminderComplete: boolean;
-    
 
-    //default timestamp
+
+    // default timestamp
     @CreatedAt
     creationDate: Date;
 
     @UpdatedAt
     updatedOn: Date;
 
-    //relationship with other tables
-    @ForeignKey(() => Space)
+    // relationship with other tables
+    @ForeignKey(() => Grid)
     @AllowNull(false)
     @Column(DataType.INTEGER)
-    spaceId: number;
-    
-    @BelongsTo(() => Space)
-    space: Space;
-    
+    gridId: number;
+
+    @BelongsTo(() => Grid)
+    grid: Grid;
 }

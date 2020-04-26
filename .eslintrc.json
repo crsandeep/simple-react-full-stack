@@ -15,7 +15,7 @@
     "comma-dangle": ["error","never"],
     "react/jsx-filename-extension": "off",
     "semi":"warn",
-    "linebreak-style": ["warn", "window"],
+    "linebreak-style": ["warn", "unix"],
     "class-methods-use-this":"off",
     "no-param-reassign": ["warn", { "props": false}],
     "react/destructuring-assignment":"off",
@@ -24,5 +24,6 @@
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/label-has-for":"off",
     "no-nested-ternary":"off"
+    
   }
 }

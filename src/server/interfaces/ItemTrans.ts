@@ -1,6 +1,6 @@
 
 export default interface ItemTrans {
-    spaceId: number;
+    gridId: number;
     itemId: number;
     name: string;
     colorCode: string;

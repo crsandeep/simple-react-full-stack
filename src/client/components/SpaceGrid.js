@@ -1,5 +1,5 @@
 import React from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import RGL, { WidthProvider } from 'react-grid-layout';
 import '../css/react-grid-layout-styles.css';
 import '../css/react-resizable-styles.css';
 import '../css/SpaceGrid.css';
@@ -15,16 +15,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+const ReactGridLayout = WidthProvider(RGL);
 
 function SpaceGrid(props) {
   const [mode, setMode] = React.useState('edit');
-  let layoutAttr = null;
 
-  for (const attr in props.tempLayouts) {
-    layoutAttr = attr;
-    break;
-  }
   return (
     <div>
       {
@@ -59,7 +54,7 @@ function SpaceGrid(props) {
           </ButtonToolbar>
         </Col>
         <Col xs={12} md={3}>
-          {props.tempLayouts != null && layoutAttr != null && (
+          {props.tempLayouts != null && (
             <div>
               Current Mode:
               <select
@@ -78,20 +73,20 @@ function SpaceGrid(props) {
       </Row>
       <Row>
         <Col xs={12} md={12}>
-          <ResponsiveReactGridLayout
-            layouts={props.tempLayouts}
-            onLayoutChange={
-              (currLayout, allLayouts) => props.handleUpdateLayout(currLayout, allLayouts)
-            }
+          <ReactGridLayout
+            cols={12}
+            rowHeight={120}
+            layout={props.tempLayouts}
+            onLayoutChange={props.handleUpdateLayout}
           >
-            {props.tempLayouts != null && layoutAttr != null ? (
-              props.tempLayouts[layoutAttr].map(grid => (
+            {props.tempLayouts !== null ? (
+              props.tempLayouts.map(grid => (
                 <div
                   key={grid.i}
                   className={
                     grid.static ? 'spaceGrid-grid-static' : 'spaceGrid-grid'
                   }
-                  data-grid={grid}
+                  // data-grid={grid}
                 >
                   <h1>{grid.i}</h1>
                   <ButtonToolbar className="spaceGrid-btn">
@@ -116,7 +111,7 @@ function SpaceGrid(props) {
 
             )}
 
-          </ResponsiveReactGridLayout>
+          </ReactGridLayout>
         </Col>
       </Row>
     </div>
@@ -125,7 +120,7 @@ function SpaceGrid(props) {
 
 SpaceGrid.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  tempLayouts: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  tempLayouts: PropTypes.arrayOf(PropTypes.object),
   handleNew: PropTypes.func.isRequired,
   handleToggleMode: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,

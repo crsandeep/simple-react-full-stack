@@ -1,28 +1,30 @@
 import { Sequelize, Repository } from 'sequelize-typescript';
 import { Service, Container } from 'typedi';
+import winston from 'winston';
 import config from '../config';
 import SpaceTrans from '../interfaces/SpaceTrans';
 import * as fileUtil from '../util/fileUtil';
-import winston from 'winston';
 
-//test for postgresql and sequelize
-import Space from '../models/Space'
+// test for postgresql and sequelize
+import Space from '../models/Space';
 
 @Service()
 export default class SpaceService {
   private logger:winston.Logger;
+
   private spaceRepo:Repository<Space>;
-  constructor() {  
+
+  constructor() {
     this.logger = Container.get<winston.Logger>('logger');
     this.spaceRepo = Container.get<Sequelize>('sequelize').getRepository<Space>(Space);
   }
 
   public async getSpaceByUserId(userId: number): Promise<Space[]> {
-    try{
+    try {
       const spaceRecordList = await this.spaceRepo.findAll({
-        where:{userId: userId},
+        where: { userId },
         order: [
-          ['spaceId', 'ASC'],
+          ['spaceId', 'ASC']
         ]
       });
       return spaceRecordList;
@@ -33,8 +35,8 @@ export default class SpaceService {
   }
 
   public async getSpaceById(spaceId: number): Promise<Space> {
-    try{
-      const spaceRecord = await this.spaceRepo.findOne({where: {spaceId: spaceId}});
+    try {
+      const spaceRecord = await this.spaceRepo.findOne({ where: { spaceId } });
       return spaceRecord;
     } catch (e) {
       this.logger.error('Fail to get space, reason: %o ', e.message);
@@ -47,11 +49,11 @@ export default class SpaceService {
     try {
       this.logger.debug('add space record');
 
-      //move file to new path
-      if(spaceTrans.imgPath!=null){
+      // move file to new path
+      if (spaceTrans.imgPath != null) {
         const newFilePath = fileUtil.moveFileToPath(spaceTrans.imgPath, config.fileUpload.imgSpacePath);
         spaceTrans.imgPath = newFilePath;
-      };
+      }
 
       const spaceRecord = await this.spaceRepo.create(spaceTrans);
 
@@ -70,8 +72,8 @@ export default class SpaceService {
   public async updateSpace(spaceTrans: SpaceTrans): Promise<Space> {
     try {
       const filter = {
-        where: {spaceId:spaceTrans.spaceId}
-      }
+        where: { spaceId: spaceTrans.spaceId }
+      };
 
       this.logger.debug('update space record, spaceId: %o', spaceTrans.spaceId);
       const spaceRecord = await this.spaceRepo.findOne(filter);
@@ -81,15 +83,15 @@ export default class SpaceService {
         throw new Error('Space not found');
       }
 
-      //handle image file
-      if(spaceTrans.imgPath!=null){
-        //if new image file is uploaded
-        //move file to new path
+      // handle image file
+      if (spaceTrans.imgPath != null) {
+        // if new image file is uploaded
+        // move file to new path
         const newFilePath = fileUtil.moveFileToPath(spaceTrans.imgPath, config.fileUpload.imgSpacePath);
         spaceTrans.imgPath = newFilePath;
-      }else{
-        //no new image uploaded
-        //copy image path from existing
+      } else {
+        // no new image uploaded
+        // copy image path from existing
         spaceTrans.imgPath = spaceRecord.imgPath;
       }
 
@@ -99,27 +101,27 @@ export default class SpaceService {
         imgPath: spaceTrans.imgPath,
         tags: spaceTrans.tags,
         location: spaceTrans.location,
-        sizeUnit : spaceTrans.sizeUnit,
-        sizeWidth : spaceTrans.sizeWidth,
-        sizeHeight : spaceTrans.sizeHeight,
-        sizeDepth : spaceTrans.sizeDepth,
+        sizeUnit: spaceTrans.sizeUnit,
+        sizeWidth: spaceTrans.sizeWidth,
+        sizeHeight: spaceTrans.sizeHeight,
+        sizeDepth: spaceTrans.sizeDepth
       };
 
-      //update record
+      // update record
       const options = {
-        where: {spaceId:spaceTrans.spaceId},
+        where: { spaceId: spaceTrans.spaceId },
         returning: true,
         plain: true
       };
 
-      let updResult:any = await this.spaceRepo.update(update, options);
+      const updResult:any = await this.spaceRepo.update(update, options);
 
       if (!updResult) {
         this.logger.error('Fail to update space');
         throw new Error('Space cannot be updated');
       }
 
-      //remove images between new and old is different
+      // remove images between new and old is different
       if (updResult && spaceTrans.imgPath !== spaceRecord.imgPath) {
         fileUtil.clearUploadFile(spaceRecord.imgPath);
       }
@@ -133,7 +135,7 @@ export default class SpaceService {
   public async deleteSpace(spaceId: number): Promise<Space> {
     try {
       this.logger.debug('delete space record, spaceId: %o', spaceId);
-      const spaceRecord = await this.spaceRepo.findOne({where: {spaceId: spaceId}});
+      const spaceRecord = await this.spaceRepo.findOne({ where: { spaceId } });
 
       if (!spaceRecord) {
         this.logger.error('Fail to find space, spaceId %o ', spaceId);
@@ -141,18 +143,18 @@ export default class SpaceService {
       }
 
       const options = {
-        where: {spaceId:spaceId},
-        limit: 1,
+        where: { spaceId },
+        limit: 1
       };
 
-      
-      let delOper = await this.spaceRepo.destroy(options);
+
+      const delOper = await this.spaceRepo.destroy(options);
 
       if (delOper) {
         if (spaceRecord.imgPath != null) {
           fileUtil.clearUploadFile(spaceRecord.imgPath);
         }
-      }else{
+      } else {
         this.logger.error('Fail to delete space, spaceId %o ', spaceId);
         throw new Error('Fail to delete space');
       }
@@ -163,15 +165,15 @@ export default class SpaceService {
     }
   }
 
-  
+
   public async deleteSpaceImage(spaceId: number): Promise<boolean> {
     let result: boolean = false;
     try {
-      const filter = { spaceId: spaceId };
+      const filter = { spaceId };
       const update = { imgPath: null };
 
       this.logger.debug('delete space image, spaceId %o', spaceId);
-      const spaceRecord = await this.spaceRepo.findOne({where: {spaceId: spaceId}});
+      const spaceRecord = await this.spaceRepo.findOne({ where: { spaceId } });
 
       if (!spaceRecord) {
         this.logger.error('Fail to find space, spaceId %o ', spaceId);
@@ -183,19 +185,19 @@ export default class SpaceService {
         throw new Error('Space image not found');
       }
 
-      //update record
+      // update record
       const options = {
-        where: {spaceId:spaceId},
+        where: { spaceId }
       };
 
-      let updResult:any = await this.spaceRepo.update(update, options);
+      const updResult:any = await this.spaceRepo.update(update, options);
 
       if (!updResult) {
         this.logger.error('Fail to update space image to null');
         throw new Error('Space image cannot be updated to null');
       }
 
-      //remove old img 
+      // remove old img
       result = fileUtil.clearUploadFile(spaceRecord.imgPath);
 
       return result;
@@ -204,5 +206,4 @@ export default class SpaceService {
       throw e;
     }
   }
-
 }
