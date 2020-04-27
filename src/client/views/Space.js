@@ -157,18 +157,17 @@ export class Space extends React.Component {
 
   loadGridRecord() {
     let originalLayouts = this.getFromLS('layouts');
-    let counter = 0;
+    const counter = -1;
 
     if (originalLayouts === null) {
       // add one as default
-      counter = 1;
 
       originalLayouts = [{
         w: 1,
         h: 1,
         x: 0,
         y: 0, // puts it at the bottom
-        i: '1',
+        i: '-1',
         id: null,
         minW: 1,
         maxW: 6,
@@ -176,7 +175,7 @@ export class Space extends React.Component {
         maxH: 6
       }];
     } else {
-      counter = this.calItemCount(originalLayouts);
+      // counter = this.calItemCount(originalLayouts);
     }
 
     this.setState({
@@ -238,17 +237,17 @@ export class Space extends React.Component {
     );
   }
 
-  calItemCount(layouts) {
-    let counter = 0;
+  // calItemCount(layouts) {
+  //   let counter = 0;
 
-    for (const el of layouts) {
-      if (parseInt(el.i, 10) < counter) {
-        counter = parseInt(el.i, 10);
-      }
-    }
+  //   for (const el of layouts) {
+  //     if (parseInt(el.i, 10) < counter) {
+  //       counter = parseInt(el.i, 10);
+  //     }
+  //   }
 
-    return counter;
-  }
+  //   return counter;
+  // }
   // space grid end
 
   render() {

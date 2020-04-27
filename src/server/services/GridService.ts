@@ -88,10 +88,12 @@ export default class GridService {
 
   public async addGrid(grid: any): Promise<Grid> {
     try {
+      let tempLayout;
       this.logger.debug('add grid record');
 
       if (grid.layout != null) {
-        grid.layout = JSON.stringify(grid.layout);// convert json to string for storing purpose
+        tempLayout = Object.assign({}, grid.layout); // copy json for later update i value
+        grid.layout = JSON.stringify(grid.layout); // convert json to string for storing purpose
       }
 
       const result = await this.gridRepo.create(grid);
@@ -101,7 +103,17 @@ export default class GridService {
         throw new Error('Grid cannot be created');
       }
 
-      return result;
+      // update grid id for new grid item
+      tempLayout.i = result.gridId;
+      result.layout = tempLayout;
+      const updResult = this.updateGrid(result);
+
+      if (!updResult) {
+        this.logger.error('Fail to create grid');
+        throw new Error('Grid cannot be created');
+      }
+
+      return updResult;
     } catch (e) {
       this.logger.error('Fail to add grid, reason: %o ', e.message);
 
