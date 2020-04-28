@@ -62,7 +62,7 @@ const validateFormSchema = Yup.object().shape({
 });
 
 
-function SpaceList(props) {
+function SpaceComp(props) {
   const formRef = useRef();
   const handleSubmit = () => {
     if (formRef.current) {
@@ -534,11 +534,11 @@ function SpaceList(props) {
     </div>
   );
 }
-SpaceList.defaultProps = {
+SpaceComp.defaultProps = {
   spaceList: []
 };
 
-SpaceList.propTypes = {
+SpaceComp.propTypes = {
   spaceList: PropTypes.arrayOf(PropTypes.object),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
@@ -552,4 +552,4 @@ SpaceList.propTypes = {
   handleSelect: PropTypes.func.isRequired
 };
 
-export default SpaceList;
+export default SpaceComp;

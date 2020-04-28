@@ -51,6 +51,7 @@ function HeaderComp(props) {
         <Nav className="mr-auto">
           <Nav.Link as={NavLink} to="/" exact>Home</Nav.Link>
           <Nav.Link as={NavLink} to="/space">Space</Nav.Link>
+          <Nav.Link as={NavLink} to="/grid">Grid</Nav.Link>
           <Nav.Link as={NavLink} to="/item">Item</Nav.Link>
         </Nav>
         <Form inline>

@@ -17,7 +17,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-function SpaceGrid(props) {
+function GridComp(props) {
   const [mode, setMode] = React.useState('edit');
   return (
     <div>
@@ -141,7 +141,7 @@ function SpaceGrid(props) {
   );
 }
 
-SpaceGrid.propTypes = {
+GridComp.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object),
   handleNew: PropTypes.func.isRequired,
@@ -153,4 +153,4 @@ SpaceGrid.propTypes = {
   handleSelect: PropTypes.func.isRequired
 };
 
-export default SpaceGrid;
+export default GridComp;

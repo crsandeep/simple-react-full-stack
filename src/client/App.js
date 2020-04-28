@@ -5,7 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import allReducers from './reducers';
 import rootSaga from './sagas';
-import { Item, Space } from './views';
+import { Item, Space, Grid } from './views';
 import { HeaderComp } from './components';
 
 // import FooterComp from "./components/common/FooterComp";
@@ -19,6 +19,7 @@ function App() {
   const linkMap = new Map([
     ['Home', '/home'],
     ['Space', '/space'],
+    ['Grid', '/grid'],
     ['Item', '/item']
   ]);
 
@@ -31,6 +32,7 @@ function App() {
           <Switch>
             {/* <Route path="/" component={Space} /> */}
             <Route path="/space" component={Space} />
+            <Route path="/grid" component={Grid} />
             <Route path="/item" component={Item} />
           </Switch>
         </div>
