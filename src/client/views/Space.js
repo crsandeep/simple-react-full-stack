@@ -5,9 +5,11 @@ import PropTypes from 'prop-types';
 
 import SplitPane from 'react-split-pane';
 import _ from 'lodash';
+import axios from 'axios';
 import { SpaceList, SpaceGrid } from '../components';
 import * as Actions from '../actions/Space';
 import * as Constants from '../constants/Space';
+
 
 export class Space extends React.Component {
   constructor(props) {
@@ -26,7 +28,8 @@ export class Space extends React.Component {
     // space grid
     this.state = {
       itemCount: 0,
-      tempLayouts: []
+      tempLayouts: [],
+      cuurSpaceId: 0
     };
 
     this.handleGridNew = this.handleGridNew.bind(this);
@@ -40,7 +43,7 @@ export class Space extends React.Component {
 
   componentDidMount() {
     this.getSpaceList();
-    this.loadGridRecord();
+    // this.loadGridRecord();
   }
 
   // space list start
@@ -83,6 +86,8 @@ export class Space extends React.Component {
 
   handleSelect(spaceId) {
     console.log(`Select space ${spaceId}`);
+    this.setState({ cuurSpaceId: spaceId });
+    this.loadGridRecord(spaceId);
     // this.props.history.push('/grid');
   }
 
@@ -107,36 +112,45 @@ export class Space extends React.Component {
 
   // space grid start
 
-  getFromLS(key) {
+  async getFromLS(spaceId) {
+    // TODO:  Testing
     let result = null;
-
-    if (global.localStorage) {
-      try {
-        if (global.localStorage.getItem('rgl-8') !== null) {
-          result = JSON.parse(global.localStorage.getItem('rgl-8')).value;
+    await axios.get(`http://localhost:8080/api/grid/space/${spaceId}`)
+      .then((response) => {
+        if (response.data.payload.layouts != null && response.data.payload.layouts.length > 0) {
+          result = response.data.payload.layouts;
         }
-      } catch (e) {
-        // null
-      }
-    }
+      }).catch((error) => {
+        console.log(`ERROR: ${error}`);
+      });
     return result;
   }
 
-  saveToLS(key, value) {
-    if (global.localStorage) {
-      global.localStorage.setItem(
-        'rgl-8',
-        JSON.stringify({
-          value
-        })
-      );
-    }
+  saveToLS(spaceId) {
+    const layouts = this.state.tempLayouts;
+    axios.post('http://localhost:8080/api/grid/', {
+      spaceId,
+      layouts
+    }).then((response) => {
+      console.log(`Save ${JSON.stringify(response.data)}`);
+      this.loadGridRecord(spaceId);
+    }).catch((error) => {
+      console.log(`ERROR: ${error}`);
+    });
+  }
+
+  deleteGrid(gridId) {
+    axios.delete(`http://localhost:8080/api/grid/${gridId}`, {
+      gridId
+    }).then((response) => {
+      console.log(`Delete ${JSON.stringify(response.data)}`);
+    }).catch((error) => {
+      console.log(`ERROR: ${error}`);
+    });
   }
 
   handleGridCancel() {
-    // this.props.updateFormMode(Constants.FORM_READONLY_MODE);
-    // this.handleReloadList();
-    this.loadGridRecord();
+    this.loadGridRecord(this.state.cuurSpaceId);
   }
 
   handleGridUpdateLayout(layout) {
@@ -149,33 +163,31 @@ export class Space extends React.Component {
   }
 
   handleGridSave() {
-    this.saveToLS('layouts', this.state.tempLayouts);
+    this.saveToLS(this.state.cuurSpaceId, this.state.tempLayouts);
     console.log(`Save: ${JSON.stringify(this.state.tempLayouts)}`);
   }
   // ------------------------------------------
 
 
-  loadGridRecord() {
-    let originalLayouts = this.getFromLS('layouts');
+  async loadGridRecord(spaceId) {
+    let originalLayouts = await this.getFromLS(spaceId);
     const counter = -1;
 
     if (originalLayouts === null) {
       // add one as default
 
       originalLayouts = [{
-        w: 1,
+        w: 2,
         h: 1,
         x: 0,
         y: 0, // puts it at the bottom
         i: '-1',
         id: null,
-        minW: 1,
+        minW: 2,
         maxW: 6,
         minH: 1,
         maxH: 6
       }];
-    } else {
-      // counter = this.calItemCount(originalLayouts);
     }
 
     this.setState({
@@ -189,13 +201,13 @@ export class Space extends React.Component {
     nextId -= 1;
 
     const newGrid = {
-      w: 1,
+      w: 2,
       h: 1,
       x: 0,
       y: 999, // puts it at the bottom
       i: `${nextId}`,
       id: null,
-      minW: 1,
+      minW: 2,
       maxW: 6,
       minH: 1,
       maxH: 6
@@ -211,6 +223,12 @@ export class Space extends React.Component {
   }
 
   handleGridRemove(itemKey) {
+    // keep at least 1 element
+    if (this.state.tempLayouts.length === 1) {
+      alert('Fail to delete, at least one grid in your space!');
+      return;
+    }
+
     let tempList = [...this.state.tempLayouts];
     tempList = tempList.filter(el => el.i !== itemKey);
 
@@ -219,6 +237,9 @@ export class Space extends React.Component {
     });
 
     console.log(`handleGridRemove, ${itemKey}`);
+    if (itemKey > 0) {
+      this.deleteGrid(itemKey);
+    }
   }
 
   handleGridToggleMode(isReadMode) {
@@ -237,17 +258,6 @@ export class Space extends React.Component {
     );
   }
 
-  // calItemCount(layouts) {
-  //   let counter = 0;
-
-  //   for (const el of layouts) {
-  //     if (parseInt(el.i, 10) < counter) {
-  //       counter = parseInt(el.i, 10);
-  //     }
-  //   }
-
-  //   return counter;
-  // }
   // space grid end
 
   render() {

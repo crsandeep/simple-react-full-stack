@@ -25,7 +25,6 @@ export default (app: Router) => {
 
     try {
       const gridTrans: any = { layouts: [] };
-      let layoutObj: any;
 
       // copy space id
       gridTrans.spaceId = gridRecordList[0].spaceId;
@@ -33,12 +32,7 @@ export default (app: Router) => {
       // copy all layout into gridTrans.layout
       for (const grid of gridRecordList) {
         // convert as json object
-        layoutObj = JSON.parse(grid.layout);
-
-        // copy grid id into i as key
-        layoutObj.i = grid.gridId;
-
-        gridTrans.layouts.push(layoutObj);
+        gridTrans.layouts.push(JSON.parse(grid.layout));
       }
 
       return gridTrans;
@@ -92,13 +86,13 @@ export default (app: Router) => {
           y: Joi.number().required(),
           w: Joi.number().required(),
           h: Joi.number().required(),
-          i: Joi.number().required(),
-          minW: Joi.number().required(),
-          maxW: Joi.number().required(),
-          minH: Joi.number().required(),
-          maxH: Joi.number().required(),
-          moved: Joi.boolean().required(),
-          static: Joi.boolean().required()
+          i: Joi.string().required(),
+          minW: Joi.number().allow(null),
+          maxW: Joi.number().allow(null),
+          minH: Joi.number().allow(null),
+          maxH: Joi.number().allow(null),
+          moved: Joi.boolean().allow(null),
+          static: Joi.boolean().allow(null)
         }))
       })
     }),

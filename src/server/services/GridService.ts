@@ -47,6 +47,7 @@ export default class GridService {
 
       let gridItem: any;
       let result = null;
+      let idx: number;
       const gridList: Promise<Grid>[] = [];
 
       // add all grids to db
@@ -57,12 +58,13 @@ export default class GridService {
           layout
         };
 
-        if (layout.i < 0) {
+        idx = parseInt(layout.i, 10);
+        if (idx < 0) {
           // new grid
           result = this.addGrid(gridItem);
         } else {
           // existing grid
-          gridItem.gridId = layout.i; // take i as grid id
+          gridItem.gridId = idx; // take i as grid id
           result = this.updateGrid(gridItem);
         }
 
@@ -88,13 +90,15 @@ export default class GridService {
 
   public async addGrid(grid: any): Promise<Grid> {
     try {
-      let tempLayout;
       this.logger.debug('add grid record');
 
-      if (grid.layout != null) {
-        tempLayout = Object.assign({}, grid.layout); // copy json for later update i value
-        grid.layout = JSON.stringify(grid.layout); // convert json to string for storing purpose
+      if (grid.layout === null) {
+        this.logger.error('Fail to create grid');
+        throw new Error('Grid cannot be created');
       }
+
+      const tempLayout = Object.assign({}, grid.layout); // copy json for later update i value
+      grid.layout = JSON.stringify(grid.layout); // convert json to string for storing purpose
 
       const result = await this.gridRepo.create(grid);
 
@@ -104,7 +108,7 @@ export default class GridService {
       }
 
       // update grid id for new grid item
-      tempLayout.i = result.gridId;
+      tempLayout.i = `${result.gridId}`; // convert integer to string
       result.layout = tempLayout;
       const updResult = this.updateGrid(result);
 
@@ -133,7 +137,6 @@ export default class GridService {
 
       if (!gridRecord) {
         this.logger.error('Fail to find grid, gridId %o ', grid.gridId);
-
         throw new Error('Grid not found');
       }
 

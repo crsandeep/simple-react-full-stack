@@ -1,5 +1,5 @@
 .spaceGrid-grid{
-    background-color: grey;
+    /* background-color: grey; */
     background-size: 100%;
     background-repeat: 'no-repeat';
 }
@@ -31,3 +31,4 @@
     bottom: 0;
     right: 0;
 }
+
