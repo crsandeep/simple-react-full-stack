@@ -40,8 +40,24 @@ function SpaceGrid(props) {
       }
       {props.tempLayouts != null && props.tempLayouts.length > 0 ? (
         <div>
+          <Row>
+            <Col xs={12} md={12}>
+              {props.tempLayouts != null && props.tempLayouts.length === 1 && (parseInt(props.tempLayouts[0].i, 10) < 0) && (
+                <Alert variant="success">
+                  Ready to manage your space!
+                  {' '}
+                  Click
+                  {' '}
+                  <AddCircleOutlineIcon />
+                  {' '}
+                  to add a new grid.
+                </Alert>
+              )}
+            </Col>
+
+          </Row>
           <Row className="justify-content-md-center">
-            <Col xs={12} md={3}>
+            <Col xs={12} md={6}>
               <ButtonToolbar>
                 <IconButton aria-label="New" onClick={props.handleNew}>
                   <AddCircleOutlineIcon />
@@ -54,22 +70,7 @@ function SpaceGrid(props) {
                 </IconButton>
               </ButtonToolbar>
             </Col>
-            <Col xs={12} md={5}>
-              {props.tempLayouts != null && props.tempLayouts.length === 1 && (parseInt(props.tempLayouts[0].i, 10) < 0) && (
-              <Alert variant="success">
-                Ready to manage your space!
-                {' '}
-                <br />
-                {' '}
-                Click
-                {' '}
-                <AddCircleOutlineIcon />
-                {' '}
-                to add a new grid.
-              </Alert>
-              )}
-            </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={6}>
               <div>
                 Current Mode:
                 <select

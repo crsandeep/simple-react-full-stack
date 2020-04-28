@@ -151,6 +151,8 @@ export class Space extends React.Component {
 
   handleGridCancel() {
     this.loadGridRecord(this.state.cuurSpaceId);
+
+    this.props.history.push('/space');
   }
 
   handleGridUpdateLayout(layout) {
@@ -160,6 +162,7 @@ export class Space extends React.Component {
 
   handleGridSelect(gridId) {
     console.log(`handleGridSelect: ${JSON.stringify(gridId)}`);
+    this.props.history.push('/item');
   }
 
   handleGridSave() {

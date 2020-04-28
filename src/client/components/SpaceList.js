@@ -205,6 +205,30 @@ function SpaceList(props) {
 
   return (
     <div>
+      <div>
+        {
+
+          props.editStatus !== null ? (
+            props.editStatus.isSuccess !== null ? (
+              props.editStatus.isSuccess === true ? (
+                <Alert variant="success">
+                  {props.editStatus.operation}
+                  {' '}
+                  Successefully
+                </Alert>
+              ) : (
+                <Alert variant="danger">
+                  Failed to
+                  {props.editStatus.operation}
+                  . Error:
+                  {props.editStatus.message}
+                </Alert>
+              )
+            ) : null
+          ) : null
+        }
+      </div>
+
       <List className="spaceList-pc" subheader={<li />}>
         {dataList}
       </List>
@@ -220,28 +244,7 @@ function SpaceList(props) {
       <Button variant="primary" onClick={props.handleReloadList}>
         Refresh
       </Button>
-      <div>
-        {
 
-          props.editStatus !== null ? (
-            props.editStatus.isSuccess !== null ? (
-              props.editStatus.isSuccess === true ? (
-                <Alert variant="success">
-                  {props.editStatus.operation}
-                  Successefully
-                </Alert>
-              ) : (
-                <Alert variant="danger">
-                  Failed to
-                  {props.editStatus.operation}
-                  . Error:
-                  {props.editStatus.message}
-                </Alert>
-              )
-            ) : null
-          ) : null
-        }
-      </div>
 
       {
         // page loading mask
