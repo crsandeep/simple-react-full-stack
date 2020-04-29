@@ -50,7 +50,17 @@ export class Grid extends React.Component {
   }
 
   saveToLS(spaceId) {
-    const layouts = this.state.tempLayouts;
+    const allowAttr = ['x', 'y', 'w', 'h', 'i'];
+    const layouts = [];
+    for (const el of this.state.tempLayouts) {
+      for (const [key, value] of Object.entries(el)) {
+        if (!allowAttr.includes(key)) {
+          delete el[key];
+        }
+      }
+      layouts.push(el);
+    }
+
     axios.post('http://localhost:8080/api/grid/', {
       spaceId,
       layouts
@@ -74,8 +84,6 @@ export class Grid extends React.Component {
 
   handleGridCancel() {
     this.loadGridRecord(this.state.cuurSpaceId);
-
-    this.props.history.push('/space');
   }
 
   handleGridUpdateLayout(layout) {
@@ -107,12 +115,7 @@ export class Grid extends React.Component {
         h: 1,
         x: 0,
         y: 0, // puts it at the bottom
-        i: '-1',
-        id: null,
-        minW: 2,
-        maxW: 6,
-        minH: 1,
-        maxH: 6
+        i: '-1'
       }];
     }
 
@@ -130,13 +133,8 @@ export class Grid extends React.Component {
       w: 2,
       h: 1,
       x: 0,
-      y: 999, // puts it at the bottom
-      i: `${nextId}`,
-      id: null,
-      minW: 2,
-      maxW: 6,
-      minH: 1,
-      maxH: 6
+      y: Infinity, // puts it at the bottom
+      i: `${nextId}`
     };
 
     const tempList = [...this.state.tempLayouts];
@@ -169,11 +167,7 @@ export class Grid extends React.Component {
   }
 
   handleGridToggleMode(isReadMode) {
-    const list = [];
-    for (const el of this.state.tempLayouts) {
-      el.static = isReadMode;
-      list.push(el);
-    }
+    const list = this.state.tempLayouts.map(l => ({ ...l, static: isReadMode }));
 
     this.setState({
       tempLayouts: list

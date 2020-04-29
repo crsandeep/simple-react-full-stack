@@ -86,13 +86,7 @@ export default (app: Router) => {
           y: Joi.number().required(),
           w: Joi.number().required(),
           h: Joi.number().required(),
-          i: Joi.string().required(),
-          minW: Joi.number().allow(null),
-          maxW: Joi.number().allow(null),
-          minH: Joi.number().allow(null),
-          maxH: Joi.number().allow(null),
-          moved: Joi.boolean().allow(null),
-          static: Joi.boolean().allow(null)
+          i: Joi.string().required()
         }))
       })
     }),

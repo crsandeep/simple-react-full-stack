@@ -19,6 +19,7 @@ const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
   const [mode, setMode] = React.useState('edit');
+
   return (
     <div>
       {
@@ -102,28 +103,21 @@ function GridComp(props) {
                         grid.static ? 'spaceGrid-grid-static' : 'spaceGrid-grid'
                       }
                     >
-                      <OverlayTrigger
-                        overlay={<Tooltip>Drag to move your grid position</Tooltip>}
-                        placement="right"
-                      >
-                        <div>
-                          <h1>{grid.i}</h1>
-                          <ButtonToolbar className="spaceGrid-btn">
-                            <IconButton
-                              aria-label="select"
-                              onClick={() => props.handleSelect(grid.i)}
-                            >
-                              <PlaylistAddIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => props.handleRemove(grid.i)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ButtonToolbar>
-                        </div>
-                      </OverlayTrigger>
+                      <h1>{grid.i}</h1>
+                      <ButtonToolbar className="spaceGrid-btn">
+                        <IconButton
+                          aria-label="select"
+                          onClick={() => props.handleSelect(grid.i)}
+                        >
+                          <PlaylistAddIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => props.handleRemove(grid.i)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ButtonToolbar>
                     </div>
                   ))
                 }
