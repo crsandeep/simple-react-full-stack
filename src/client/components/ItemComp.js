@@ -10,7 +10,7 @@ import '../css/Form.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import {
-  Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns, Spinner, Image, Badge, Alert
+  Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns, Spinner, Image, Badge, Alert, Breadcrumb
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
@@ -23,6 +23,10 @@ import LabelIcon from '@material-ui/icons/Label';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import * as Constants from '../constants/Item';
 
 const validateFormSchema = Yup.object().shape({
@@ -101,6 +105,16 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
         </div>
       </Card.Body>
       <Card.Footer>
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Link color="inherit" href="/space">
+            <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+            Bedroom 1 - Wardobe 1
+          </Link>
+          <Link color="inherit" href="/grid">
+            <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+            Grid 1
+          </Link>
+        </Breadcrumbs>
         {
         // item.reminderDtm != null &&
         // <RemindNoteComp remindDtm={item.reminderDtm}></RemindNoteComp>

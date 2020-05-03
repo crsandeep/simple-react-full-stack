@@ -8,7 +8,8 @@ import GridTrans from '../interfaces/GridTrans';
 // test for postgresql and sequelize
 
 import Grid from '../models/Grid';
-import SpaceService from './SpaceService';
+import Item from '../models/Item';
+import Space from '../models/Space';
 
 @Service()
 export default class GridService {
@@ -16,22 +17,34 @@ export default class GridService {
 
   private gridRepo: Repository<Grid>;
 
+  private itemRepo: Repository<Item>;
+
+  private spaceRepo: Repository<Space>;
+
   constructor() {
     this.logger = Container.get<winston.Logger>('logger');
 
-    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(
-      Grid
-    );
+    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(Grid);
+    this.itemRepo = Container.get<Sequelize>('sequelize').getRepository<Item>(Item);
+    this.spaceRepo = Container.get<Sequelize>('sequelize').getRepository<Space>(Space);
   }
 
   public async getGridBySpaceId(spaceId: number): Promise<Grid[]> {
     try {
+      // get assoicated item tags
       const gridRecordList = await this.gridRepo.findAll({
         where: { spaceId },
-
+        include: [{
+          model: this.itemRepo,
+          as: 'items',
+          attributes: ['tags']
+        }, {
+          model: this.spaceRepo,
+          as: 'Space',
+          attributes: ['imgPath']
+        }],
         order: [['gridId', 'ASC']]
       });
-
 
       return gridRecordList;
     } catch (e) {
@@ -78,9 +91,11 @@ export default class GridService {
       }
 
       // wait for all complete
-      return await Promise.all(gridList);
+      await Promise.all(gridList);
 
-      // return gridList;
+      // instead of returing save/update result directly
+      // return gridList by using select function to populate item tags
+      return await this.getGridBySpaceId(gridTrans.spaceId);
     } catch (e) {
       this.logger.error('Fail to save grid, reason: %o ', e.message);
 

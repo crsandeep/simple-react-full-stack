@@ -18,6 +18,8 @@ export class Grid extends React.Component {
     this.state = {
       itemCount: 0,
       tempLayouts: [],
+      tagsMap: new Map(),
+      gridImgPath: null,
       cuurSpaceId: 2
     };
 
@@ -41,7 +43,7 @@ export class Grid extends React.Component {
     await axios.get(`http://localhost:8080/api/grid/space/${spaceId}`)
       .then((response) => {
         if (response.data.payload.layouts != null && response.data.payload.layouts.length > 0) {
-          result = response.data.payload.layouts;
+          result = response.data.payload;
         }
       }).catch((error) => {
         console.log(`ERROR: ${error}`);
@@ -104,10 +106,14 @@ export class Grid extends React.Component {
 
 
   async loadGridRecord(spaceId) {
-    let originalLayouts = await this.getFromLS(spaceId);
+    const data = await this.getFromLS(spaceId);
+    let originalLayouts = null;
+    let gridImgPath = null;
+    const tagsMap = new Map();
     const counter = -1;
 
-    if (originalLayouts === null) {
+    if (data === null) {
+      // no record from db
       // add one as default
 
       originalLayouts = [{
@@ -117,11 +123,38 @@ export class Grid extends React.Component {
         y: 0, // puts it at the bottom
         i: '-1'
       }];
+    } else {
+      // load record from db
+      // extract image path for display
+      if (data.imgPath != null) {
+        gridImgPath = data.imgPath;
+      }
+
+      // extract tagslist to form map
+      originalLayouts = data.layouts;
+      for (const layout of originalLayouts) {
+        // get unique tags list
+        const tagList = [];
+        for (const tag of layout.tagsList) {
+          const tagsArr = tag.split(',');
+          for (const el of tagsArr) {
+            if (!tagList.includes(el)) {
+              tagList.push(el);
+            }
+          }
+        }
+        tagsMap.set(layout.i, tagList);
+
+        // remove tag list from each layout
+        delete layout.tagsList;
+      }
     }
 
     this.setState({
       itemCount: counter,
-      tempLayouts: originalLayouts
+      tempLayouts: originalLayouts,
+      tagsMap,
+      gridImgPath
     });
   }
 
@@ -181,12 +214,10 @@ export class Grid extends React.Component {
   // space grid end
 
   render() {
-    const splitType = 'vertical';
-    const initSize = 400;
     const spaceId = 1;
 
-    const { tempLayouts } = this.state;
-    const { spaceList, editStatus, formState } = this.props;
+    const { tempLayouts, tagsMap, gridImgPath } = this.state;
+    const { editStatus, formState } = this.props;
     return (
       <div>
         <GridComp
@@ -200,6 +231,8 @@ export class Grid extends React.Component {
           spaceId={spaceId}
           formState={formState}
           tempLayouts={tempLayouts}
+          tagsMap={tagsMap}
+          gridImgPath={gridImgPath}
         />
       </div>
     );
@@ -210,7 +243,7 @@ const mapStateToProps = (state) => {
   // //TODO: testing
   const userId = 1;
 
-  const { spaceList, editStatus } = state.Space;
+  const { editStatus } = state.Space;
 
   const inState = state.Space;
   const formState = {
@@ -229,7 +262,6 @@ const mapStateToProps = (state) => {
 
   return {
     userId,
-    spaceList,
     editStatus,
     formState
   };
@@ -259,14 +291,10 @@ const mapDispatchToProps = dispatch => ({
   // }
 });
 
-Grid.defaultProps = {
-  spaceList: []
-};
 
 Grid.propTypes = {
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  spaceList: PropTypes.arrayOf(PropTypes.object),
   userId: PropTypes.number.isRequired
 
   // sagaGetSpaceList: PropTypes.func.isRequired,

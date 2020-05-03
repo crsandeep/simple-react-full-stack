@@ -2,22 +2,14 @@
     /* background-color: grey; */
     background-size: 100%;
     background-repeat: 'no-repeat';
+    border-style: outset;
+    border-radius: 7px;
 }
 
 .spaceGrid-grid-static{
     background-color: #ffffcc;
 }
 
-.spaceGrid-close {
-    display: 'inline';
-    position: "absolute";
-    left: "35%";
-    right: "35%";
-    top: "100px";
-    color: 'blue';
-    text-decoration-line: 'underline';
-    cursor: "pointer";
-}
 
 .spaceGrid-select{
     position: "absolute";
@@ -30,5 +22,27 @@
     position: absolute;
     bottom: 0;
     right: 0;
+    /* background-color: white; */
+    background: rgb(255, 255, 255,0.7);
+    border-radius: 25px;
+    border: 1px dashed;
+    
 }
 
+.spaceGrid-idPanel{
+    background-color: white;
+    border: 1px dashed blue;
+    border-radius: 25px;
+    font-size: 20px;
+    text-align: center;
+    width: 40px;
+}
+
+.spaceGrid-newIdPanel{
+    background-color: white;
+    border: 1px dashed blue;
+    border-radius: 25px;
+    font-size: 20px;
+    text-align: center;
+    width: 90px;
+}

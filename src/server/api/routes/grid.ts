@@ -4,9 +4,11 @@ import {
 import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
+import { number } from 'prop-types';
 import GridTrans from '../../interfaces/GridTrans';
 import GridService from '../../services/GridService';
 import Grid from '../../models/Grid';
+import config from '../../config';
 
 const route = Router();
 
@@ -24,15 +26,30 @@ export default (app: Router) => {
     }
 
     try {
-      const gridTrans: any = { layouts: [] };
+      const gridTrans: any = { layouts: [], spaceId: number, imgPath: String };
 
-      // copy space id
+      // copy space id from 1st return element
       gridTrans.spaceId = gridRecordList[0].spaceId;
+
+      // copy img path from 1st return element
+      if (gridRecordList[0].Space.imgPath != null) {
+        gridTrans.imgPath = gridRecordList[0].Space.imgPath.replace(config.publicFolder, '');
+      }
 
       // copy all layout into gridTrans.layout
       for (const grid of gridRecordList) {
+        // prepare items tags list
+        const tagList: string[] = [];
+        for (const item of grid.items) {
+          if (item.tags != null) {
+            tagList.push(item.tags);
+          }
+        }
+
         // convert as json object
-        gridTrans.layouts.push(JSON.parse(grid.layout));
+        const layout = JSON.parse(grid.layout);
+        layout.tagsList = tagList;
+        gridTrans.layouts.push(layout);
       }
 
       return gridTrans;

@@ -6,8 +6,9 @@ import '../css/SpaceGrid.css';
 import PropTypes from 'prop-types';
 
 import {
-  Row, Col, ButtonToolbar, Spinner, Alert, Tooltip, OverlayTrigger
+  Row, Col, ButtonToolbar, Spinner, Alert, Badge
 } from 'react-bootstrap';
+
 import { IconButton } from '@material-ui/core/';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
@@ -19,6 +20,15 @@ const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
   const [mode, setMode] = React.useState('edit');
+
+  const idList = [];
+  if (props.tempLayouts != null) {
+    for (const [key, value] of props.tagsMap.entries()) {
+      // idList.push(parseInt(key, 10));
+      idList.push(key);
+    }
+    idList.sort();
+  }
 
   return (
     <div>
@@ -102,21 +112,53 @@ function GridComp(props) {
                       className={
                         grid.static ? 'spaceGrid-grid-static' : 'spaceGrid-grid'
                       }
+                      style={props.gridImgPath != null ? { backgroundImage: `url(${props.gridImgPath})` } : ''}
                     >
-                      <h1>{grid.i}</h1>
+                      <h3 className={parseInt(grid.i, 10) > 0 ? 'spaceGrid-idPanel' : 'spaceGrid-newIdPanel'}>
+                        {idList.indexOf(grid.i) >= 0 ? `${idList.indexOf(grid.i) + 1}` : `New ${(grid.i * -1) - 1}`}
+                      </h3>
+                      {
+                        props.tagsMap != null
+                        && props.tagsMap.get(grid.i) != null
+                        && props.tagsMap.get(grid.i).map((tag, i) => (
+                          // console.log(`Val: ${tag}`)
+                          <span key={`${grid.i}-${tag}`}>
+                            <Badge variant="warning">
+                              #
+                              {tag}
+                            </Badge>
+                            {' '}
+                          </span>
+                        ))
+                      }
                       <ButtonToolbar className="spaceGrid-btn">
-                        <IconButton
-                          aria-label="select"
-                          onClick={() => props.handleSelect(grid.i)}
-                        >
-                          <PlaylistAddIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => props.handleRemove(grid.i)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        {parseInt(grid.i, 10) > 0
+                          ? (
+                            <IconButton
+                              aria-label="select"
+                              onClick={() => props.handleSelect(grid.i)}
+                            >
+                              <PlaylistAddIcon />
+                            </IconButton>
+                          )
+                          : null
+                        }
+
+                        {
+                          parseInt(grid.i, 10) < 0
+                        || (props.tagsMap != null
+                        && props.tagsMap.get(grid.i) != null
+                        && props.tagsMap.get(grid.i).length === 0
+                        ) ? (
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => props.handleRemove(grid.i)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                            ) : null
+                        }
+
                       </ButtonToolbar>
                     </div>
                   ))
@@ -135,9 +177,15 @@ function GridComp(props) {
   );
 }
 
+GridComp.defaultProps = {
+  gridImgPath: null
+};
+
 GridComp.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  tempLayouts: PropTypes.arrayOf(PropTypes.object),
+  tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tagsMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  gridImgPath: PropTypes.string,
   handleNew: PropTypes.func.isRequired,
   handleToggleMode: PropTypes.func.isRequired,
   handleSave: PropTypes.func.isRequired,
