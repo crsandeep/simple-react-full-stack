@@ -20,7 +20,8 @@ export class Grid extends React.Component {
       tempLayouts: [],
       tagsMap: new Map(),
       gridImgPath: null,
-      cuurSpaceId: 2
+      cuurSpaceId: 2,
+      isDirtyWrite: false
     };
 
     this.handleGridNew = this.handleGridNew.bind(this);
@@ -91,6 +92,7 @@ export class Grid extends React.Component {
   handleGridUpdateLayout(layout) {
     console.log(`currLayout: ${JSON.stringify(layout)}`);
     this.setState({ tempLayouts: layout });
+    this.setState({ isDirtyWrite: true });
   }
 
   handleGridSelect(gridId) {
@@ -100,6 +102,7 @@ export class Grid extends React.Component {
 
   handleGridSave() {
     this.saveToLS(this.state.cuurSpaceId, this.state.tempLayouts);
+    this.setState({ isDirtyWrite: false });
     console.log(`Save: ${JSON.stringify(this.state.tempLayouts)}`);
   }
   // ------------------------------------------
@@ -156,6 +159,8 @@ export class Grid extends React.Component {
       tagsMap,
       gridImgPath
     });
+
+    this.setState({ isDirtyWrite: false });
   }
 
   handleGridNew() {
@@ -216,7 +221,9 @@ export class Grid extends React.Component {
   render() {
     const spaceId = 1;
 
-    const { tempLayouts, tagsMap, gridImgPath } = this.state;
+    const {
+      tempLayouts, tagsMap, gridImgPath, isDirtyWrite
+    } = this.state;
     const { editStatus, formState } = this.props;
     return (
       <div>
@@ -233,6 +240,7 @@ export class Grid extends React.Component {
           tempLayouts={tempLayouts}
           tagsMap={tagsMap}
           gridImgPath={gridImgPath}
+          isDirtyWrite={isDirtyWrite}
         />
       </div>
     );

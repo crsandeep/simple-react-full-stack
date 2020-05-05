@@ -40,7 +40,7 @@ export default class GridService {
           attributes: ['tags']
         }, {
           model: this.spaceRepo,
-          as: 'Space',
+          as: 'space',
           attributes: ['imgPath']
         }],
         order: [['gridId', 'ASC']]

@@ -10,6 +10,7 @@ import ItemService from '../../services/ItemService';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
 import Item from '../../models/Item';
+import grid from './grid';
 
 const route = Router();
 
@@ -34,7 +35,10 @@ export default (app: Router) => {
     logger.debug('format item');
     const outputItem:any = {};
 
-    const excludeAttr:string[] = ['creationDate', 'updatedOn'];
+    const excludeAttr:string[] = ['creationDate',
+      'updatedOn',
+      'grid' // special handle for grid
+    ];
 
     if (itemRecord == null) {
       const empty:any = {};
@@ -55,6 +59,20 @@ export default (app: Router) => {
           outputItem[key] = value;
         }
       }
+
+      // special handle for grid
+      let spaceName = null;
+      let spaceLocation = null;
+      if (itemRecord.grid != null && itemRecord.grid.space != null) {
+        if (itemRecord.grid.space.name != null) {
+          spaceName = itemRecord.grid.space.name;
+        }
+        if (itemRecord.grid.space.location != null) {
+          spaceLocation = itemRecord.grid.space.location;
+        }
+      }
+      outputItem.spaceName = spaceName;
+      outputItem.spaceLocation = spaceLocation;
 
       return outputItem;
     } catch (e) {

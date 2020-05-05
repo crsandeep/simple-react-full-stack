@@ -10,4 +10,8 @@ export default interface ItemTrans {
     category: string;
     reminderDtm: Date;
     reminderComplete: boolean;
+
+    // other object attributes for display
+    spaceName: string;
+    spaceLocation: string;
 }

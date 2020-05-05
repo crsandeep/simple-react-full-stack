@@ -27,7 +27,7 @@ export default class Grid extends Model<Grid> {
   spaceId: number;
 
   @BelongsTo(() => Space)
-  Space: Space;
+  space: Space;
 
   @CreatedAt
   creationDate: Date;

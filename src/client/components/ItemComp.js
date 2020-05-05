@@ -108,17 +108,28 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
         <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
           <Link color="inherit" href="/space">
             <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
-            Bedroom 1 - Wardobe 1
+            {
+              // show space name
+              `${item.spaceLocation} - ${item.spaceName}`
+            }
           </Link>
           <Link color="inherit" href="/grid">
             <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
-            Grid 1
+            {
+              // show location with grid ID with 2 digits
+              item.gridId.toString().padStart(2, '0')
+            }
           </Link>
         </Breadcrumbs>
         {
-        // item.reminderDtm != null &&
+          item.reminderDtm != null
+            && (
+            <div>
+              {item.reminderDtm}
+            </div>
+            )
         // <RemindNoteComp remindDtm={item.reminderDtm}></RemindNoteComp>
-      }
+        }
       </Card.Footer>
     </Card>
   );

@@ -9,7 +9,9 @@ import ItemTrans from '../interfaces/ItemTrans';
 import * as fileUtil from '../util/fileUtil';
 
 // test for postgresql and sequelize
+import Grid from '../models/Grid';
 import Item from '../models/Item';
+import Space from '../models/Space';
 
 @Service()
 export default class ItemService {
@@ -17,15 +19,27 @@ export default class ItemService {
 
   private itemRepo:Repository<Item>;
 
+  private spaceRepo: Repository<Space>;
+
+  private gridRepo: Repository<Grid>;
+
   constructor() {
     this.logger = Container.get<winston.Logger>('logger');
     this.itemRepo = Container.get<Sequelize>('sequelize').getRepository<Item>(Item);
+    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(Grid);
+    this.spaceRepo = Container.get<Sequelize>('sequelize').getRepository<Space>(Space);
   }
 
   public async getItemByGridId(gridId: number): Promise<Item[]> {
     try {
       const itemRecordList = await this.itemRepo.findAll({
         where: { gridId },
+        include: [{
+          model: this.gridRepo,
+          include: [{ model: this.spaceRepo, attributes: ['name', 'location'] }],
+          as: 'grid',
+          attributes: ['gridId']
+        }],
         order: [
           ['itemId', 'ASC']
         ]

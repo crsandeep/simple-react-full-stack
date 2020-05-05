@@ -16,22 +16,16 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
+import { Prompt } from 'react-router';
+
 const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
   const [mode, setMode] = React.useState('edit');
 
-  const idList = [];
-  if (props.tempLayouts != null) {
-    for (const [key, value] of props.tagsMap.entries()) {
-      // idList.push(parseInt(key, 10));
-      idList.push(key);
-    }
-    idList.sort();
-  }
-
   return (
     <div>
+      <Prompt when={props.isDirtyWrite} message="Changes you made may not be saved. Are you sure you want to leave?" />
       {
         // page loading mask
         props.formState.pageLoading === true && (
@@ -114,9 +108,14 @@ function GridComp(props) {
                       }
                       style={props.gridImgPath != null ? { backgroundImage: `url(${props.gridImgPath})` } : ''}
                     >
-                      <h3 className={parseInt(grid.i, 10) > 0 ? 'spaceGrid-idPanel' : 'spaceGrid-newIdPanel'}>
-                        {idList.indexOf(grid.i) >= 0 ? `${idList.indexOf(grid.i) + 1}` : `New ${(grid.i * -1) - 1}`}
-                      </h3>
+                      {
+                        parseInt(grid.i, 10) > 0 ? (
+                          <h3 className="spaceGrid-idPanel">{grid.i.padStart(2, '0')}</h3>
+                        ) : (
+                          <h3 className="spaceGrid-newIdPanel">{`New ${(Math.abs(grid.i) - 1).toString().padStart(2, '0')}`}</h3>
+                        )
+                      }
+
                       {
                         props.tagsMap != null
                         && props.tagsMap.get(grid.i) != null
@@ -185,6 +184,7 @@ GridComp.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
   tagsMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  isDirtyWrite: PropTypes.bool.isRequired,
   gridImgPath: PropTypes.string,
   handleNew: PropTypes.func.isRequired,
   handleToggleMode: PropTypes.func.isRequired,

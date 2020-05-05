@@ -8,6 +8,10 @@
 
 .spaceGrid-grid-static{
     background-color: #ffffcc;
+    background-size: 100%;
+    background-repeat: 'no-repeat';
+    border-style: outset;
+    border-radius: 7px;
 }
 
 
@@ -40,7 +44,8 @@
 
 .spaceGrid-newIdPanel{
     background-color: white;
-    border: 1px dashed blue;
+    border: 1px dashed red;
+    color: red;
     border-radius: 25px;
     font-size: 20px;
     text-align: center;

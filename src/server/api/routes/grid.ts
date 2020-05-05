@@ -32,8 +32,10 @@ export default (app: Router) => {
       gridTrans.spaceId = gridRecordList[0].spaceId;
 
       // copy img path from 1st return element
-      if (gridRecordList[0].Space.imgPath != null) {
-        gridTrans.imgPath = gridRecordList[0].Space.imgPath.replace(config.publicFolder, '');
+      if (gridRecordList[0].space.imgPath != null) {
+        gridTrans.imgPath = gridRecordList[0].space.imgPath.replace(config.publicFolder, '');
+      } else {
+        gridTrans.imgPath = null;
       }
 
       // copy all layout into gridTrans.layout
