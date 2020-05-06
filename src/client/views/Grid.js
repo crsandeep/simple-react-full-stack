@@ -7,7 +7,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { GridComp } from '../components';
 import * as Actions from '../actions/Space';
-import * as Constants from '../constants/Space';
+import * as Constants from '../constants/Grid';
 
 
 export class Grid extends React.Component {
@@ -18,19 +18,20 @@ export class Grid extends React.Component {
     this.state = {
       itemCount: 0,
       tempLayouts: [],
-      tagsMap: new Map(),
+      dataMap: new Map(),
       gridImgPath: null,
       cuurSpaceId: 2,
-      isDirtyWrite: false
+      isDirtyWrite: false,
+      currMode: Constants.FORM_READONLY_MODE
     };
 
-    this.handleGridNew = this.handleGridNew.bind(this);
-    this.handleGridSave = this.handleGridSave.bind(this);
-    this.handleGridCancel = this.handleGridCancel.bind(this);
-    this.handleGridUpdateLayout = this.handleGridUpdateLayout.bind(this);
-    this.handleGridSelect = this.handleGridSelect.bind(this);
-    this.handleGridToggleMode = this.handleGridToggleMode.bind(this);
-    this.handleGridRemove = this.handleGridRemove.bind(this);
+    this.handleNew = this.handleNew.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleUpdateLayout = this.handleUpdateLayout.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleToggleMode = this.handleToggleMode.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   componentDidMount() {
@@ -85,25 +86,23 @@ export class Grid extends React.Component {
     });
   }
 
-  handleGridCancel() {
+  handleCancel() {
     this.loadGridRecord(this.state.cuurSpaceId);
   }
 
-  handleGridUpdateLayout(layout) {
-    console.log(`currLayout: ${JSON.stringify(layout)}`);
+  handleUpdateLayout(layout) {
     this.setState({ tempLayouts: layout });
     this.setState({ isDirtyWrite: true });
   }
 
-  handleGridSelect(gridId) {
-    console.log(`handleGridSelect: ${JSON.stringify(gridId)}`);
+  handleSelect(gridId) {
+    console.log(`handleSelect: ${JSON.stringify(gridId)}`);
     this.props.history.push('/item');
   }
 
-  handleGridSave() {
+  handleSave() {
     this.saveToLS(this.state.cuurSpaceId, this.state.tempLayouts);
     this.setState({ isDirtyWrite: false });
-    console.log(`Save: ${JSON.stringify(this.state.tempLayouts)}`);
   }
   // ------------------------------------------
 
@@ -112,7 +111,8 @@ export class Grid extends React.Component {
     const data = await this.getFromLS(spaceId);
     let originalLayouts = null;
     let gridImgPath = null;
-    const tagsMap = new Map();
+    let currMode = null;
+    const dataMap = new Map();
     const counter = -1;
 
     if (data === null) {
@@ -126,15 +126,20 @@ export class Grid extends React.Component {
         y: 0, // puts it at the bottom
         i: '-1'
       }];
+      currMode = Constants.FORM_EDIT_MODE;
     } else {
       // load record from db
+
       // extract image path for display
       if (data.imgPath != null) {
         gridImgPath = data.imgPath;
       }
 
+      // load data and set as view mode
+      currMode = Constants.FORM_READONLY_MODE;
+      originalLayouts = data.layouts.map(l => ({ ...l, static: true }));
+
       // extract tagslist to form map
-      originalLayouts = data.layouts;
       for (const layout of originalLayouts) {
         // get unique tags list
         const tagList = [];
@@ -146,7 +151,15 @@ export class Grid extends React.Component {
             }
           }
         }
-        tagsMap.set(layout.i, tagList);
+
+        // form object
+        const record = {};
+        record.tagList = tagList;
+        record.itemCount = layout.itemCount;
+
+        // push in map for component to form UI
+        dataMap.set(layout.i, record);
+
 
         // remove tag list from each layout
         delete layout.tagsList;
@@ -156,14 +169,15 @@ export class Grid extends React.Component {
     this.setState({
       itemCount: counter,
       tempLayouts: originalLayouts,
-      tagsMap,
-      gridImgPath
+      dataMap,
+      gridImgPath,
+      currMode
     });
 
     this.setState({ isDirtyWrite: false });
   }
 
-  handleGridNew() {
+  handleNew() {
     let nextId = this.state.itemCount;
     nextId -= 1;
 
@@ -175,16 +189,17 @@ export class Grid extends React.Component {
       i: `${nextId}`
     };
 
-    const tempList = [...this.state.tempLayouts];
+    const tempList = [...this.state.tempLayouts].map(l => ({ ...l, static: false }));
     tempList.push(newGrid);
 
     this.setState({
       itemCount: nextId,
-      tempLayouts: tempList
+      tempLayouts: tempList,
+      currMode: Constants.FORM_EDIT_MODE
     });
   }
 
-  handleGridRemove(itemKey) {
+  handleRemove(itemKey) {
     // keep at least 1 element
     if (this.state.tempLayouts.length === 1) {
       alert('Fail to delete, at least one grid in your space!');
@@ -198,22 +213,18 @@ export class Grid extends React.Component {
       tempLayouts: tempList
     });
 
-    console.log(`handleGridRemove, ${itemKey}`);
     if (itemKey > 0) {
       this.deleteGrid(itemKey);
     }
   }
 
-  handleGridToggleMode(isReadMode) {
-    const list = this.state.tempLayouts.map(l => ({ ...l, static: isReadMode }));
+  handleToggleMode(currMode) {
+    const list = this.state.tempLayouts.map(l => ({ ...l, static: (currMode === Constants.FORM_READONLY_MODE) }));
 
     this.setState({
-      tempLayouts: list
+      tempLayouts: list,
+      currMode
     });
-
-    console.log(
-      `handleGridToggleMode: ${JSON.stringify(this.state.tempLayouts)}`
-    );
   }
 
   // space grid end
@@ -222,25 +233,26 @@ export class Grid extends React.Component {
     const spaceId = 1;
 
     const {
-      tempLayouts, tagsMap, gridImgPath, isDirtyWrite
+      tempLayouts, dataMap, gridImgPath, isDirtyWrite, currMode
     } = this.state;
     const { editStatus, formState } = this.props;
     return (
       <div>
         <GridComp
-          handleNew={this.handleGridNew}
-          handleToggleMode={this.handleGridToggleMode}
-          handleSave={this.handleGridSave}
-          handleCancel={this.handleGridCancel}
-          handleUpdateLayout={this.handleGridUpdateLayout}
-          handleRemove={this.handleGridRemove}
-          handleSelect={this.handleGridSelect}
+          handleNew={this.handleNew}
+          handleToggleMode={this.handleToggleMode}
+          handleSave={this.handleSave}
+          handleCancel={this.handleCancel}
+          handleUpdateLayout={this.handleUpdateLayout}
+          handleRemove={this.handleRemove}
+          handleSelect={this.handleSelect}
           spaceId={spaceId}
           formState={formState}
           tempLayouts={tempLayouts}
-          tagsMap={tagsMap}
+          dataMap={dataMap}
           gridImgPath={gridImgPath}
           isDirtyWrite={isDirtyWrite}
+          currMode={currMode}
         />
       </div>
     );

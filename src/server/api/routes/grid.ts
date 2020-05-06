@@ -26,7 +26,9 @@ export default (app: Router) => {
     }
 
     try {
-      const gridTrans: any = { layouts: [], spaceId: number, imgPath: String };
+      const gridTrans: any = {
+        layouts: [], spaceId: number, imgPath: String
+      };
 
       // copy space id from 1st return element
       gridTrans.spaceId = gridRecordList[0].spaceId;
@@ -42,15 +44,18 @@ export default (app: Router) => {
       for (const grid of gridRecordList) {
         // prepare items tags list
         const tagList: string[] = [];
+        const itemCount:number = (grid.items != null ? grid.items.length : 0);
         for (const item of grid.items) {
+          // prepare tag list
           if (item.tags != null) {
             tagList.push(item.tags);
           }
         }
 
-        // convert as json object
+        // convert as json object under layout
         const layout = JSON.parse(grid.layout);
         layout.tagsList = tagList;
+        layout.itemCount = itemCount;
         gridTrans.layouts.push(layout);
       }
 

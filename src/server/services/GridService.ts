@@ -37,7 +37,7 @@ export default class GridService {
         include: [{
           model: this.itemRepo,
           as: 'items',
-          attributes: ['tags']
+          attributes: ['itemId', 'tags']
         }, {
           model: this.spaceRepo,
           as: 'space',
@@ -45,6 +45,7 @@ export default class GridService {
         }],
         order: [['gridId', 'ASC']]
       });
+      console.log(`gridRecordList ${JSON.stringify(gridRecordList)}`);
 
       return gridRecordList;
     } catch (e) {

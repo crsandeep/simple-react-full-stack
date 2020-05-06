@@ -4,9 +4,11 @@ export default interface GridTrans {
 
   // for batch display/insert/update
   layouts: any[];
+  // itemCount: number
+  // tagsList: string[]
 
   gridId: number; // for delete only
 
   imgPath: String; // for display only
 
-}
+};

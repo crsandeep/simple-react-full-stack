@@ -7,7 +7,7 @@
 }
 
 .spaceGrid-grid-static{
-    background-color: #ffffcc;
+    /* background-color: #ffffcc; */
     background-size: 100%;
     background-repeat: 'no-repeat';
     border-style: outset;
@@ -22,7 +22,7 @@
     cursor: "pointer";
 }
 
-.spaceGrid-btn{
+.spaceGrid-editPanel{
     position: absolute;
     bottom: 0;
     right: 0;
@@ -30,7 +30,6 @@
     background: rgb(255, 255, 255,0.7);
     border-radius: 25px;
     border: 1px dashed;
-    
 }
 
 .spaceGrid-idPanel{

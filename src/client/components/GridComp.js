@@ -6,23 +6,22 @@ import '../css/SpaceGrid.css';
 import PropTypes from 'prop-types';
 
 import {
-  Row, Col, ButtonToolbar, Spinner, Alert, Badge
+  Row, Col, ButtonToolbar, Spinner, Alert, Badge, Button
 } from 'react-bootstrap';
 
 import { IconButton } from '@material-ui/core/';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import { Prompt } from 'react-router';
+import * as Constants from '../constants/Grid';
 
 const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
-  const [mode, setMode] = React.useState('edit');
-
   return (
     <div>
       <Prompt when={props.isDirtyWrite} message="Changes you made may not be saved. Are you sure you want to leave?" />
@@ -79,14 +78,13 @@ function GridComp(props) {
               <div>
                 Current Mode:
                 <select
-                  value={mode}
+                  value={props.currMode}
                   onChange={(event) => {
-                    setMode(event.target.value);
-                    props.handleToggleMode(mode === 'edit');
+                    props.handleToggleMode(event.target.value);
                   }}
                 >
-                  <option value="edit">Edit</option>
-                  <option value="view">View</option>
+                  <option value={Constants.FORM_READONLY_MODE}>View</option>
+                  <option value={Constants.FORM_EDIT_MODE}>Edit</option>
                 </select>
               </div>
             </Col>
@@ -116,11 +114,25 @@ function GridComp(props) {
                         )
                       }
 
+
+                      <ButtonToolbar>
+                        { // go to item page button
+                          props.currMode === Constants.FORM_READONLY_MODE // under readonly mode
+                          && parseInt(grid.i, 10) > 0 // old grid
+                            && (
+                            <Button variant="outline-info" size="lg" block onClick={() => props.handleSelect(grid.i)}>
+                              <FormatListBulletedIcon />
+                              {' '}
+                              Item(s)
+                            </Button>
+                            )
+                        }
+                      </ButtonToolbar>
+
                       {
-                        props.tagsMap != null
-                        && props.tagsMap.get(grid.i) != null
-                        && props.tagsMap.get(grid.i).map((tag, i) => (
-                          // console.log(`Val: ${tag}`)
+                        props.dataMap != null
+                        && props.dataMap.get(grid.i) != null
+                        && props.dataMap.get(grid.i).tagList.map(tag => (
                           <span key={`${grid.i}-${tag}`}>
                             <Badge variant="warning">
                               #
@@ -130,31 +142,24 @@ function GridComp(props) {
                           </span>
                         ))
                       }
-                      <ButtonToolbar className="spaceGrid-btn">
-                        {parseInt(grid.i, 10) > 0
-                          ? (
-                            <IconButton
-                              aria-label="select"
-                              onClick={() => props.handleSelect(grid.i)}
-                            >
-                              <PlaylistAddIcon />
-                            </IconButton>
-                          )
-                          : null
-                        }
-
+                      <ButtonToolbar className="spaceGrid-editPanel">
                         {
-                          parseInt(grid.i, 10) < 0
-                        || (props.tagsMap != null
-                        && props.tagsMap.get(grid.i) != null
-                        && props.tagsMap.get(grid.i).length === 0
-                        ) ? (
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => props.handleRemove(grid.i)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          // delete grid button
+                          props.currMode === Constants.FORM_EDIT_MODE // under edit mode
+                          && (
+                            parseInt(grid.i, 10) < 0 // new grid, not yet save
+                            || (
+                              props.dataMap != null && props.dataMap.get(grid.i) != null // old grid, no item in grid
+                              && props.dataMap.get(grid.i).itemCount === 0
+                            )
+                          )
+                            ? (
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() => props.handleRemove(grid.i)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
                             ) : null
                         }
 
@@ -183,8 +188,9 @@ GridComp.defaultProps = {
 GridComp.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  tagsMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  dataMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
   isDirtyWrite: PropTypes.bool.isRequired,
+  currMode: PropTypes.string.isRequired,
   gridImgPath: PropTypes.string,
   handleNew: PropTypes.func.isRequired,
   handleToggleMode: PropTypes.func.isRequired,
