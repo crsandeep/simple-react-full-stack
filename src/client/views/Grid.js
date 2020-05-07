@@ -21,6 +21,7 @@ export class Grid extends React.Component {
       dataMap: new Map(),
       gridImgPath: null,
       cuurSpaceId: 2,
+      isResetLayout: false,
       isDirtyWrite: false,
       currMode: Constants.FORM_READONLY_MODE
     };
@@ -32,6 +33,7 @@ export class Grid extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.handleToggleMode = this.handleToggleMode.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleGoBack = this.handleGoBack.bind(this);
   }
 
   componentDidMount() {
@@ -44,7 +46,7 @@ export class Grid extends React.Component {
     let result = null;
     await axios.get(`http://localhost:8080/api/grid/space/${spaceId}`)
       .then((response) => {
-        if (response.data.payload.layouts != null && response.data.payload.layouts.length > 0) {
+        if (response.data.payload != null && response.data.payload.length > 0) {
           result = response.data.payload;
         }
       }).catch((error) => {
@@ -55,19 +57,26 @@ export class Grid extends React.Component {
 
   saveToLS(spaceId) {
     const allowAttr = ['x', 'y', 'w', 'h', 'i'];
-    const layouts = [];
+    const grids = [];
     for (const el of this.state.tempLayouts) {
       for (const [key, value] of Object.entries(el)) {
         if (!allowAttr.includes(key)) {
           delete el[key];
         }
       }
-      layouts.push(el);
+      // generate each grid
+      const grid = {
+        layout: el,
+        gridId: (parseInt(el.i, 10) < 0 ? null : parseInt(el.i, 10)),
+        spaceId
+      };
+
+      // push as list
+      grids.push(grid);
     }
 
     axios.post('http://localhost:8080/api/grid/', {
-      spaceId,
-      layouts
+      grids
     }).then((response) => {
       console.log(`Save ${JSON.stringify(response.data)}`);
       this.loadGridRecord(spaceId);
@@ -90,9 +99,20 @@ export class Grid extends React.Component {
     this.loadGridRecord(this.state.cuurSpaceId);
   }
 
+  handleGoBack() {
+    this.props.history.push('/space');
+  }
+
   handleUpdateLayout(layout) {
     this.setState({ tempLayouts: layout });
-    this.setState({ isDirtyWrite: true });
+    if (this.state.isResetLayout) {
+      // update layout by reset data from backend
+      this.setState({ isResetLayout: false });
+    } else {
+      // this update layout not triggered by reset data
+      this.setState({ isDirtyWrite: true });
+    }
+    console.log('handleUpdateLayout');
   }
 
   handleSelect(gridId) {
@@ -115,8 +135,8 @@ export class Grid extends React.Component {
     const dataMap = new Map();
     const counter = -1;
 
-    if (data === null) {
-      // no record from db
+    // no record from db
+    if (data === null || data.length === 0) {
       // add one as default
 
       originalLayouts = [{
@@ -131,19 +151,16 @@ export class Grid extends React.Component {
       // load record from db
 
       // extract image path for display
-      if (data.imgPath != null) {
-        gridImgPath = data.imgPath;
-      }
+      gridImgPath = data[0].gridImgPath;
 
-      // load data and set as view mode
-      currMode = Constants.FORM_READONLY_MODE;
-      originalLayouts = data.layouts.map(l => ({ ...l, static: true }));
+      const layouts = [];
+      for (const grid of data) {
+        // prepare grid layouts
+        layouts.push(grid.layout);
 
-      // extract tagslist to form map
-      for (const layout of originalLayouts) {
-        // get unique tags list
+        // prepare unique item tags list
         const tagList = [];
-        for (const tag of layout.tagsList) {
+        for (const tag of grid.itemTags) {
           const tagsArr = tag.split(',');
           for (const el of tagsArr) {
             if (!tagList.includes(el)) {
@@ -152,29 +169,28 @@ export class Grid extends React.Component {
           }
         }
 
-        // form object
-        const record = {};
-        record.tagList = tagList;
-        record.itemCount = layout.itemCount;
+        // add tagsList into grid for UI proess
+        grid.tagList = tagList;
 
         // push in map for component to form UI
-        dataMap.set(layout.i, record);
-
-
-        // remove tag list from each layout
-        delete layout.tagsList;
+        dataMap.set(`${grid.gridId}`, grid);
       }
+
+      // load data and set as view mode
+      currMode = Constants.FORM_READONLY_MODE;
+      originalLayouts = layouts.map(el => ({ ...el, static: true }));
     }
+
 
     this.setState({
       itemCount: counter,
       tempLayouts: originalLayouts,
       dataMap,
       gridImgPath,
-      currMode
+      currMode,
+      isDirtyWrite: false,
+      isResetLayout: true // prevent cause dirty write by layout reload
     });
-
-    this.setState({ isDirtyWrite: false });
   }
 
   handleNew() {
@@ -246,6 +262,7 @@ export class Grid extends React.Component {
           handleUpdateLayout={this.handleUpdateLayout}
           handleRemove={this.handleRemove}
           handleSelect={this.handleSelect}
+          handleGoBack={this.handleGoBack}
           spaceId={spaceId}
           formState={formState}
           tempLayouts={tempLayouts}
@@ -315,6 +332,7 @@ const mapDispatchToProps = dispatch => ({
 Grid.propTypes = {
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  history: PropTypes.oneOfType([PropTypes.object]).isRequired,
   userId: PropTypes.number.isRequired
 
   // sagaGetSpaceList: PropTypes.func.isRequired,

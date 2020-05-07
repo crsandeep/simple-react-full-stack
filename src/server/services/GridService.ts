@@ -55,7 +55,7 @@ export default class GridService {
     }
   }
 
-  public async saveGrid(gridTrans: GridTrans): Promise<Grid[]> {
+  public async saveGrid(gridTransList: GridTrans[]): Promise<Grid[]> {
     try {
       this.logger.debug('save grid record');
 
@@ -65,20 +65,19 @@ export default class GridService {
       const gridList: Promise<Grid>[] = [];
 
       // add all grids to db
-      for (const layout of gridTrans.layouts) {
+      for (const gridTrans of gridTransList) {
         // prepare grid by for each layout
         gridItem = {
           spaceId: gridTrans.spaceId,
-          layout
+          layout: gridTrans.layout,
+          gridId: gridTrans.gridId
         };
 
-        idx = parseInt(layout.i, 10);
-        if (idx < 0) {
+        if (gridTrans.gridId === null) {
           // new grid
           result = this.addGrid(gridItem);
         } else {
           // existing grid
-          gridItem.gridId = idx; // take i as grid id
           result = this.updateGrid(gridItem);
         }
 
@@ -96,7 +95,7 @@ export default class GridService {
 
       // instead of returing save/update result directly
       // return gridList by using select function to populate item tags
-      return await this.getGridBySpaceId(gridTrans.spaceId);
+      return await this.getGridBySpaceId(gridTransList[0].spaceId);
     } catch (e) {
       this.logger.error('Fail to save grid, reason: %o ', e.message);
 
@@ -129,7 +128,7 @@ export default class GridService {
       const updResult = this.updateGrid(result);
 
       if (!updResult) {
-        this.logger.error('Fail to create grid');
+        this.logger.error('Fail to update grid id in layout');
         throw new Error('Grid cannot be created');
       }
 

@@ -17,49 +17,66 @@ export default (app: Router) => {
   const logger: winston.Logger = Container.get('logger');
   const gridService = Container.get(GridService);
 
-  function formatGridList(gridRecordList: Grid[]): GridTrans {
-    logger.debug('format grid list');
 
-    if (gridRecordList == null || gridRecordList.length === 0) {
-      const empty: any = {};
-      return empty;
+  function formatSuccess(payload: any, message: string = null): object {
+    // eslint-disable-next-line object-shorthand
+    return { isSuccess: true, payload, message };
+  }
+
+  function formatGrid(gridRecord: Grid): GridTrans {
+    logger.debug('format grid');
+
+    const outputGrid:any = {};
+
+    const excludeAttr:string[] = ['creationDate',
+      'updatedOn',
+      'space', // special handle
+      'items'
+    ];
+
+    if (gridRecord == null) {
+      return outputGrid;
     }
 
     try {
-      const gridTrans: any = {
-        layouts: [], spaceId: number, imgPath: String
-      };
-
-      // copy space id from 1st return element
-      gridTrans.spaceId = gridRecordList[0].spaceId;
-
-      // copy img path from 1st return element
-      if (gridRecordList[0].space.imgPath != null) {
-        gridTrans.imgPath = gridRecordList[0].space.imgPath.replace(config.publicFolder, '');
-      } else {
-        gridTrans.imgPath = null;
+      // copy value from db object to transmission object
+      // eslint-disable-next-line dot-notation
+      for (const [key, value] of Object.entries(gridRecord['dataValues'])) {
+        if (excludeAttr.indexOf(key) < 0) {
+          // non exclude field
+          outputGrid[key] = value;
+        }
       }
 
-      // copy all layout into gridTrans.layout
-      for (const grid of gridRecordList) {
-        // prepare items tags list
-        const tagList: string[] = [];
-        const itemCount:number = (grid.items != null ? grid.items.length : 0);
-        for (const item of grid.items) {
+      // special fill from db
+      // copy img path
+      if (gridRecord.space != null && gridRecord.space.imgPath != null) {
+        outputGrid.imgPath = outputGrid.space.imgPath.replace(config.publicFolder, '');
+      } else {
+        outputGrid.imgPath = null;
+      }
+
+      // prepare items tags list
+      let tagList: string[] = null;
+      let itemCount:number = null;
+
+      if (gridRecord.items != null) {
+        itemCount = gridRecord.items.length;
+        tagList = [];
+        for (const item of gridRecord.items) {
           // prepare tag list
           if (item.tags != null) {
             tagList.push(item.tags);
           }
         }
-
-        // convert as json object under layout
-        const layout = JSON.parse(grid.layout);
-        layout.tagsList = tagList;
-        layout.itemCount = itemCount;
-        gridTrans.layouts.push(layout);
       }
 
-      return gridTrans;
+      // copy other fields
+      outputGrid.layout = JSON.parse(gridRecord.layout);
+      outputGrid.itemTags = tagList;
+      outputGrid.itemCount = itemCount;
+
+      return outputGrid;
     } catch (e) {
       logger.error(
         'Fail to prepare output grid list , reason: %o ',
@@ -69,9 +86,26 @@ export default (app: Router) => {
     }
   }
 
-  function formatSuccess(payload: any, message: string = null): object {
-    // eslint-disable-next-line object-shorthand
-    return { isSuccess: true, payload, message };
+  function formatGridList(gridRecordList: (Grid)[]): GridTrans[] {
+    logger.debug('format grid list');
+
+    if (gridRecordList == null) {
+      const empty:any = {};
+      return empty;
+    }
+
+    try {
+      const outputList: GridTrans[] = [];
+      if (gridRecordList != null) {
+        for (const grid of gridRecordList) {
+          outputList.push(formatGrid(grid));
+        }
+      }
+      return outputList;
+    } catch (e) {
+      logger.error('Fail to prepare output grid list , reason: %o ', e.message);
+      throw e;
+    }
   }
 
   app.use('/grid', route);
@@ -91,7 +125,7 @@ export default (app: Router) => {
         const gridRecordList: Grid[] = await gridService.getGridBySpaceId(
           spaceId
         );
-        const result: GridTrans = formatGridList(gridRecordList);
+        const result: GridTrans[] = formatGridList(gridRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -104,13 +138,16 @@ export default (app: Router) => {
     '/',
     celebrate({
       body: Joi.object({
-        spaceId: Joi.number().required(),
-        layouts: Joi.array().items(Joi.object({
-          x: Joi.number().required(),
-          y: Joi.number().required(),
-          w: Joi.number().required(),
-          h: Joi.number().required(),
-          i: Joi.string().required()
+        grids: Joi.array().items(Joi.object({
+          spaceId: Joi.number().required(),
+          gridId: Joi.number().allow(null),
+          layout: Joi.object({
+            x: Joi.number().required(),
+            y: Joi.number().required(),
+            w: Joi.number().required(),
+            h: Joi.number().required(),
+            i: Joi.string().required()
+          })
         }))
       })
     }),
@@ -118,9 +155,9 @@ export default (app: Router) => {
       logger.debug('Calling addGrid endpoint');
 
       try {
-        const input: GridTrans = req.body;
+        const input: GridTrans[] = req.body.grids;
         const gridRecord: Grid[] = await gridService.saveGrid(input);
-        const result: GridTrans = formatGridList(gridRecord);
+        const result: GridTrans[] = formatGridList(gridRecord);
         return res.status(201).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);
@@ -142,7 +179,7 @@ export default (app: Router) => {
       try {
         const gridId: number = parseInt(req.params.gridId, 10);
         const gridRecord: Grid = await gridService.deleteGrid(gridId);
-        const result: GridTrans = formatGridList([gridRecord]); // pass in as list
+        const result: GridTrans = formatGrid(gridRecord); // pass in as list
         return res.status(200).json(formatSuccess(result));
       } catch (e) {
         logger.error('🔥 error: %o', e);

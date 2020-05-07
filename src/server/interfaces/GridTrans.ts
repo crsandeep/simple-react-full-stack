@@ -2,13 +2,15 @@
 export default interface GridTrans {
   spaceId: number;
 
-  // for batch display/insert/update
-  layouts: any[];
-  // itemCount: number
-  // tagsList: string[]
+  layout: String;
 
   gridId: number; // for delete only
 
-  imgPath: String; // for display only
+  // for display only
+  imgPath: String;
 
-};
+  itemCount: number;
+
+  itemTags: string[];
+
+}
