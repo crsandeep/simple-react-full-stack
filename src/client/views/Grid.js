@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import axios from 'axios';
 import { GridComp } from '../components';
-import * as Actions from '../actions/Space';
+import * as Actions from '../actions/Grid';
 import * as Constants from '../constants/Grid';
 
 
@@ -20,7 +20,6 @@ export class Grid extends React.Component {
       tempLayouts: [],
       dataMap: new Map(),
       gridImgPath: null,
-      cuurSpaceId: 2,
       isResetLayout: false,
       isDirtyWrite: false,
       currMode: Constants.FORM_READONLY_MODE
@@ -37,7 +36,7 @@ export class Grid extends React.Component {
   }
 
   componentDidMount() {
-    this.loadGridRecord(this.state.cuurSpaceId);
+    this.loadGridRecord(this.props.spaceId);
   }
 
   // space grid start
@@ -96,7 +95,7 @@ export class Grid extends React.Component {
   }
 
   handleCancel() {
-    this.loadGridRecord(this.state.cuurSpaceId);
+    this.loadGridRecord(this.props.spaceId);
   }
 
   handleGoBack() {
@@ -121,7 +120,7 @@ export class Grid extends React.Component {
   }
 
   handleSave() {
-    this.saveToLS(this.state.cuurSpaceId, this.state.tempLayouts);
+    this.saveToLS(this.props.spaceId, this.state.tempLayouts);
     this.setState({ isDirtyWrite: false });
   }
   // ------------------------------------------
@@ -226,11 +225,13 @@ export class Grid extends React.Component {
     tempList = tempList.filter(el => el.i !== itemKey);
 
     this.setState({
-      tempLayouts: tempList
+      tempLayouts: tempList,
+      isResetLayout: true // prevent cause dirty write by layout reload
     });
 
     if (itemKey > 0) {
-      this.deleteGrid(itemKey);
+      this.props.sagaDeleteGrid(itemKey);
+      // this.deleteGrid(itemKey);
     }
   }
 
@@ -246,12 +247,10 @@ export class Grid extends React.Component {
   // space grid end
 
   render() {
-    const spaceId = 1;
-
     const {
       tempLayouts, dataMap, gridImgPath, isDirtyWrite, currMode
     } = this.state;
-    const { editStatus, formState } = this.props;
+    const { editStatus, pageLoading } = this.props;
     return (
       <div>
         <GridComp
@@ -263,8 +262,8 @@ export class Grid extends React.Component {
           handleRemove={this.handleRemove}
           handleSelect={this.handleSelect}
           handleGoBack={this.handleGoBack}
-          spaceId={spaceId}
-          formState={formState}
+          editStatus={editStatus}
+          pageLoading={pageLoading}
           tempLayouts={tempLayouts}
           dataMap={dataMap}
           gridImgPath={gridImgPath}
@@ -277,71 +276,39 @@ export class Grid extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  // //TODO: testing
-  const userId = 1;
+  // TODO: testing
+  const spaceId = 2;
 
-  const { editStatus } = state.Space;
-
-  const inState = state.Space;
-  const formState = {
-    formMode: inState.formMode,
-    spaceId: inState.spaceId,
-    name: inState.name,
-    colorCode: inState.colorCode,
-    imgPath: inState.imgPath,
-    tags: inState.tags,
-    location: inState.location,
-    sizeUnit: inState.sizeUnit,
-    sizeWidth: inState.sizeWidth,
-    sizeHeight: inState.sizeHeight,
-    sizeDepth: inState.sizeDepth
-  };
+  const { editStatus, pageLoading } = state.Grid;
 
   return {
-    userId,
+    spaceId,
     editStatus,
-    formState
+    pageLoading
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  // sagaGetSpaceList: (userId) => {
-  //   dispatch(Actions.sagaGetSpaceList(userId));
-  // },
-  // sagaUpdateSpace: (space, fileMap) => {
-  //   dispatch(Actions.sagaUpdateSpace(space, fileMap));
-  // },
-  // sagaAddSpace: (space, fileMap) => {
-  //   dispatch(Actions.sagaAddSpace(space, fileMap));
-  // },
-  // sagaDeleteSpace: (userId, spaceId) => {
-  //   dispatch(Actions.sagaDeleteSpace(userId, spaceId));
-  // },
-  // sagaGetSpace: (spaceId) => {
-  //   dispatch(Actions.sagaGetSpace(spaceId));
-  // },
-  // sagaRemoveSpaceImg: (spaceId) => {
-  //   dispatch(Actions.sagaRemoveSpaceImg(spaceId));
-  // },
-  // updateFormMode: (mode) => {
-  //   dispatch(Actions.updateFormMode(mode));
-  // }
+  sagaGetGridList: (spaceId) => {
+    dispatch(Actions.sagaGetGridList(spaceId));
+  },
+  sagaSaveGrids: (grids) => {
+    dispatch(Actions.sagaSaveGrids(grids));
+  },
+  sagaDeleteGrid: (gridId) => {
+    dispatch(Actions.sagaDeleteGrid(gridId));
+  }
 });
 
 
 Grid.propTypes = {
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   history: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  userId: PropTypes.number.isRequired
-
-  // sagaGetSpaceList: PropTypes.func.isRequired,
-  // sagaUpdateSpace: PropTypes.func.isRequired,
-  // sagaAddSpace: PropTypes.func.isRequired,
-  // sagaDeleteSpace: PropTypes.func.isRequired,
-  // sagaGetSpace: PropTypes.func.isRequired,
-  // sagaRemoveSpaceImg: PropTypes.func.isRequired,
-  // updateFormMode: PropTypes.func.isRequired
+  spaceId: PropTypes.number.isRequired,
+  pageLoading: PropTypes.bool.isRequired,
+  sagaSaveGrids: PropTypes.func.isRequired,
+  sagaGetGridList: PropTypes.func.isRequired,
+  sagaDeleteGrid: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Grid));

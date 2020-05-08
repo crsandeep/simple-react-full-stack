@@ -1,6 +1,5 @@
 
 export const OPERATION_SAVE = 'SAVE';
-export const OPERATION_UPDATE = 'UPDATE';
 export const OPERATION_DELETE = 'DELETE';
 
 export const FORM_EDIT_MODE = 'GRID_EDIT_MODE';

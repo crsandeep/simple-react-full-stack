@@ -23,7 +23,7 @@
     "no-restricted-syntax":"off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/label-has-for":"off",
-    "no-nested-ternary":"off"
-    
+    "no-nested-ternary":"off",
+    "import/extensions": ["error", "never"]
   }
 }

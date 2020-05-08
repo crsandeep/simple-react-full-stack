@@ -32,6 +32,16 @@ export const API_SPACE = {
 };
 
 
+// grid related
+export const API_GRID_CONTEXT_PATH = '/grid/';
+export const API_GRID_FULL_PATH = API_HOST + API_GRID_CONTEXT_PATH;
+export const API_GRID = {
+  GET_GRID_LIST_BY_SPACE_ID: `${API_GRID_FULL_PATH}space/`,
+  SAVE_GRIDS: API_GRID_FULL_PATH,
+  DELETE_GRID: API_GRID_FULL_PATH
+};
+
+
 // reminder related
 export const API_REMINDER_CONTEXT_PATH = '/reminder/';
 export const API_REMINDER_FULL_PATH = API_HOST + API_REMINDER_CONTEXT_PATH;

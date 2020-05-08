@@ -29,7 +29,7 @@ function GridComp(props) {
   const confirmDelete = (gridId) => {
     confirmAlert({
       title: 'Confirm to delete',
-      message: `Are you sure to delete (ID: ${gridId})?`,
+      message: `Are you sure to delete${gridId > 0 ? ` (ID: ${gridId})` : ''}?`,
       buttons: [
         {
           label: 'Confirm',
@@ -47,7 +47,7 @@ function GridComp(props) {
       <Prompt when={props.isDirtyWrite} message="Changes you made may not be saved. Are you sure you want to leave?" />
       {
         // page loading mask
-        props.formState.pageLoading === true && (
+        props.pageLoading === true && (
           <div className="overlay">
             <Spinner
               animation="border"
@@ -136,6 +136,7 @@ function GridComp(props) {
                       style={props.gridImgPath != null ? { backgroundImage: `url(${props.gridImgPath})` } : ''}
                     >
                       {
+                        // generate ID panel
                         parseInt(grid.i, 10) > 0 ? (
                           <h3 className="spaceGrid-idPanel">{grid.i.padStart(2, '0')}</h3>
                         ) : (
@@ -143,6 +144,13 @@ function GridComp(props) {
                         )
                       }
 
+                      {
+                        // edit mode - drag item message
+                        props.currMode === Constants.FORM_EDIT_MODE // under edit mode
+                        && (
+                          <h3 className="spaceGrid-dragTips">Drag & Organise</h3>
+                        )
+                      }
 
                       <ButtonToolbar>
                         { // go to item page button
@@ -171,6 +179,7 @@ function GridComp(props) {
                       </ButtonToolbar>
 
                       {
+                        // item tags
                         props.dataMap != null
                         && props.dataMap.get(grid.i) != null
                         && props.dataMap.get(grid.i).tagList.map(tag => (
@@ -227,7 +236,7 @@ GridComp.defaultProps = {
 };
 
 GridComp.propTypes = {
-  formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  pageLoading: PropTypes.bool.isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
   dataMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
   isDirtyWrite: PropTypes.bool.isRequired,
