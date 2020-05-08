@@ -20,9 +20,10 @@ export const startLoading = () => ({
   type: ActionTypes.PAGE_LOADING
 });
 
-export const getGridList = data => ({
+export const getGridList = (data, operation) => ({
   type: ActionTypes.GET_GRID_LIST,
-  data
+  data,
+  operation
 });
 
 export const completeEdit = (data, operation) => ({
@@ -35,8 +36,4 @@ export const failEdit = (message, operation) => ({
   type: ActionTypes.FAIL_EDIT,
   message,
   operation
-});
-
-export const clearEditStatus = () => ({
-  type: ActionTypes.CLEAR_EDIT_STATUS
 });

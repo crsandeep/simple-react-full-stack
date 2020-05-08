@@ -4,18 +4,18 @@ import * as Actions from '../actions/Grid';
 import * as ActionTypes from '../actionTypes/Grid';
 import * as Constants from '../constants/Grid';
 
-export function* handleGetGridList({ gridId }) {
+export function* handleGetGridList({ spaceId }) {
   try {
     yield put(Actions.startLoading());
-    const operResult = yield call(Service.getGridList, gridId);
+    const operResult = yield call(Service.getGridList, spaceId);
 
     if (operResult.isSuccess) {
-      yield put(Actions.getGridList(operResult.data));
+      yield put(Actions.getGridList(operResult.data, Constants.OPERATION_GET));
     } else {
-      yield put(Actions.getGridList(null));
+      yield put(Actions.getGridList(null, Constants.OPERATION_GET));
     }
   } catch (error) {
-    yield put(Actions.getGridList(null));
+    yield put(Actions.getGridList(null, Constants.OPERATION_GET));
   }
 }
 

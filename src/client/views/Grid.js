@@ -2,9 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-
-import _ from 'lodash';
-import axios from 'axios';
 import { GridComp } from '../components';
 import * as Actions from '../actions/Grid';
 import * as Constants from '../constants/Grid';
@@ -22,7 +19,8 @@ export class Grid extends React.Component {
       gridImgPath: null,
       isResetLayout: false,
       isDirtyWrite: false,
-      currMode: Constants.FORM_READONLY_MODE
+      currMode: Constants.FORM_READONLY_MODE,
+      displayMsg: { isSuccess: null, msg: null }
     };
 
     this.handleNew = this.handleNew.bind(this);
@@ -36,72 +34,38 @@ export class Grid extends React.Component {
   }
 
   componentDidMount() {
-    this.loadGridRecord(this.props.spaceId);
+    this.props.sagaGetGridList(this.props.spaceId);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // clear side effect
-    if (prevProps.editStatus.isSuccess !== this.props.editStatus.isSuccess
+    // handle side effect
+    const currStatus = this.props.editStatus;
+
+    // capture 1st side effect
+    if (prevProps.editStatus.isSuccess !== currStatus.isSuccess
       && prevProps.editStatus.isSuccess == null) {
+      // console.log(`prevProps ${JSON.stringify(prevProps.editStatus)}`);
+      // console.log(`currStatus ${JSON.stringify(currStatus)}`);
+
+      // clear header first
+      this.updateHeaderMsgInUI(null, null);
+
       // delete case
-      if (this.props.editStatus.operation === Constants.OPERATION_DELETE) {
-        if (this.props.editStatus.isSuccess) {
-          // delete success - remove in UI
-          this.deleteGridInUI(`${this.props.editStatus.data.gridId}`);
-        }
-
-        setTimeout(() => this.props.clearEditStatus(), 5000);
+      if (currStatus.operation === Constants.OPERATION_DELETE) {
+        // delete success - remove in UI
+        this.cbDeleteGridInUI(currStatus.isSuccess, `${currStatus.isSuccess ? currStatus.data.gridId : null}`);
+      } else if (currStatus.operation === Constants.OPERATION_GET) {
+        // get case
+        this.cbLoadGridLayoutInUI(currStatus.isSuccess, currStatus.data);
+      } else if (currStatus.operation === Constants.OPERATION_SAVE) {
+        // save case
+        this.cbSaveGridInUI(currStatus.isSuccess, currStatus.data);
       }
     }
-  }
-
-  // space grid start
-  async getFromLS(spaceId) {
-    // TODO:  Testing
-    let result = null;
-    await axios.get(`http://localhost:8080/api/grid/space/${spaceId}`)
-      .then((response) => {
-        if (response.data.payload != null && response.data.payload.length > 0) {
-          result = response.data.payload;
-        }
-      }).catch((error) => {
-        console.log(`ERROR: ${error}`);
-      });
-    return result;
-  }
-
-  saveToLS(spaceId) {
-    const allowAttr = ['x', 'y', 'w', 'h', 'i'];
-    const grids = [];
-    for (const el of this.state.tempLayouts) {
-      for (const [key, value] of Object.entries(el)) {
-        if (!allowAttr.includes(key)) {
-          delete el[key];
-        }
-      }
-      // generate each grid
-      const grid = {
-        layout: el,
-        gridId: (parseInt(el.i, 10) < 0 ? null : parseInt(el.i, 10)),
-        spaceId
-      };
-
-      // push as list
-      grids.push(grid);
-    }
-
-    axios.post('http://localhost:8080/api/grid/', {
-      grids
-    }).then((response) => {
-      console.log(`Save ${JSON.stringify(response.data)}`);
-      this.loadGridRecord(spaceId);
-    }).catch((error) => {
-      console.log(`ERROR: ${error}`);
-    });
   }
 
   handleCancel() {
-    this.loadGridRecord(this.props.spaceId);
+    this.props.sagaGetGridList(this.props.spaceId);
   }
 
   handleGoBack() {
@@ -124,76 +88,28 @@ export class Grid extends React.Component {
   }
 
   handleSave() {
-    this.saveToLS(this.props.spaceId, this.state.tempLayouts);
-    this.setState({ isDirtyWrite: false });
-  }
-  // ------------------------------------------
-
-
-  async loadGridRecord(spaceId) {
-    const data = await this.getFromLS(spaceId);
-    let originalLayouts = null;
-    let gridImgPath = null;
-    let currMode = null;
-    const dataMap = new Map();
-    const counter = -1;
-
-    // no record from db
-    if (data === null || data.length === 0) {
-      // add one as default
-
-      originalLayouts = [{
-        w: 2,
-        h: 1,
-        x: 0,
-        y: 0, // puts it at the bottom
-        i: '-1'
-      }];
-      currMode = Constants.FORM_EDIT_MODE;
-    } else {
-      // load record from db
-
-      // extract image path for display
-      gridImgPath = data[0].gridImgPath;
-
-      const layouts = [];
-      for (const grid of data) {
-        // prepare grid layouts
-        layouts.push(grid.layout);
-
-        // prepare unique item tags list
-        const tagList = [];
-        for (const tag of grid.itemTags) {
-          const tagsArr = tag.split(',');
-          for (const el of tagsArr) {
-            if (!tagList.includes(el)) {
-              tagList.push(el);
-            }
-          }
+    const allowAttr = ['x', 'y', 'w', 'h', 'i'];
+    const data = {};
+    const gridsArr = [];
+    for (const el of this.state.tempLayouts) {
+      for (const [key, value] of Object.entries(el)) {
+        if (!allowAttr.includes(key)) {
+          delete el[key];
         }
-
-        // add tagsList into grid for UI proess
-        grid.tagList = tagList;
-
-        // push in map for component to form UI
-        dataMap.set(`${grid.gridId}`, grid);
       }
+      // generate each grid
+      const grid = {
+        layout: el,
+        gridId: (parseInt(el.i, 10) < 0 ? null : parseInt(el.i, 10)),
+        spaceId: this.props.spaceId
+      };
 
-      // load data and set as view mode
-      currMode = Constants.FORM_READONLY_MODE;
-      originalLayouts = layouts.map(el => ({ ...el, static: true }));
+      // push as list
+      gridsArr.push(grid);
     }
 
-
-    this.setState({
-      itemCount: counter,
-      tempLayouts: originalLayouts,
-      dataMap,
-      gridImgPath,
-      currMode,
-      isDirtyWrite: false,
-      isResetLayout: true // prevent cause dirty write by layout reload
-    });
+    data.grids = gridsArr;
+    this.props.sagaSaveGrids(data);
   }
 
   handleNew() {
@@ -201,12 +117,9 @@ export class Grid extends React.Component {
     nextId -= 1;
 
     const newGrid = {
-      w: 2,
-      h: 1,
-      x: 0,
-      y: Infinity, // puts it at the bottom
-      i: `${nextId}`
-    };
+      w: 2, h: 1, x: 0, y: Infinity, i: `${nextId}`
+    };// puts it at the bottom
+
 
     const tempList = [...this.state.tempLayouts].map(l => ({ ...l, static: false }));
     tempList.push(newGrid);
@@ -230,19 +143,8 @@ export class Grid extends React.Component {
       this.props.sagaDeleteGrid(itemKey);
     } else {
       // delete directly (new grid)
-      this.deleteGridInUI(itemKey);
+      this.cbDeleteGridInUI(true, itemKey);
     }
-  }
-
-  deleteGridInUI(itemKey) {
-    // filter item by i(grid id in String)
-    const orignList = [...this.state.tempLayouts];
-    const tempList = orignList.filter(el => el.i !== itemKey);
-
-    this.setState({
-      tempLayouts: tempList,
-      isResetLayout: true // prevent cause dirty write by layout reload
-    });
   }
 
   handleToggleMode(currMode) {
@@ -259,13 +161,114 @@ export class Grid extends React.Component {
     });
   }
 
-  // space grid end
+  // ------------------------------------------
+  // update UI
+  updateHeaderMsgInUI(isSuccess, msg) {
+    this.setState({
+      displayMsg: { isSuccess, msg }
+    });
+  }
 
+  // triggered by did update after saga ajax call
+  cbLoadGridLayoutInUI(isSuccess, grids) {
+    if (!isSuccess) {
+      this.updateHeaderMsgInUI(false, 'Failed to load grid. Please try again.');
+      return;
+    }
+
+    let tempLayouts = null;
+    let gridImgPath = null;
+    let currMode = null;
+    const dataMap = new Map();
+    const counter = -2;
+
+    // no record from db, prepare default new grid
+    if (grids === null || grids.length === 0) {
+      tempLayouts = [{
+        w: 2, h: 1, x: 0, y: 0, i: `${counter}`
+      }]; // puts it at the bottom
+
+      // set as edit mode
+      currMode = Constants.FORM_EDIT_MODE;
+    } else {
+      // load record from db
+
+      // extract image path for display
+      gridImgPath = grids[0].gridImgPath;
+
+      const layouts = [];
+      for (const grid of grids) {
+        // prepare grid layouts
+        layouts.push(grid.layout);
+
+        // prepare unique item tags list
+        const tagList = [];
+        for (const tag of grid.itemTags) {
+          const tagsArr = tag.split(',');
+          for (const el of tagsArr) {
+            if (!tagList.includes(el)) {
+              tagList.push(el);
+            }
+          }
+        }
+
+        // add tagsList into grid for UI proess
+        grid.tagList = tagList;
+
+        // push in map for component to form UI
+        dataMap.set(`${grid.gridId}`, grid);
+      }
+
+      // load data and set as view mode
+      currMode = Constants.FORM_READONLY_MODE;
+      tempLayouts = layouts.map(el => ({ ...el, static: true }));
+    }
+
+    this.setState({
+      itemCount: counter,
+      tempLayouts,
+      dataMap,
+      gridImgPath,
+      currMode,
+      isDirtyWrite: false,
+      isResetLayout: true // prevent cause dirty write by layout reload
+    });
+  }
+
+  cbSaveGridInUI(isSuccess, grids) {
+    if (isSuccess) {
+      // success, load new gridlayout with data
+      this.cbLoadGridLayoutInUI(true, grids);
+      this.updateHeaderMsgInUI(true, 'Save successfully.');
+      this.setState({ isDirtyWrite: false });
+    } else {
+      this.updateHeaderMsgInUI(false, 'Failed to save grid. Please try again.');
+    }
+  }
+
+  cbDeleteGridInUI(isSuccess, itemKey) {
+    if (isSuccess) {
+      // filter item by i(grid id in String)
+      const orignList = [...this.state.tempLayouts];
+      const tempList = orignList.filter(el => el.i !== itemKey);
+
+      this.setState({
+        tempLayouts: tempList,
+        isResetLayout: true // prevent cause dirty write by layout reload
+      });
+      this.updateHeaderMsgInUI(true, `Grid ${itemKey < 0 ? '' : `(ID: ${itemKey})`} delete successfully`);
+    } else {
+      // fail to delete
+      this.updateHeaderMsgInUI(false, 'Failed to delete grid. Please try again.');
+    }
+  }
+
+  // space grid end
   render() {
     const {
-      tempLayouts, dataMap, gridImgPath, isDirtyWrite, currMode
+      tempLayouts, dataMap, gridImgPath, isDirtyWrite, currMode, displayMsg
     } = this.state;
-    const { editStatus, pageLoading } = this.props;
+    const { pageLoading } = this.props;
     return (
       <div>
         <GridComp
@@ -277,7 +280,7 @@ export class Grid extends React.Component {
           handleRemove={this.handleRemove}
           handleSelect={this.handleSelect}
           handleGoBack={this.handleGoBack}
-          editStatus={editStatus}
+          displayMsg={displayMsg}
           pageLoading={pageLoading}
           tempLayouts={tempLayouts}
           dataMap={dataMap}
@@ -312,9 +315,6 @@ const mapDispatchToProps = dispatch => ({
   },
   sagaDeleteGrid: (gridId) => {
     dispatch(Actions.sagaDeleteGrid(gridId));
-  },
-  clearEditStatus: () => {
-    dispatch(Actions.clearEditStatus());
   }
 });
 
@@ -326,8 +326,7 @@ Grid.propTypes = {
   pageLoading: PropTypes.bool.isRequired,
   sagaSaveGrids: PropTypes.func.isRequired,
   sagaGetGridList: PropTypes.func.isRequired,
-  sagaDeleteGrid: PropTypes.func.isRequired,
-  clearEditStatus: PropTypes.func.isRequired
+  sagaDeleteGrid: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Grid));

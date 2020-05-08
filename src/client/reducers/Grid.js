@@ -14,7 +14,8 @@ export default function Grid(state = initialState, action) {
       return {
         ...state,
         pageLoading: false,
-        gridList: action.data
+        gridList: action.data,
+        editStatus: { isSuccess: (action.data !== null), data: action.data, operation: action.operation }
       };
     case ActionTypes.COMPLETE_EDIT:
       return {
@@ -32,12 +33,8 @@ export default function Grid(state = initialState, action) {
     case ActionTypes.PAGE_LOADING:
       return {
         ...state,
-        pageLoading: true
-      };
-    case ActionTypes.CLEAR_EDIT_STATUS:
-      return {
-        ...state,
-        editStatus: {
+        pageLoading: true,
+        editStatus: { // clear previous edit status
           isSuccess: null, data: null, message: null, operation: null
         }
       };

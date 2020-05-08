@@ -122,26 +122,17 @@ function GridComp(props) {
           <Row>
             <Col xs={12} md={12}>
               {
-                props.editStatus !== null ? (
-                  props.editStatus.isSuccess !== null ? (
-                    props.editStatus.isSuccess === true ? (
-                      <Alert variant="success">
-                        {props.editStatus.operation}
-                        {' '}
-                        Successefully
+                props.displayMsg.isSuccess !== null ? (
+                  props.displayMsg.isSuccess === true ? (
+                    <Alert variant="success">
+                      {props.displayMsg.msg}
+                    </Alert>
+                  )
+                    : (
+                      <Alert variant="danger">
+                        {props.displayMsg.msg}
                       </Alert>
                     )
-                      : (
-                        <Alert variant="danger">
-                          Failed to
-                          {' '}
-                          {props.editStatus.operation}
-                          . Error:
-                          {' '}
-                          {props.editStatus.message}
-                        </Alert>
-                      )
-                  ) : null
                 ) : null
               }
             </Col>
@@ -264,10 +255,10 @@ GridComp.defaultProps = {
 };
 
 GridComp.propTypes = {
+  displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   pageLoading: PropTypes.bool.isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
   dataMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
-  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   isDirtyWrite: PropTypes.bool.isRequired,
   currMode: PropTypes.string.isRequired,
   gridImgPath: PropTypes.string,
