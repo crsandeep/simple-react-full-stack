@@ -40,11 +40,18 @@ export class Grid extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // clear side effect (notification msg)
+    // clear side effect
     if (prevProps.editStatus.isSuccess !== this.props.editStatus.isSuccess
       && prevProps.editStatus.isSuccess == null) {
-      console.log(`Did update - ${JSON.stringify(prevProps.editStatus)} - ${JSON.stringify(this.props.editStatus)}`);
-      setTimeout(() => this.props.clearEditStatus(), 3000);
+      // delete case
+      if (this.props.editStatus.operation === Constants.OPERATION_DELETE) {
+        if (this.props.editStatus.isSuccess) {
+          // delete success - remove in UI
+          this.deleteGridInUI(`${this.props.editStatus.data.gridId}`);
+        }
+
+        setTimeout(() => this.props.clearEditStatus(), 5000);
+      }
     }
   }
 
@@ -93,16 +100,6 @@ export class Grid extends React.Component {
     });
   }
 
-  deleteGrid(gridId) {
-    axios.delete(`http://localhost:8080/api/grid/${gridId}`, {
-      gridId
-    }).then((response) => {
-      console.log(`Delete ${JSON.stringify(response.data)}`);
-    }).catch((error) => {
-      console.log(`ERROR: ${error}`);
-    });
-  }
-
   handleCancel() {
     this.loadGridRecord(this.props.spaceId);
   }
@@ -120,11 +117,9 @@ export class Grid extends React.Component {
       // this update layout not triggered by reset data
       this.setState({ isDirtyWrite: true });
     }
-    console.log('handleUpdateLayout');
   }
 
   handleSelect(gridId) {
-    console.log(`handleSelect: ${JSON.stringify(gridId)}`);
     this.props.history.push('/item');
   }
 
@@ -230,18 +225,24 @@ export class Grid extends React.Component {
       return;
     }
 
-    let tempList = [...this.state.tempLayouts];
-    tempList = tempList.filter(el => el.i !== itemKey);
+    if (itemKey > 0) {
+      // delete from db first
+      this.props.sagaDeleteGrid(itemKey);
+    } else {
+      // delete directly (new grid)
+      this.deleteGridInUI(itemKey);
+    }
+  }
+
+  deleteGridInUI(itemKey) {
+    // filter item by i(grid id in String)
+    const orignList = [...this.state.tempLayouts];
+    const tempList = orignList.filter(el => el.i !== itemKey);
 
     this.setState({
       tempLayouts: tempList,
       isResetLayout: true // prevent cause dirty write by layout reload
     });
-
-    if (itemKey > 0) {
-      this.props.sagaDeleteGrid(itemKey);
-      // this.deleteGrid(itemKey);
-    }
   }
 
   handleToggleMode(currMode) {
