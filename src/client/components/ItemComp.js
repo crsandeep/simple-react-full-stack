@@ -117,7 +117,7 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
             <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
             {
               // show location with grid ID with 2 digits
-              item.gridId.toString().padStart(2, '0')
+              item.gridId.toString().padStart(2, '0').slice(-3)
             }
           </Link>
         </Breadcrumbs>

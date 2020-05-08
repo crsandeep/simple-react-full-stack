@@ -39,6 +39,15 @@ export class Grid extends React.Component {
     this.loadGridRecord(this.props.spaceId);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    // clear side effect (notification msg)
+    if (prevProps.editStatus.isSuccess !== this.props.editStatus.isSuccess
+      && prevProps.editStatus.isSuccess == null) {
+      console.log(`Did update - ${JSON.stringify(prevProps.editStatus)} - ${JSON.stringify(this.props.editStatus)}`);
+      setTimeout(() => this.props.clearEditStatus(), 3000);
+    }
+  }
+
   // space grid start
   async getFromLS(spaceId) {
     // TODO:  Testing
@@ -236,6 +245,11 @@ export class Grid extends React.Component {
   }
 
   handleToggleMode(currMode) {
+    if (currMode === Constants.FORM_READONLY_MODE && this.state.isDirtyWrite) {
+      alert('Please save your change before change back to View Mode.');
+      return;
+    }
+
     const list = this.state.tempLayouts.map(l => ({ ...l, static: (currMode === Constants.FORM_READONLY_MODE) }));
 
     this.setState({
@@ -297,6 +311,9 @@ const mapDispatchToProps = dispatch => ({
   },
   sagaDeleteGrid: (gridId) => {
     dispatch(Actions.sagaDeleteGrid(gridId));
+  },
+  clearEditStatus: () => {
+    dispatch(Actions.clearEditStatus());
   }
 });
 
@@ -308,7 +325,8 @@ Grid.propTypes = {
   pageLoading: PropTypes.bool.isRequired,
   sagaSaveGrids: PropTypes.func.isRequired,
   sagaGetGridList: PropTypes.func.isRequired,
-  sagaDeleteGrid: PropTypes.func.isRequired
+  sagaDeleteGrid: PropTypes.func.isRequired,
+  clearEditStatus: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Grid));

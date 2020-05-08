@@ -36,3 +36,7 @@ export const failEdit = (message, operation) => ({
   message,
   operation
 });
+
+export const clearEditStatus = () => ({
+  type: ActionTypes.CLEAR_EDIT_STATUS
+});

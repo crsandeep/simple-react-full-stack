@@ -62,6 +62,7 @@ function GridComp(props) {
           </div>
         )
       }
+
       {props.tempLayouts != null && props.tempLayouts.length > 0 ? (
         <div>
           <Row>
@@ -120,6 +121,33 @@ function GridComp(props) {
           </Row>
           <Row>
             <Col xs={12} md={12}>
+              {
+                props.editStatus !== null ? (
+                  props.editStatus.isSuccess !== null ? (
+                    props.editStatus.isSuccess === true ? (
+                      <Alert variant="success">
+                        {props.editStatus.operation}
+                        {' '}
+                        Successefully
+                      </Alert>
+                    )
+                      : (
+                        <Alert variant="danger">
+                          Failed to
+                          {' '}
+                          {props.editStatus.operation}
+                          . Error:
+                          {' '}
+                          {props.editStatus.message}
+                        </Alert>
+                      )
+                  ) : null
+                ) : null
+              }
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} md={12}>
               <ReactGridLayout
                 cols={12}
                 rowHeight={120}
@@ -138,7 +166,7 @@ function GridComp(props) {
                       {
                         // generate ID panel
                         parseInt(grid.i, 10) > 0 ? (
-                          <h3 className="spaceGrid-idPanel">{grid.i.padStart(2, '0')}</h3>
+                          <h3 className="spaceGrid-idPanel">{grid.i.padStart(2, '0').slice(-3)}</h3>
                         ) : (
                           <h3 className="spaceGrid-newIdPanel">{`New ${(Math.abs(grid.i) - 1).toString().padStart(2, '0')}`}</h3>
                         )
@@ -239,6 +267,7 @@ GridComp.propTypes = {
   pageLoading: PropTypes.bool.isRequired,
   tempLayouts: PropTypes.arrayOf(PropTypes.object).isRequired,
   dataMap: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   isDirtyWrite: PropTypes.bool.isRequired,
   currMode: PropTypes.string.isRequired,
   gridImgPath: PropTypes.string,

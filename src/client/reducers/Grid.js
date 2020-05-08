@@ -34,6 +34,13 @@ export default function Grid(state = initialState, action) {
         ...state,
         pageLoading: true
       };
+    case ActionTypes.CLEAR_EDIT_STATUS:
+      return {
+        ...state,
+        editStatus: {
+          isSuccess: null, data: null, message: null, operation: null
+        }
+      };
     default:
       return state;
   }
