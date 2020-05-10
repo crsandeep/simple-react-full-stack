@@ -229,9 +229,6 @@ function SpaceComp(props) {
         }
       </div>
 
-      <List className="spaceList-pc" subheader={<li />}>
-        {dataList}
-      </List>
       {
         // new space button
         props.formState.formMode === Constants.FORM_READONLY_MODE && (
@@ -245,6 +242,9 @@ function SpaceComp(props) {
         Refresh
       </Button>
 
+      <List className="spaceList-pc" subheader={<li />}>
+        {dataList}
+      </List>
 
       {
         // page loading mask

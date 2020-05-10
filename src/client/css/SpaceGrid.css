@@ -1,15 +1,15 @@
 .spaceGrid-grid{
-    /* background-color: grey; */
-    background-size: 100%;
-    background-repeat: 'no-repeat';
+    background-color: #BFC9CA;
+    background-position: center;
+    background-repeat: no-repeat;
     border-style: outset;
     border-radius: 7px;
 }
 
 .spaceGrid-grid-static{
-    /* background-color: #ffffcc; */
-    background-size: 100%;
-    background-repeat: 'no-repeat';
+    background-color: #ffffcc;
+    background-position: center;
+    background-repeat: no-repeat;
     border-style: outset;
     border-radius: 7px;
 }

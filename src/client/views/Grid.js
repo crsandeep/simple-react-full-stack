@@ -84,6 +84,7 @@ export class Grid extends React.Component {
   }
 
   handleSelect(gridId) {
+    this.props.setCurrentGridId(gridId);
     this.props.history.push('/item');
   }
 
@@ -194,7 +195,7 @@ export class Grid extends React.Component {
       // load record from db
 
       // extract image path for display
-      gridImgPath = grids[0].gridImgPath;
+      gridImgPath = grids[0].imgPath;
 
       const layouts = [];
       for (const grid of grids) {
@@ -294,13 +295,11 @@ export class Grid extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  // TODO: testing
-  const spaceId = 2;
-
   const { editStatus, pageLoading } = state.Grid;
+  const { currentSpaceId } = state.Space;
 
   return {
-    spaceId,
+    spaceId: currentSpaceId,
     editStatus,
     pageLoading
   };
@@ -315,6 +314,9 @@ const mapDispatchToProps = dispatch => ({
   },
   sagaDeleteGrid: (gridId) => {
     dispatch(Actions.sagaDeleteGrid(gridId));
+  },
+  setCurrentGridId: (gridId) => {
+    dispatch(Actions.setCurrentGridId(gridId));
   }
 });
 
@@ -326,7 +328,8 @@ Grid.propTypes = {
   pageLoading: PropTypes.bool.isRequired,
   sagaSaveGrids: PropTypes.func.isRequired,
   sagaGetGridList: PropTypes.func.isRequired,
-  sagaDeleteGrid: PropTypes.func.isRequired
+  sagaDeleteGrid: PropTypes.func.isRequired,
+  setCurrentGridId: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Grid));

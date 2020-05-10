@@ -10,7 +10,8 @@ import '../css/Form.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import {
-  Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns, Spinner, Image, Badge, Alert, Breadcrumb
+  Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns,
+  Spinner, Image, Badge, Alert, Breadcrumb
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
@@ -23,6 +24,7 @@ import LabelIcon from '@material-ui/icons/Label';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -77,7 +79,7 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
         </Card.Text>
         <div>
           <Row>
-            <Col xs={7} md={7}>
+            <Col xs={12} md={7}>
               {
               tagsArr != null && tagsArr.length > 0
               && tagsArr.map((tags, i) => (
@@ -91,7 +93,7 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
               ))
             }
             </Col>
-            <Col xs={5} md={5}>
+            <Col xs={12} md={5}>
               <ButtonToolbar>
                 <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
                   <EditIcon />
@@ -190,16 +192,23 @@ function ItemComp(props) {
           )
       }
 
+      <IconButton
+        aria-label="delete"
+        onClick={() => props.handleGoBack()}
+      >
+        <ArrowBackIosIcon />
+      </IconButton>
       {
         // new item button
         props.formState.formMode === Constants.FORM_READONLY_MODE
           && <Button variant="primary" onClick={props.handleNew}>New Item</Button>
       }
 
+      <Button variant="primary" onClick={props.handleReloadList}>Refresh</Button>
+
       <CardColumns>
         {displayList}
       </CardColumns>
-      <Button variant="primary" onClick={props.handleReloadList}>Refresh</Button>
 
       <div>
         <Modal
@@ -347,17 +356,22 @@ function ItemComp(props) {
   );
 }
 
+ItemComp.defaultProps = {
+  itemList: []
+};
+
 ItemComp.propTypes = {
-  itemList: PropTypes.array,
-  editStatus: PropTypes.object,
-  formState: PropTypes.object,
+  itemList: PropTypes.arrayOf(PropTypes.object),
+  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleFormSave: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
   handleNew: PropTypes.func.isRequired,
   handleEdit: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleReloadList: PropTypes.func.isRequired,
-  handleRemoveItemImg: PropTypes.func.isRequired
+  handleRemoveItemImg: PropTypes.func.isRequired,
+  handleGoBack: PropTypes.func.isRequired
 };
 
 export default ItemComp;

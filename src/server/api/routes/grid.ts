@@ -51,7 +51,7 @@ export default (app: Router) => {
       // special fill from db
       // copy img path
       if (gridRecord.space != null && gridRecord.space.imgPath != null) {
-        outputGrid.imgPath = outputGrid.space.imgPath.replace(config.publicFolder, '');
+        outputGrid.imgPath = gridRecord.space.imgPath.replace(config.publicFolder, '');
       } else {
         outputGrid.imgPath = null;
       }

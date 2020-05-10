@@ -45,7 +45,6 @@ export default class GridService {
         }],
         order: [['gridId', 'ASC']]
       });
-      console.log(`gridRecordList ${JSON.stringify(gridRecordList)}`);
 
       return gridRecordList;
     } catch (e) {

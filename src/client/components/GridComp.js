@@ -81,7 +81,7 @@ function GridComp(props) {
             </Col>
           </Row>
           <Row>
-            <Col xs={12} md={1}>
+            <Col xs={1} md={1}>
               <IconButton
                 aria-label="delete"
                 onClick={() => props.handleGoBack()}
@@ -89,7 +89,7 @@ function GridComp(props) {
                 <ArrowBackIosIcon />
               </IconButton>
             </Col>
-            <Col xs={12} md={2} className="spaceGrid-changeMode">
+            <Col xs={8} md={3} className="spaceGrid-changeMode">
               <div>
                 Current Mode:
                 {' '}
@@ -104,7 +104,7 @@ function GridComp(props) {
                 </select>
               </div>
             </Col>
-            <Col xs={12} md={9}>
+            <Col xs={12} md={8}>
               <ButtonToolbar>
                 <IconButton aria-label="New" onClick={props.handleNew}>
                   <AddCircleOutlineIcon />
@@ -176,7 +176,7 @@ function GridComp(props) {
                           props.currMode === Constants.FORM_READONLY_MODE // under readonly mode
                           && parseInt(grid.i, 10) > 0 // old grid
                             && (
-                            <Button variant="outline-info" size="lg" block onClick={() => props.handleSelect(grid.i)}>
+                            <Button variant="outline-primary" size="lg" block onClick={() => props.handleSelect(parseInt(grid.i, 10))}>
 
                               {props.dataMap.get(grid.i).itemCount === 0 ? (
                                 <div>

@@ -5,7 +5,8 @@ const initialState = {
   gridList: [],
   editStatus: {
     isSuccess: null, data: null, message: null, operation: null
-  }
+  },
+  currentGridId: null
 };
 
 export default function Grid(state = initialState, action) {
@@ -37,6 +38,11 @@ export default function Grid(state = initialState, action) {
         editStatus: { // clear previous edit status
           isSuccess: null, data: null, message: null, operation: null
         }
+      };
+    case ActionTypes.SET_CURRENT_GRID_ID:
+      return {
+        ...state,
+        currentGridId: action.gridId
       };
     default:
       return state;

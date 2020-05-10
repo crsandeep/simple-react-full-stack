@@ -28,7 +28,6 @@ export class Space extends React.Component {
 
   componentDidMount() {
     this.getSpaceList();
-    // this.loadGridRecord();
   }
 
   // space list start
@@ -70,7 +69,7 @@ export class Space extends React.Component {
   }
 
   handleSelect(spaceId) {
-    // console.log(`Select space ${spaceId}`);
+    this.props.setCurrentSpaceId(spaceId);
     this.props.history.push('/grid');
   }
 
@@ -166,6 +165,9 @@ const mapDispatchToProps = dispatch => ({
   },
   updateFormMode: (mode) => {
     dispatch(Actions.updateFormMode(mode));
+  },
+  setCurrentSpaceId: (spaceId) => {
+    dispatch(Actions.setCurrentSpaceId(spaceId));
   }
 });
 
@@ -185,7 +187,8 @@ Space.propTypes = {
   sagaDeleteSpace: PropTypes.func.isRequired,
   sagaGetSpace: PropTypes.func.isRequired,
   sagaRemoveSpaceImg: PropTypes.func.isRequired,
-  updateFormMode: PropTypes.func.isRequired
+  updateFormMode: PropTypes.func.isRequired,
+  setCurrentSpaceId: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Space));

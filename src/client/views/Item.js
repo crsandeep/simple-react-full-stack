@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { ItemComp } from '../components';
 import * as Actions from '../actions/Item';
@@ -18,6 +19,7 @@ export class Item extends React.Component {
     this.handleReloadList = this.handleReloadList.bind(this);
     this.handleFormSave = this.handleFormSave.bind(this);
     this.handleRemoveItemImg = this.handleRemoveItemImg.bind(this);
+    this.handleGoBack = this.handleGoBack.bind(this);
   }
 
   componentDidMount() {
@@ -65,25 +67,26 @@ export class Item extends React.Component {
     this.props.sagaRemoveItemImg(itemId);
   }
 
-  handleReloadList(event) {
+  handleReloadList() {
     this.getItemList();
   }
 
   // UI only
-  handleNew(event) {
+  handleNew() {
     this.props.updateFormMode(Constants.FORM_EDIT_MODE);
   }
 
-  handleCancel(event) {
+  handleCancel() {
     this.props.updateFormMode(Constants.FORM_READONLY_MODE);
     this.handleReloadList();
   }
 
+  handleGoBack() {
+    this.props.history.push('/grid');
+  }
 
   render() {
-    const { itemList } = this.props;
-    const { editStatus } = this.props;
-    const { formState } = this.props;
+    const { itemList, editStatus, formState } = this.props;
     return (
       <div>
         <ItemComp
@@ -94,6 +97,7 @@ export class Item extends React.Component {
           handleDelete={this.handleDelete}
           handleReloadList={this.handleReloadList}
           handleRemoveItemImg={this.handleRemoveItemImg}
+          handleGoBack={this.handleGoBack}
 
           itemList={itemList}
           editStatus={editStatus}
@@ -105,8 +109,7 @@ export class Item extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  // //TODO: testing
-  const gridId = 37;
+  const { currentGridId } = state.Grid;
 
   const { itemList, editStatus } = state.Item;
 
@@ -130,7 +133,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    gridId,
+    gridId: currentGridId,
     itemList,
     editStatus,
     formState
@@ -161,8 +164,23 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps, mapDispatchToProps
-  )(Item)
-);
+Item.defaultProps = {
+  itemList: []
+};
+
+Item.propTypes = {
+  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  history: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  gridId: PropTypes.number.isRequired,
+  formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  itemList: PropTypes.arrayOf(PropTypes.object),
+  updateFormMode: PropTypes.func.isRequired,
+  sagaGetItemList: PropTypes.func.isRequired,
+  sagaUpdateItem: PropTypes.func.isRequired,
+  sagaAddItem: PropTypes.func.isRequired,
+  sagaDeleteItem: PropTypes.func.isRequired,
+  sagaGetItem: PropTypes.func.isRequired,
+  sagaRemoveItemImg: PropTypes.func.isRequired
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Item));

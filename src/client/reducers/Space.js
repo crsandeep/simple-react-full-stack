@@ -1,4 +1,4 @@
-import * as ActionTypes from '../actionTypes/Space'
+import * as ActionTypes from '../actionTypes/Space';
 import * as Constants from '../constants/Space';
 
 const initialState = {
@@ -6,34 +6,38 @@ const initialState = {
   pageLoading: false,
   validating: true,
   spaceList: [],
-  editStatus: { isSuccess: null, data: null, message: null, operation:null },
+  editStatus: {
+    isSuccess: null, data: null, message: null, operation: null
+  },
+  currentSpaceId: null,
 
-  //form field
+  // form field
   spaceId: null,
   name: '',
   colorCode: '',
   imgFile: null,
   imgPath: null,
-  tags:null,
+  tags: null,
   location: '',
   sizeUnit: null,
   sizeWidth: null,
   sizeHeight: null,
-  sizeDepth: null,
+  sizeDepth: null
 };
- 
-export default function Space (state = initialState, action) {
+
+export default function Space(state = initialState, action) {
   switch (action.type) {
     case ActionTypes.GET_SPACE_LIST:
       return {
-          ...state,
-          pageLoading: false, 
-          spaceList: action.data
-        }
+        ...state,
+        pageLoading: false,
+        spaceList: action.data
+      };
     case ActionTypes.GET_SPACE:
-      return { ...state, 
-        formMode: Constants.FORM_EDIT_MODE, //set form to edit
-        pageLoading: false, 
+      return {
+        ...state,
+        formMode: Constants.FORM_EDIT_MODE, // set form to edit
+        pageLoading: false,
         spaceId: action.data.spaceId,
         name: action.data.name,
         colorCode: action.data.colorCode,
@@ -44,65 +48,73 @@ export default function Space (state = initialState, action) {
         sizeUnit: action.data.sizeUnit,
         sizeWidth: action.data.sizeWidth,
         sizeHeight: action.data.sizeHeight,
-        sizeDepth: action.data.sizeDepth,
-      }
+        sizeDepth: action.data.sizeDepth
+      };
     case ActionTypes.COMPLETE_EDIT:
-      return { ...state, 
-        pageLoading: false, 
-        formMode: Constants.FORM_READONLY_MODE,   //set form to read only to hide inputs
-        editStatus: { isSuccess: true, data: action.data, operation:action.operation } 
-    }
+      return {
+        ...state,
+        pageLoading: false,
+        formMode: Constants.FORM_READONLY_MODE, // set form to read only to hide inputs
+        editStatus: { isSuccess: true, data: action.data, operation: action.operation }
+      };
     case ActionTypes.FAIL_EDIT:
-      return { 
-        ...state, 
-        pageLoading: false, 
-        editStatus: { isSuccess: false, message: action.message, operation:action.operation } 
-    }
+      return {
+        ...state,
+        pageLoading: false,
+        editStatus: { isSuccess: false, message: action.message, operation: action.operation }
+      };
     case ActionTypes.COMPLETE_REMOVE_SPACE_IMG:
-      return { 
-        ...state, 
+      return {
+        ...state,
         pageLoading: false,
         imgPath: null,
         imgFile: null,
-        editStatus: { 
-          isSuccess: true, 
-          data: null, 
-          message: null, 
-          operation:Constants.OPERATION_REMOVE_IMG} 
-      }
+        editStatus: {
+          isSuccess: true,
+          data: null,
+          message: null,
+          operation: Constants.OPERATION_REMOVE_IMG
+        }
+      };
     case ActionTypes.FAIL_REMOVE_SPACE_IMG:
-      return { 
-        ...state, 
+      return {
+        ...state,
         pageLoading: false,
-        editStatus: { 
-          isSuccess: false, 
-          data:null,
-          message: action.message, 
-          operation:Constants.OPERATION_REMOVE_IMG 
-        } 
-      }
+        editStatus: {
+          isSuccess: false,
+          data: null,
+          message: action.message,
+          operation: Constants.OPERATION_REMOVE_IMG
+        }
+      };
     case ActionTypes.PAGE_LOADING:
-      return { ...state, 
-        pageLoading: true, 
-      }
+      return {
+        ...state,
+        pageLoading: true
+      };
     case ActionTypes.UPDATE_FORM_MODE:
-      return {...state,
-          pageLoading:false,
-          formMode: action.mode,
-          spaceId: null,
-          name: '',
-          colorCode: '',
-          imgFile: null,
-          imgPath: null,
-          tags:null,
-          location: '',
-          sizeUnit: null,
-          sizeWidth: null,
-          sizeHeight: null,
-          sizeDepth: null,
-      }
-
+      return {
+        ...state,
+        pageLoading: false,
+        formMode: action.mode,
+        spaceId: null,
+        name: '',
+        colorCode: '',
+        imgFile: null,
+        imgPath: null,
+        tags: null,
+        location: '',
+        sizeUnit: null,
+        sizeWidth: null,
+        sizeHeight: null,
+        sizeDepth: null
+      };
+    case ActionTypes.SET_CURRENT_SPACE_ID:
+      return {
+        ...state,
+        currentSpaceId: action.spaceId
+      };
     default:
-      return state
+      return state;
   }
 }

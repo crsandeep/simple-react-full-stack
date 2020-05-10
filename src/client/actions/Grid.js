@@ -37,3 +37,9 @@ export const failEdit = (message, operation) => ({
   message,
   operation
 });
+
+
+export const setCurrentGridId = gridId => ({
+  type: ActionTypes.SET_CURRENT_GRID_ID,
+  gridId
+});
