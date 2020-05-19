@@ -15,6 +15,10 @@ export class Space extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      displayMsg: { isSuccess: null, msg: null }
+    };
+
     // space list
     this.handleNew = this.handleNew.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
@@ -28,6 +32,41 @@ export class Space extends React.Component {
 
   componentDidMount() {
     this.getSpaceList();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // handle side effect
+    const currStatus = this.props.editStatus;
+
+    // capture 1st side effect
+    if (prevProps.editStatus.isSuccess !== currStatus.isSuccess
+      && prevProps.editStatus.isSuccess == null) {
+      // console.log(`prevProps ${JSON.stringify(prevProps.editStatus)}`);
+      // console.log(`currStatus ${JSON.stringify(currStatus)}`);
+
+      // delete case
+      if (currStatus.operation === Constants.OPERATION_DELETE) {
+        this.updateHeaderMsgInUI(currStatus.isSuccess,
+          currStatus.isSuccess
+            ? 'Delete successfully.'
+            : 'Failed to delete. Please try again.');
+      } else if (currStatus.operation === Constants.OPERATION_REMOVE_IMG) {
+        // remove img
+
+      } else if (currStatus.operation === Constants.OPERATION_GET) {
+        // get case, show error if failed
+        if (!currStatus.isSuccess) {
+          this.updateHeaderMsgInUI(false, 'Failed to load space. Please try again.');
+        }
+      } else if (currStatus.operation === Constants.OPERATION_SAVE
+        || currStatus.operation === Constants.OPERATION_UPDATE) {
+        // save case
+        this.updateHeaderMsgInUI(currStatus.isSuccess,
+          currStatus.isSuccess
+            ? 'Save successfully.'
+            : 'Failed to save. Please try again.');
+      }
+    }
   }
 
   // space list start
@@ -60,8 +99,12 @@ export class Space extends React.Component {
     }
   }
 
-  handleDelete(spaceId) {
-    this.props.sagaDeleteSpace(this.props.userId, spaceId);
+  handleDelete(spaceId, spaceName) {
+    const result = confirm(`Confirm to delete (Space: ${spaceName})?`);
+    if (result === true) {
+      // confirm
+      this.props.sagaDeleteSpace(this.props.userId, spaceId);
+    }
   }
 
   handleEdit(spaceId) {
@@ -78,6 +121,7 @@ export class Space extends React.Component {
   }
 
   handleReloadList() {
+    this.updateHeaderMsgInUI(null, null);
     this.getSpaceList();
   }
 
@@ -92,8 +136,16 @@ export class Space extends React.Component {
   }
   // space list end
 
+  // update UI
+  updateHeaderMsgInUI(isSuccess, msg) {
+    this.setState({
+      displayMsg: { isSuccess, msg }
+    });
+  }
+
 
   render() {
+    const { displayMsg } = this.state;
     const { spaceList, editStatus, formState } = this.props;
     return (
       <div>
@@ -106,6 +158,7 @@ export class Space extends React.Component {
           handleDelete={this.handleDelete}
           handleReloadList={this.handleReloadList}
           handleRemoveSpaceImg={this.handleRemoveSpaceImg}
+          displayMsg={displayMsg}
           spaceList={spaceList}
           editStatus={editStatus}
           formState={formState}
@@ -126,14 +179,8 @@ const mapStateToProps = (state) => {
     formMode: inState.formMode,
     spaceId: inState.spaceId,
     name: inState.name,
-    colorCode: inState.colorCode,
     imgPath: inState.imgPath,
-    tags: inState.tags,
-    location: inState.location,
-    sizeUnit: inState.sizeUnit,
-    sizeWidth: inState.sizeWidth,
-    sizeHeight: inState.sizeHeight,
-    sizeDepth: inState.sizeDepth
+    location: inState.location
   };
 
   return {

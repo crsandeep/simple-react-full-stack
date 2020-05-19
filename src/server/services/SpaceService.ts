@@ -5,7 +5,8 @@ import config from '../config';
 import SpaceTrans from '../interfaces/SpaceTrans';
 import * as fileUtil from '../util/fileUtil';
 
-// test for postgresql and sequelize
+import Grid from '../models/Grid';
+import Item from '../models/Item';
 import Space from '../models/Space';
 
 @Service()
@@ -14,8 +15,15 @@ export default class SpaceService {
 
   private spaceRepo:Repository<Space>;
 
+  private gridRepo: Repository<Grid>;
+
+  private itemRepo: Repository<Item>;
+
   constructor() {
     this.logger = Container.get<winston.Logger>('logger');
+
+    this.gridRepo = Container.get<Sequelize>('sequelize').getRepository<Grid>(Grid);
+    this.itemRepo = Container.get<Sequelize>('sequelize').getRepository<Item>(Item);
     this.spaceRepo = Container.get<Sequelize>('sequelize').getRepository<Space>(Space);
   }
 
@@ -23,10 +31,21 @@ export default class SpaceService {
     try {
       const spaceRecordList = await this.spaceRepo.findAll({
         where: { userId },
+        include: [{
+          model: this.gridRepo,
+          as: 'grids',
+          attributes: ['gridId'],
+          include: [{
+            model: this.itemRepo,
+            as: 'items',
+            attributes: ['itemId', 'tags']
+          }]
+        }],
         order: [
           ['spaceId', 'ASC']
         ]
       });
+
       return spaceRecordList;
     } catch (e) {
       this.logger.error('Fail to get space list, reason: %o ', e.message);
@@ -97,14 +116,8 @@ export default class SpaceService {
 
       const update = {
         name: spaceTrans.name,
-        colorCode: spaceTrans.colorCode,
         imgPath: spaceTrans.imgPath,
-        tags: spaceTrans.tags,
-        location: spaceTrans.location,
-        sizeUnit: spaceTrans.sizeUnit,
-        sizeWidth: spaceTrans.sizeWidth,
-        sizeHeight: spaceTrans.sizeHeight,
-        sizeDepth: spaceTrans.sizeDepth
+        location: spaceTrans.location
       };
 
       // update record
@@ -169,7 +182,6 @@ export default class SpaceService {
   public async deleteSpaceImage(spaceId: number): Promise<boolean> {
     let result: boolean = false;
     try {
-      const filter = { spaceId };
       const update = { imgPath: null };
 
       this.logger.debug('delete space image, spaceId %o', spaceId);

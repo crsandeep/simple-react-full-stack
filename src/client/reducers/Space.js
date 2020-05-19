@@ -14,15 +14,9 @@ const initialState = {
   // form field
   spaceId: null,
   name: '',
-  colorCode: '',
   imgFile: null,
   imgPath: null,
-  tags: null,
-  location: '',
-  sizeUnit: null,
-  sizeWidth: null,
-  sizeHeight: null,
-  sizeDepth: null
+  location: ''
 };
 
 export default function Space(state = initialState, action) {
@@ -31,7 +25,8 @@ export default function Space(state = initialState, action) {
       return {
         ...state,
         pageLoading: false,
-        spaceList: action.data
+        spaceList: action.data,
+        editStatus: { isSuccess: (action.data !== null), data: action.data, operation: action.operation }
       };
     case ActionTypes.GET_SPACE:
       return {
@@ -40,15 +35,10 @@ export default function Space(state = initialState, action) {
         pageLoading: false,
         spaceId: action.data.spaceId,
         name: action.data.name,
-        colorCode: action.data.colorCode,
         imgFile: null,
         imgPath: action.data.imgPath,
-        tags: action.data.tags,
         location: action.data.location,
-        sizeUnit: action.data.sizeUnit,
-        sizeWidth: action.data.sizeWidth,
-        sizeHeight: action.data.sizeHeight,
-        sizeDepth: action.data.sizeDepth
+        editStatus: { isSuccess: (action.data !== null), data: action.data, operation: action.operation }
       };
     case ActionTypes.COMPLETE_EDIT:
       return {
@@ -69,28 +59,21 @@ export default function Space(state = initialState, action) {
         pageLoading: false,
         imgPath: null,
         imgFile: null,
-        editStatus: {
-          isSuccess: true,
-          data: null,
-          message: null,
-          operation: Constants.OPERATION_REMOVE_IMG
-        }
+        editStatus: { isSuccess: true, data: action.data, operation: action.operation }
       };
     case ActionTypes.FAIL_REMOVE_SPACE_IMG:
       return {
         ...state,
         pageLoading: false,
-        editStatus: {
-          isSuccess: false,
-          data: null,
-          message: action.message,
-          operation: Constants.OPERATION_REMOVE_IMG
-        }
+        editStatus: { isSuccess: false, message: action.message, operation: action.operation }
       };
     case ActionTypes.PAGE_LOADING:
       return {
         ...state,
-        pageLoading: true
+        pageLoading: true,
+        editStatus: { // clear previous edit status
+          isSuccess: null, data: null, message: null, operation: null
+        }
       };
     case ActionTypes.UPDATE_FORM_MODE:
       return {
@@ -99,15 +82,9 @@ export default function Space(state = initialState, action) {
         formMode: action.mode,
         spaceId: null,
         name: '',
-        colorCode: '',
         imgFile: null,
         imgPath: null,
-        tags: null,
-        location: '',
-        sizeUnit: null,
-        sizeWidth: null,
-        sizeHeight: null,
-        sizeDepth: null
+        location: ''
       };
     case ActionTypes.SET_CURRENT_SPACE_ID:
       return {

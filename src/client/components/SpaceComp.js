@@ -24,8 +24,8 @@ import {
   Col,
   Spinner,
   Image,
-  Badge,
-  Alert
+  Alert,
+  Badge
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
@@ -33,6 +33,15 @@ import {
 import * as Yup from 'yup';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import SingleBedIcon from '@material-ui/icons/SingleBed';
+import KingBedIcon from '@material-ui/icons/KingBed';
+import LocalHotelIcon from '@material-ui/icons/LocalHotel';
+import WcIcon from '@material-ui/icons/Wc';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import WeekendIcon from '@material-ui/icons/Weekend';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+
 import * as Constants from '../constants/Space';
 
 const validateFormSchema = Yup.object().shape({
@@ -40,25 +49,9 @@ const validateFormSchema = Yup.object().shape({
     .required('Name is required')
     .min(3, 'Name must be at least 3 characters')
     .trim(),
-  colorCode: Yup.string()
-    .required('Color is required')
-    .min(1, 'Please select Color'),
   location: Yup.string()
     .required('Location is required')
-    .min(1, 'Please select location'),
-  tags: Yup.string()
-    .nullable()
-    .min(3, 'Tags must be at least 3 characters')
-    .trim(),
-  sizeUnit: Yup.string()
-    .nullable()
-    .when(['sizeWidth', 'sizeHeight', 'sizeDepth'], {
-      is: (sizeWidth, sizeHeight, sizeDepth) => sizeWidth > 0 || sizeHeight > 0 || sizeDepth > 0,
-      then: Yup.string().required('Unit is required')
-    }),
-  sizeWidth: Yup.number().nullable().min(0, 'Please enter valid Width'),
-  sizeHeight: Yup.number().nullable().min(0, 'Please enter valid Height'),
-  sizeDepth: Yup.number().nullable().min(0, 'Please enter valid Depth')
+    .min(1, 'Please select location')
 });
 
 
@@ -108,32 +101,18 @@ function SpaceComp(props) {
                   component="span"
                   variant="body2"
                   className="spaceList-inline"
-                  color="textPrimary"
+                  color="textSecondary"
                 >
-                  {space.tags != null
-                    && space.tags.length > 0
-                    && space.tags.split(',').map(tags => (
-                      <span key={`${tags}`}>
-                        <Badge variant="warning">
-                          #
-                          {tags}
-                        </Badge>
-                        {' '}
-                      </span>
-                    ))}
+                  {`Grids: ${space.gridCount} - Items: ${space.itemCount}`}
                 </Typography>
                 <br />
-                <span>
-                  Size (WxHxD):
-                  {space.sizeWidth != null ? space.sizeWidth : 'NA'}
-                  {' '}
-                  x
-                  {space.sizeHeight != null ? space.sizeHeight : 'NA'}
-                  {' '}
-                  x
-                  {space.sizeDepth != null ? space.sizeDepth : 'NA'}
-                  {space.sizeUnit != null ? ` ${space.sizeUnit}` : ''}
-                </span>
+                {
+                  space.itemTags.map(tag => (
+                    <Badge variant="warning">
+                      {tag}
+                    </Badge>
+                  ))
+                }
               </React.Fragment>
             )}
           />
@@ -146,7 +125,7 @@ function SpaceComp(props) {
             </IconButton>
             <IconButton
               aria-label="delete"
-              onClick={() => handleDelete(space.spaceId)}
+              onClick={() => handleDelete(space.spaceId, space.name)}
             >
               <DeleteIcon />
             </IconButton>
@@ -183,7 +162,22 @@ function SpaceComp(props) {
       displayList.push(
         <li key={`section-${location}`}>
           <ul className="spaceList-ul">
-            <ListSubheader>{location}</ListSubheader>
+            <ListSubheader>
+              {
+                {
+                  'Bedroom 1': <SingleBedIcon />,
+                  'Bedroom 2': <LocalHotelIcon />,
+                  'Bedroom 3': <KingBedIcon />,
+                  'Living Room': <WeekendIcon />,
+                  'Dinning Room': <FastfoodIcon />,
+                  Kitechen: <KitchenIcon />,
+                  Bathroom: <WcIcon />,
+                  Others: <HelpOutlineIcon />
+                }[location]
+              }
+              {' '}
+              {location}
+            </ListSubheader>
             {getSpaceItem(list, handleEdit, handleSelect, handleDelete)}
           </ul>
         </li>
@@ -205,29 +199,20 @@ function SpaceComp(props) {
 
   return (
     <div>
-      <div>
-        {
-
-          props.editStatus !== null ? (
-            props.editStatus.isSuccess !== null ? (
-              props.editStatus.isSuccess === true ? (
-                <Alert variant="success">
-                  {props.editStatus.operation}
-                  {' '}
-                  Successefully
-                </Alert>
-              ) : (
-                <Alert variant="danger">
-                  Failed to
-                  {props.editStatus.operation}
-                  . Error:
-                  {props.editStatus.message}
-                </Alert>
-              )
-            ) : null
-          ) : null
-        }
-      </div>
+      {
+        props.displayMsg.isSuccess !== null ? (
+          props.displayMsg.isSuccess === true ? (
+            <Alert variant="success">
+              {props.displayMsg.msg}
+            </Alert>
+          )
+            : (
+              <Alert variant="danger">
+                {props.displayMsg.msg}
+              </Alert>
+            )
+        ) : null
+      }
 
       {
         // new space button
@@ -268,7 +253,6 @@ function SpaceComp(props) {
         <Modal
           show={props.formState.formMode === Constants.FORM_EDIT_MODE}
           onHide={props.handleCancel}
-          dialogClassName="modal-90w"
         >
           <Modal.Header closeButton>
             <Modal.Title>Space Details</Modal.Title>
@@ -284,7 +268,7 @@ function SpaceComp(props) {
               {({ errors, touched }) => (
                 <Form>
                   <Row className="justify-content-md-center">
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={12}>
                       <Field name="imgPath">
                         {({ field, form }) => field.value != null && (
                         <div>
@@ -309,7 +293,7 @@ function SpaceComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={12}>
-                      <label htmlFor="name">Name</label>
+                      <label htmlFor="name">Space Name</label>
                       <Field
                         id="name"
                         name="name"
@@ -327,8 +311,8 @@ function SpaceComp(props) {
                     </Col>
                   </Row>
                   <Row>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="location">Location</label>
+                    <Col xs={12} md={5}>
+                      <label htmlFor="location">Space Location</label>
                       <Field
                         name="location"
                         as="select"
@@ -355,51 +339,8 @@ function SpaceComp(props) {
                         className="invalid-feedback"
                       />
                     </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="colorCode">Color Code</label>
-                      <Field
-                        name="colorCode"
-                        as="select"
-                        placeholder="Color"
-                        className={`form-control${
-                          errors.colorCode && touched.colorCode
-                            ? ' is-invalid'
-                            : ''
-                        }`}
-                      >
-                        <option value="">Please select...</option>
-                        <option value="Light">Light</option>
-                        <option value="Primary">Blue</option>
-                        <option value="Secondary">Grey</option>
-                        <option value="Success">Green</option>
-                        <option value="Danger">Red</option>
-                        <option value="Warning">Yellow</option>
-                        <option value="Info">Cyan</option>
-                      </Field>
-                      <ErrorMessage
-                        name="colorCode"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="tags">Tags</label>
-                      <Field
-                        name="tags"
-                        type="text"
-                        placeholder="Use commas to separate Tags"
-                        className={`form-control${
-                          errors.tags && touched.tags ? ' is-invalid' : ''
-                        }`}
-                      />
-                      <ErrorMessage
-                        name="tags"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="imgFile">Image</label>
+                    <Col xs={12} md={7}>
+                      <label htmlFor="imgFile">Display Image</label>
                       <Field name="imgFile">
                         {({ form }) => (
                           <input
@@ -420,98 +361,6 @@ function SpaceComp(props) {
                       </Field>
                       <ErrorMessage
                         name="imgFile"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12} md={2}>
-                      <label htmlFor="sizeWidth">Width</label>
-                      <Field name="sizeWidth">
-                        {({ field }) => (
-                          <input
-                            type="number"
-                            {...field}
-                            placeholder="Width"
-                            className={`form-control${
-                              errors.sizeWidth && touched.sizeWidth
-                                ? ' is-invalid'
-                                : ''
-                            }`}
-                          />
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="sizeWidth"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                    <Col xs={12} md={2}>
-                      <label htmlFor="sizeHeight">Height</label>
-                      <Field name="sizeHeight">
-                        {({ field }) => (
-                          <input
-                            type="number"
-                            {...field}
-                            placeholder="Height"
-                            className={`form-control${
-                              errors.sizeHeight && touched.sizeHeight
-                                ? ' is-invalid'
-                                : ''
-                            }`}
-                          />
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="sizeHeight"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                    <Col xs={12} md={2}>
-                      <label htmlFor="sizeDepth">Depth</label>
-                      <Field name="sizeDepth">
-                        {({ field }) => (
-                          <input
-                            type="number"
-                            {...field}
-                            placeholder="Depth"
-                            className={`form-control${
-                              errors.sizeDepth && touched.sizeDepth
-                                ? ' is-invalid'
-                                : ''
-                            }`}
-                          />
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="sizeDepth"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </Col>
-                    <Col xs={12} md={2}>
-                      <label htmlFor="sizeUnit">Unit</label>
-                      <Field
-                        name="sizeUnit"
-                        as="select"
-                        placeholder="Unit"
-                        className={`form-control${
-                          errors.sizeUnit && touched.sizeUnit
-                            ? ' is-invalid'
-                            : ''
-                        }`}
-                      >
-                        <option value="">Please select...</option>
-                        <option value="cm">cm</option>
-                        <option value="m">m</option>
-                        <option value="inch">inch</option>
-                        <option value="feet">feet</option>
-                      </Field>
-                      <ErrorMessage
-                        name="sizeUnit"
                         component="div"
                         className="invalid-feedback"
                       />
@@ -539,6 +388,7 @@ SpaceComp.defaultProps = {
 };
 
 SpaceComp.propTypes = {
+  displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceList: PropTypes.arrayOf(PropTypes.object),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,

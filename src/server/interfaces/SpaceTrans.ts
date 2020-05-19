@@ -1,14 +1,20 @@
 
+
 export default interface SpaceTrans {
+
     userId: number;
+
     spaceId: number;
+
     name: string;
-    colorCode: string;
+
     imgPath: string;
-    tags: string;
+
     location: string;
-    sizeUnit: number;
-    sizeWidth: number;
-    sizeHeight: number;
-    sizeDepth: number;
+
+    gridCount: number;
+
+    itemCount: number;
+
+    itemTags: string[];
   };

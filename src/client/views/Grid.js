@@ -118,7 +118,7 @@ export class Grid extends React.Component {
     nextId -= 1;
 
     const newGrid = {
-      w: 2, h: 1, x: 0, y: Infinity, i: `${nextId}`
+      w: 1, h: 1, x: 0, y: Infinity, i: `${nextId}`
     };// puts it at the bottom
 
 
@@ -192,7 +192,7 @@ export class Grid extends React.Component {
     // no record from db, prepare default new grid
     if (grids === null || grids.length === 0) {
       tempLayouts = [{
-        w: 2, h: 1, x: 0, y: 0, i: `${counter}`
+        w: 1, h: 1, x: 0, y: 0, i: `${counter}`
       }]; // puts it at the bottom
 
       // set as edit mode
@@ -208,19 +208,19 @@ export class Grid extends React.Component {
         // prepare grid layouts
         layouts.push(grid.layout);
 
-        // prepare unique item tags list
-        const tagList = [];
-        for (const tag of grid.itemTags) {
-          const tagsArr = tag.split(',');
-          for (const el of tagsArr) {
-            if (!tagList.includes(el)) {
-              tagList.push(el);
-            }
-          }
-        }
+        // // prepare unique item tags list
+        // const tagList = [];
+        // for (const tag of grid.itemTags) {
+        //   const tagsArr = tag.split(',');
+        //   for (const el of tagsArr) {
+        //     if (!tagList.includes(el)) {
+        //       tagList.push(el);
+        //     }
+        //   }
+        // }
 
-        // add tagsList into grid for UI proess
-        grid.tagList = tagList;
+        // // add tagsList into grid for UI proess
+        // grid.tagList = tagList;
 
         // push in map for component to form UI
         dataMap.set(`${grid.gridId}`, grid);

@@ -59,14 +59,21 @@ export default (app: Router) => {
       // prepare items tags list
       let tagList: string[] = null;
       let itemCount:number = null;
+      let tempArr: string[] = null;
 
       if (gridRecord.items != null) {
         itemCount = gridRecord.items.length;
         tagList = [];
         for (const item of gridRecord.items) {
-          // prepare tag list
+          // prepare unique tag list
           if (item.tags != null) {
-            tagList.push(item.tags);
+            // tags stored in comma format, split to get unqiue value
+            tempArr = item.tags.split(',');
+            for (const tag of tempArr) {
+              if (tagList.indexOf(tag.trim()) < 0) {
+                tagList.push(tag.trim());
+              }
+            }
           }
         }
       }

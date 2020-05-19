@@ -101,7 +101,6 @@ function GridComp(props) {
             <Col xs={5} md={2} className="spaceGrid-changeMode">
               <div>
                 Mode:
-                {' '}
                 <select
                   value={props.currMode}
                   onChange={(event) => {
@@ -218,23 +217,23 @@ function GridComp(props) {
                         // item tags
                         props.dataMap != null
                         && props.dataMap.get(grid.i) != null
-                        && props.dataMap.get(grid.i).tagList.map((tag, i) => (
-                          !isLargeScreen && i === grid.w - 1 ? (
+                        && props.dataMap.get(grid.i).itemTags.map((tag, i) => (
+                          i === grid.w * (isLargeScreen ? 3 : 1) - 1 ? (
                             // small screen and last displayable tags
                             <span key={`${grid.i}-${tag}`}>
                               <OverlayTrigger
                                 placement="right"
                                 delay={{ show: 250, hide: 400 }}
-                                overlay={prop => renderTagsTooltip(prop, props.dataMap.get(grid.i).tagList.slice(i).join())}
+                                overlay={prop => renderTagsTooltip(prop, `#${props.dataMap.get(grid.i).itemTags.slice(i).join(', #')}`)}
                               >
                                 <Badge variant="success">
-                                  {props.dataMap.get(grid.i).tagList.length - 1 - i}
+                                  {props.dataMap.get(grid.i).itemTags.length - i}
                                   + tags
                                 </Badge>
                               </OverlayTrigger>
 
                             </span>
-                          ) : !isLargeScreen && i >= grid.w ? null : (
+                          ) : i >= grid.w * (isLargeScreen ? 3 : 1) ? null : (
                             // large screen + small screen < grid width
                             <span key={`${grid.i}-${tag}`}>
                               <Badge variant="warning">

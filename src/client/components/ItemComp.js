@@ -265,7 +265,7 @@ function ItemComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={3}>
-                      <label htmlFor="colorCode">Color Code</label>
+                      <label htmlFor="colorCode">Color</label>
                       <Field name="colorCode" as="select" placeholder="Color" className={`form-control${errors.colorCode && touched.colorCode ? ' is-invalid' : ''}`}>
                         <option value="">Please select...</option>
                         <option value="Light">Light</option>

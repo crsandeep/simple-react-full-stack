@@ -38,14 +38,16 @@ export const startLoading = () => ({
   type: ActionTypes.PAGE_LOADING
 });
 
-export const getSpaceList = data => ({
+export const getSpaceList = (data, operation) => ({
   type: ActionTypes.GET_SPACE_LIST,
-  data
+  data,
+  operation
 });
 
-export const getSpace = data => ({
+export const getSpace = (data, operation) => ({
   type: ActionTypes.GET_SPACE,
-  data
+  data,
+  operation
 });
 
 export const completeEdit = (data, operation) => ({
@@ -65,14 +67,16 @@ export const updateFormMode = mode => ({
   mode
 });
 
-export const completeRemoveSpaceImg = data => ({
+export const completeRemoveSpaceImg = (data, operation) => ({
   type: ActionTypes.COMPLETE_REMOVE_SPACE_IMG,
-  data
+  data,
+  operation
 });
 
-export const failRemoveSpaceImg = message => ({
+export const failRemoveSpaceImg = (message, operation) => ({
   type: ActionTypes.FAIL_REMOVE_SPACE_IMG,
-  message
+  message,
+  operation
 });
 
 

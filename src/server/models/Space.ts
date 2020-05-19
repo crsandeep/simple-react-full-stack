@@ -19,35 +19,11 @@ export default class Space extends Model<Space> {
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  colorCode: string;
-
-  @AllowNull(true)
-  @Column(DataType.TEXT)
   imgPath: string;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  tags: string;
-
-  @AllowNull(true)
-  @Column(DataType.TEXT)
   location: string;
-
-  @AllowNull(true)
-  @Column(DataType.TEXT)
-  sizeUnit: string;
-
-  @AllowNull(true)
-  @Column(DataType.INTEGER)
-  sizeWidth: number;
-
-  @AllowNull(true)
-  @Column(DataType.INTEGER)
-  sizeHeight: number;
-
-  @AllowNull(true)
-  @Column(DataType.INTEGER)
-  sizeDepth: number;
 
   // relationship with other tables
   @HasMany(() => Grid)

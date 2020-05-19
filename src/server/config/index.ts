@@ -25,40 +25,39 @@ export default {
    * Used by winston logger
    */
   logs: {
-    level: process.env.LOG_LEVEL || 'silly',
+    level: process.env.LOG_LEVEL || 'silly'
   },
-  
+
   /**
    * Used by morgan logger
    */
   mogran: {
-    level: process.env.MORGAN_LEVEL || 'dev',
+    level: process.env.MORGAN_LEVEL || 'dev'
   },
 
   /**
    * API configs
    */
   api: {
-    prefix: '/api',
+    prefix: '/api'
   },
 
   /**
    * Used by display
    */
   publicFolder: process.env.PUBLIC_FOLDER,
-  
+
 
   /**
    * upload configs
    */
-  fileUpload:{
+  fileUpload: {
     tempPath: process.env.FILE_UPLOAD_TEMP_PATH,
     imgItemPath: process.env.FILE_UPLOAD_IMG_ITEM_PATH,
     imgSpacePath: process.env.FILE_UPLOAD_IMG_SPACE_PATH,
-    maxSize: (1024 * 1024 * parseInt(process.env.FILE_UPLOAD_MAX_SIZE,10)),  
-    fileType: ['.png','.jpg','.jpeg','gif']
-  },
-
+    maxSize: (1024 * 1024 * parseInt(process.env.FILE_UPLOAD_MAX_SIZE, 10)),
+    fileType: ['.png', '.jpg', '.jpeg', 'gif']
+  }
 
 
 };
