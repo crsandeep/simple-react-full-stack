@@ -149,8 +149,13 @@ export class Grid extends React.Component {
   }
 
   handleToggleMode(currMode) {
+    // change from edit to read
     if (currMode === Constants.FORM_READONLY_MODE && this.state.isDirtyWrite) {
-      alert('Please save your change before change back to View Mode.');
+      const result = confirm('Changes you made may not be saved. Are you sure you want to restore to original layout?');
+      if (result === true) {
+        // confirm to reset
+        this.props.sagaGetGridList(this.props.spaceId);
+      }
       return;
     }
 
@@ -158,7 +163,8 @@ export class Grid extends React.Component {
 
     this.setState({
       tempLayouts: list,
-      currMode
+      currMode,
+      isResetLayout: true
     });
   }
 

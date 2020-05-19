@@ -28,6 +28,10 @@
     border: 1px dashed;
 }
 
+.spaceGrid-manageBtnPanel{
+    text-align:center;
+}
+
 
 .spaceGrid-dragTips{
     background-color: white;
@@ -36,6 +40,12 @@
     text-align: center;
 }
 
+.spaceGrid-dragTips-mobile{
+    background-color: white;
+    border-radius: 25px;
+    font-size: 13px;
+    text-align: center;
+}
 
 .spaceGrid-idPanel{
     background-color: white;

@@ -6,7 +6,7 @@ import '../css/SpaceGrid.css';
 import PropTypes from 'prop-types';
 
 import {
-  Row, Col, ButtonToolbar, Spinner, Alert, Badge, Button
+  Row, Col, ButtonToolbar, Spinner, Alert, Badge, Button, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
 
 import { IconButton } from '@material-ui/core/';
@@ -22,10 +22,13 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { Prompt } from 'react-router';
 import * as Constants from '../constants/Grid';
+import * as UIConstants from '../constants/Global';
 
 const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
+  const isLargeScreen = (window.innerWidth > UIConstants.UI_SMALL_SCREEN_WIDTH);
+
   const confirmDelete = (gridId) => {
     confirmAlert({
       title: 'Confirm to delete',
@@ -41,6 +44,12 @@ function GridComp(props) {
       ]
     });
   };
+
+  const renderTagsTooltip = (prop, text) => (
+    <Tooltip id="button-tooltip" {...prop}>
+      {text}
+    </Tooltip>
+  );
 
   return (
     <div>
@@ -83,15 +92,15 @@ function GridComp(props) {
           <Row>
             <Col xs={1} md={1}>
               <IconButton
-                aria-label="delete"
+                aria-label="back"
                 onClick={() => props.handleGoBack()}
               >
                 <ArrowBackIosIcon />
               </IconButton>
             </Col>
-            <Col xs={8} md={3} className="spaceGrid-changeMode">
+            <Col xs={5} md={2} className="spaceGrid-changeMode">
               <div>
-                Current Mode:
+                Mode:
                 {' '}
                 <select
                   value={props.currMode}
@@ -104,7 +113,7 @@ function GridComp(props) {
                 </select>
               </div>
             </Col>
-            <Col xs={12} md={8}>
+            <Col xs={6} md={9}>
               <ButtonToolbar>
                 <IconButton aria-label="New" onClick={props.handleNew}>
                   <AddCircleOutlineIcon />
@@ -140,7 +149,7 @@ function GridComp(props) {
           <Row>
             <Col xs={12} md={12}>
               <ReactGridLayout
-                cols={12}
+                cols={4}
                 rowHeight={120}
                 layout={props.tempLayouts}
                 onLayoutChange={props.handleUpdateLayout}
@@ -167,48 +176,74 @@ function GridComp(props) {
                         // edit mode - drag item message
                         props.currMode === Constants.FORM_EDIT_MODE // under edit mode
                         && (
-                          <h3 className="spaceGrid-dragTips">Drag & Organise</h3>
+                          <h4 className={isLargeScreen ? 'spaceGrid-dragTips' : 'spaceGrid-dragTips-mobile'}>
+                            Drag & Organise
+
+                          </h4>
                         )
                       }
 
-                      <ButtonToolbar>
+                      <div className="spaceGrid-manageBtnPanel">
                         { // go to item page button
                           props.currMode === Constants.FORM_READONLY_MODE // under readonly mode
                           && parseInt(grid.i, 10) > 0 // old grid
                             && (
-                            <Button variant="outline-primary" size="lg" block onClick={() => props.handleSelect(parseInt(grid.i, 10))}>
+                            <Button
+                              variant="outline-dark"
+                              className="spaceGrid-manageBtnPanel"
+                              onClick={() => props.handleSelect(parseInt(grid.i, 10))}
+                              {...(isLargeScreen ? { size: 'lg', block: 'block' } : null)}
+                            >
 
                               {props.dataMap.get(grid.i).itemCount === 0 ? (
                                 <div>
                                   <PostAddIcon />
-                                  Add items
+                                  Add
+                                  {isLargeScreen ? ' items' : null}
                                 </div>
                               ) : (
                                 <div>
                                   <FormatListBulletedIcon />
                                   {props.dataMap.get(grid.i).itemCount}
-                                  {' '}
-                                  Items
+                                  {isLargeScreen ? ' items' : null}
                                 </div>
                               )}
 
                             </Button>
                             )
                         }
-                      </ButtonToolbar>
+                      </div>
 
                       {
                         // item tags
                         props.dataMap != null
                         && props.dataMap.get(grid.i) != null
-                        && props.dataMap.get(grid.i).tagList.map(tag => (
-                          <span key={`${grid.i}-${tag}`}>
-                            <Badge variant="warning">
-                              #
-                              {tag}
-                            </Badge>
-                            {' '}
-                          </span>
+                        && props.dataMap.get(grid.i).tagList.map((tag, i) => (
+                          !isLargeScreen && i === grid.w - 1 ? (
+                            // small screen and last displayable tags
+                            <span key={`${grid.i}-${tag}`}>
+                              <OverlayTrigger
+                                placement="right"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={prop => renderTagsTooltip(prop, props.dataMap.get(grid.i).tagList.slice(i).join())}
+                              >
+                                <Badge variant="success">
+                                  {props.dataMap.get(grid.i).tagList.length - 1 - i}
+                                  + tags
+                                </Badge>
+                              </OverlayTrigger>
+
+                            </span>
+                          ) : !isLargeScreen && i >= grid.w ? null : (
+                            // large screen + small screen < grid width
+                            <span key={`${grid.i}-${tag}`}>
+                              <Badge variant="warning">
+                                #
+                                {tag}
+                              </Badge>
+                              {' '}
+                            </span>
+                          )
                         ))
                       }
                       <ButtonToolbar className="spaceGrid-editPanel">
