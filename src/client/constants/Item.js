@@ -1,4 +1,4 @@
-
+export const OPERATION_GET = 'GET';
 export const OPERATION_SAVE = 'SAVE';
 export const OPERATION_UPDATE = 'UPDATE';
 export const OPERATION_DELETE = 'DELETE';

@@ -38,14 +38,16 @@ export const startLoading = () => ({
   type: ActionTypes.PAGE_LOADING
 });
 
-export const getItemList = data => ({
+export const getItemList = (data, operation) => ({
   type: ActionTypes.GET_ITEM_LIST,
-  data
+  data,
+  operation
 });
 
-export const getItem = data => ({
+export const getItem = (data, operation) => ({
   type: ActionTypes.GET_ITEM,
-  data
+  data,
+  operation
 });
 
 export const completeEdit = (data, operation) => ({
@@ -65,12 +67,14 @@ export const updateFormMode = mode => ({
   mode
 });
 
-export const completeRemoveItemImg = data => ({
+export const completeRemoveItemImg = (data, operation) => ({
   type: ActionTypes.COMPLETE_REMOVE_ITEM_IMG,
-  data
+  data,
+  operation
 });
 
-export const failRemoveItemImg = message => ({
+export const failRemoveItemImg = (message, operation) => ({
   type: ActionTypes.FAIL_REMOVE_ITEM_IMG,
-  message
+  message,
+  operation
 });

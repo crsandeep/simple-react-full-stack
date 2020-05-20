@@ -117,7 +117,11 @@ export class Space extends React.Component {
   }
 
   handleRemoveSpaceImg(spaceId) {
-    this.props.sagaRemoveSpaceImg(spaceId);
+    const result = confirm('Confirm to delete image?');
+    if (result === true) {
+      // confirm
+      this.props.sagaRemoveSpaceImg(spaceId);
+    }
   }
 
   handleReloadList() {

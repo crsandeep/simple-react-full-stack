@@ -9,12 +9,12 @@ export function* handleGetItemList({ gridId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getItemList, gridId);
     if (operResult.isSuccess) {
-      yield put(Actions.getItemList(operResult.data));
+      yield put(Actions.getItemList(operResult.data, Constants.OPERATION_GET));
     } else {
-      yield put(Actions.getItemList(null));
+      yield put(Actions.getItemList(null, Constants.OPERATION_GET));
     }
   } catch (error) {
-    yield put(Actions.getItemList(null));
+    yield put(Actions.getItemList(null, Constants.OPERATION_GET));
   }
 }
 
@@ -23,12 +23,12 @@ export function* handleGetItem({ itemId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getItem, itemId);
     if (operResult.isSuccess) {
-      yield put(Actions.getItem(operResult.data));
+      yield put(Actions.getItem(operResult.data, Constants.OPERATION_GET));
     } else {
-      yield put(Actions.getItem(null));
+      yield put(Actions.getItem(null, Constants.OPERATION_GET));
     }
   } catch (error) {
-    yield put(Actions.getItem(null));
+    yield put(Actions.getItem(null, Constants.OPERATION_GET));
   }
 }
 
@@ -91,12 +91,12 @@ export function* handleRemoveItemImg({ itemId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.removeItemImg, itemId);
     if (operResult.isSuccess) {
-      yield put(Actions.completeRemoveItemImg(operResult.data));
+      yield put(Actions.completeRemoveItemImg(operResult.data, Constants.OPERATION_REMOVE_IMG));
     } else {
-      yield put(Actions.failRemoveItemImg(operResult.message));
+      yield put(Actions.failRemoveItemImg(operResult.message, Constants.OPERATION_REMOVE_IMG));
     }
   } catch (error) {
-    yield put(Actions.failRemoveItemImg(error.message));
+    yield put(Actions.failRemoveItemImg(error.message, Constants.OPERATION_REMOVE_IMG));
   }
 }
 

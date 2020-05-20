@@ -10,12 +10,12 @@ import {
 } from 'react-bootstrap';
 
 import { IconButton } from '@material-ui/core/';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -125,7 +125,6 @@ function GridComp(props) {
                 </IconButton>
               </ButtonToolbar>
             </Col>
-
           </Row>
           <Row>
             <Col xs={12} md={12}>

@@ -390,7 +390,6 @@ SpaceComp.defaultProps = {
 SpaceComp.propTypes = {
   displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceList: PropTypes.arrayOf(PropTypes.object),
-  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleFormSave: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,

@@ -25,6 +25,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import BuildIcon from '@material-ui/icons/Build';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FlightIcon from '@material-ui/icons/Flight';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
@@ -38,12 +49,12 @@ const validateFormSchema = Yup.object().shape({
     .trim(),
   colorCode: Yup.string()
     .required('Color is required')
-    .min(1, 'Please select Color'),
+    .min(1, 'Please select Card Color'),
   description: Yup.string().nullable()
     .min(3, 'Description must be at least 3 characters')
     .trim(),
   tags: Yup.string().nullable()
-    .min(3, 'Tags must be at least 3 characters')
+    .min(3, '#Tags must be at least 3 characters')
     .trim(),
   category: Yup.string()
     .required('Category is required')
@@ -64,19 +75,32 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
           && <Card.Img variant="top" src={item.imgPath} />
     }
       <Card.Header>
-        <CardGiftcardIcon />
-        {' '}
-        {' '}
         {item.name}
         <Badge className="float-right" variant="light">
-          <LabelIcon />
+          {
+            {
+              Favorite: <FavoriteBorderIcon />,
+              Travel: <FlightIcon />,
+              Clothes: <i className="fas fa-tshirt" />,
+              Shoes: <i className="fas fa-shoe-prints" />,
+              Collections: <EmojiEventsIcon />,
+              Baby: <ChildFriendlyIcon />,
+              Books: <MenuBookIcon />,
+              Gifts: <CardGiftcardIcon />,
+              Food: <RestaurantIcon />,
+              Kitchenware: <KitchenIcon />,
+              Tools: <BuildIcon />,
+              Others: <HelpOutlineIcon />
+            }[item.category]
+          }
+          {' '}
+          {' '}
           {item.category}
         </Badge>
       </Card.Header>
       <Card.Body>
-        <Card.Text>
-          {item.description}
-        </Card.Text>
+        {item.description != null ? <Card.Text>item.description </Card.Text> : null}
+
         <div>
           <Row>
             <Col xs={12} md={7}>
@@ -98,7 +122,7 @@ const genItemData = (item, key, handleEdit, handleDelete) => {
                 <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId)}>
+                <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
                   <DeleteIcon />
                 </IconButton>
               </ButtonToolbar>
@@ -155,23 +179,20 @@ function ItemComp(props) {
 
   return (
     <div>
-      <div>
-        {
-          // props.editStatus!==null ? (
-          //   props.editStatus.isSuccess !== null ? (
-          //     props.editStatus.isSuccess === true ? (
-          //       <Alert variant='success'>
-          //         {props.editStatus.operation} Successefully
-          //       </Alert>
-
-          //     ) :
-          //       <Alert variant='danger'>
-          //           Failed to {props.editStatus.operation}. Error: {props.editStatus.message}
-          //         </Alert>
-          //   ):null
-          // ):null
-        }
-      </div>
+      {
+        props.displayMsg.isSuccess !== null ? (
+          props.displayMsg.isSuccess === true ? (
+            <Alert variant="success">
+              {props.displayMsg.msg}
+            </Alert>
+          )
+            : (
+              <Alert variant="danger">
+                {props.displayMsg.msg}
+              </Alert>
+            )
+        ) : null
+      }
 
       {
         // page loading mask
@@ -192,23 +213,40 @@ function ItemComp(props) {
           )
       }
 
-      <IconButton
-        aria-label="delete"
-        onClick={() => props.handleGoBack()}
-      >
-        <ArrowBackIosIcon />
-      </IconButton>
-      {
-        // new item button
-        props.formState.formMode === Constants.FORM_READONLY_MODE
-          && <Button variant="primary" onClick={props.handleNew}>New Item</Button>
-      }
+      <Row>
+        <Col xs={2} md={1}>
+          <IconButton
+            aria-label="back"
+            onClick={() => props.handleGoBack()}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+        </Col>
+        <Col xs={10} md={11}>
+          <ButtonToolbar>
+            {
+                // new item button
+                props.formState.formMode === Constants.FORM_READONLY_MODE
+                  && (
+                  <IconButton aria-label="New" onClick={props.handleNew}>
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                  )
+              }
 
-      <Button variant="primary" onClick={props.handleReloadList}>Refresh</Button>
-
-      <CardColumns>
-        {displayList}
-      </CardColumns>
+            <IconButton aria-label="Cancel" onClick={props.handleReloadList}>
+              <RefreshIcon />
+            </IconButton>
+          </ButtonToolbar>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} md={12}>
+          <CardColumns>
+            {displayList}
+          </CardColumns>
+        </Col>
+      </Row>
 
       <div>
         <Modal
@@ -258,47 +296,53 @@ function ItemComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={12}>
-                      <label htmlFor="name">Name</label>
-                      <Field name="name" type="text" placeholder="Name" className={`form-control${errors.name && touched.name ? ' is-invalid' : ''}`} />
+                      <label htmlFor="name" className="required-field">Name</label>
+                      <Field name="name" type="text" placeholder="Your Item Name" className={`form-control${errors.name && touched.name ? ' is-invalid' : ''}`} />
                       <ErrorMessage name="name" component="div" className="invalid-feedback" />
                     </Col>
                   </Row>
                   <Row>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="colorCode">Color</label>
-                      <Field name="colorCode" as="select" placeholder="Color" className={`form-control${errors.colorCode && touched.colorCode ? ' is-invalid' : ''}`}>
-                        <option value="">Please select...</option>
-                        <option value="Light">Light</option>
-                        <option value="Primary">Blue</option>
-                        <option value="Secondary">Grey</option>
-                        <option value="Success">Green</option>
-                        <option value="Danger">Red</option>
-                        <option value="Warning">Yellow</option>
-                        <option value="Info">Cyan</option>
-                      </Field>
-                      <ErrorMessage name="colorCode" component="div" className="invalid-feedback" />
-                    </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="tags">Tags</label>
-                      <Field name="tags" type="text" placeholder="Use commas to separate Tags" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
-                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
-                    </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="category">Category</label>
+                    <Col xs={12} md={6}>
+                      <label htmlFor="category" className="required-field">Category</label>
                       <Field name="category" as="select" placeholder="Category" className={`form-control${errors.category && touched.category ? ' is-invalid' : ''}`}>
                         <option value="">Please select...</option>
+                        <option value="Favorite">Favorite</option>
+                        <option value="Gifts">Gifts</option>
                         <option value="Clothes">Clothes</option>
                         <option value="Shoes">Shoes</option>
                         <option value="Collections">Collections</option>
+                        <option value="Baby">Baby</option>
                         <option value="Books">Books</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Food">Food</option>
                         <option value="Kitchenware">Kitchenware</option>
                         <option value="Tools">Tools</option>
                         <option value="Others">Others</option>
                       </Field>
                       <ErrorMessage name="category" component="div" className="invalid-feedback" />
                     </Col>
-                    <Col xs={12} md={3}>
-                      <label htmlFor="imgFile">Image</label>
+                    <Col xs={12} md={6}>
+                      <label htmlFor="tags">#Tags</label>
+                      <Field name="tags" type="text" placeholder="Use commas to separate" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
+                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={12} md={6}>
+                      <label htmlFor="colorCode" className="required-field">Card Color</label>
+                      <Field name="colorCode" as="select" placeholder="Color" className={`form-control${errors.colorCode && touched.colorCode ? ' is-invalid' : ''}`}>
+                        <option value="">Please select...</option>
+                        <option value="Light" default>Light</option>
+                        <option value="Primary">Blue</option>
+                        <option value="Secondary">Grey</option>
+                        <option value="Success">Green</option>
+                        <option value="Danger">Red</option>
+                        <option value="Info">Cyan</option>
+                      </Field>
+                      <ErrorMessage name="colorCode" component="div" className="invalid-feedback" />
+                    </Col>
+                    <Col xs={12} md={6}>
+                      <label htmlFor="imgFile">Photo</label>
                       <Field name="imgFile">
                         {({ field, form, meta }) => (
                           <input
@@ -316,12 +360,17 @@ function ItemComp(props) {
                   <Row>
                     <Col xs={12} md={12}>
                       <label htmlFor="description">Description</label>
-                      <Field name="description" component="textarea" placeholder="Description" className={`form-control${errors.description && touched.description ? ' is-invalid' : ''}`} />
+                      <Field
+                        name="description"
+                        component="textarea"
+                        placeholder="E.g. 2nd Wedding Anniversary gift from your wife. "
+                        className={`form-control${errors.description && touched.description ? ' is-invalid' : ''}`}
+                      />
                       <ErrorMessage name="description" component="div" className="invalid-feedback" />
                     </Col>
                   </Row>
                   <Row>
-                    <Col xs={12} md={3}>
+                    <Col xs={12} md={6}>
                       <label htmlFor="reminderDtm">Reminder</label>
                       <AddAlertIcon />
                       <Field name="reminderDtm">
@@ -362,7 +411,7 @@ ItemComp.defaultProps = {
 
 ItemComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
-  editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleFormSave: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
