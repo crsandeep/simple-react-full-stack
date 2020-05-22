@@ -34,7 +34,7 @@ import RemindNoteComp from './RemindNoteComp';
 
 // generate item content in list view
 
-const genListData = (itemList, handleEdit, handleDelete) => {
+const genListData = (itemList, isShowLocation, handleEdit, handleDelete) => {
   if (itemList == null) return;
   const elementList = [];
 
@@ -96,21 +96,25 @@ const genListData = (itemList, handleEdit, handleDelete) => {
               }
 
               {/* // ignore breadcrumbs as it triger ol cannot appear as a descendant of p tag issue */}
-              <Link color="inherit" href="/space">
-                <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
-                {
-                    // show space name
-                    `${item.spaceLocation} - ${item.spaceName}`
-                  }
-              </Link>
-              {' > '}
-              <Link color="inherit" href="/grid">
-                <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
-                {
-                    // show location with grid ID with 2 digits
-                    item.gridId.toString().padStart(2, '0').slice(-3)
-                  }
-              </Link>
+              {isShowLocation === true ? (
+                <div>
+                  <Link color="inherit" href="/space">
+                    <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+                    {
+                      // show space name
+                      `${item.spaceLocation} - ${item.spaceName}`
+                    }
+                  </Link>
+                  <span>{' > '}</span>
+                  <Link color="inherit" href="/grid">
+                    <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+                    {
+                        // show location with grid ID with 2 digits
+                        item.gridId.toString().padStart(2, '0').slice(-3)
+                      }
+                  </Link>
+                </div>
+              ) : null}
             </React.Fragment>
           )}
         />
@@ -129,7 +133,7 @@ const genListData = (itemList, handleEdit, handleDelete) => {
 };
 
 
-const genListView = (itemList, handleEdit, handleDelete) => {
+const genListView = (itemList, isShowLocation, handleEdit, handleDelete) => {
   const displayList = [];
   const itemMap = new Map();
   let tempList = null;
@@ -175,7 +179,7 @@ const genListView = (itemList, handleEdit, handleDelete) => {
             {' '}
             {category}
           </ListSubheader>
-          {genListData(list, handleEdit, handleDelete)}
+          {genListData(list, isShowLocation, handleEdit, handleDelete)}
         </ul>
       </li>
     );
@@ -185,7 +189,7 @@ const genListView = (itemList, handleEdit, handleDelete) => {
 
 function ItemListComp(props) {
   // generate item data
-  const dataList = genListView(props.itemList, props.handleEdit, props.handleDelete);
+  const dataList = genListView(props.itemList, props.isShowLocation, props.handleEdit, props.handleDelete);
 
   return (
     <List className="spaceList-pc" subheader={<li />}>
@@ -201,7 +205,8 @@ ItemListComp.defaultProps = {
 ItemListComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
   handleEdit: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired
+  handleDelete: PropTypes.func.isRequired,
+  isShowLocation: PropTypes.bool.isRequired
 };
 
 export default ItemListComp;

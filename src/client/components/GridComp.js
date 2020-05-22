@@ -6,7 +6,7 @@ import '../css/SpaceGrid.css';
 import PropTypes from 'prop-types';
 
 import {
-  Row, Col, ButtonToolbar, Spinner, Alert, Badge, Button, OverlayTrigger, Tooltip
+  Row, Col, ButtonToolbar, Alert, Badge, Button, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
 
 import { IconButton } from '@material-ui/core/';
@@ -24,6 +24,7 @@ import Switch from '@material-ui/core/Switch';
 import { Prompt } from 'react-router';
 import * as Constants from '../constants/Grid';
 import * as UIConstants from '../constants/Global';
+import BaseUIComp from './BaseUIComp';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -49,23 +50,11 @@ function GridComp(props) {
   return (
     <div>
       <Prompt when={props.isDirtyWrite} message="Changes you made may not be saved. Are you sure you want to leave?" />
-      {
-        // page loading mask
-        props.pageLoading === true && (
-          <div className="overlay">
-            <Spinner
-              animation="border"
-              role="status"
-              size="lg"
-              style={{ width: `${10}rem`, height: `${10}rem` }}
-              className="mt-5"
-            >
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-            <h5>Loading...</h5>
-          </div>
-        )
-      }
+
+      <BaseUIComp
+        displayMsg={props.displayMsg}
+        pageLoading={props.pageLoading}
+      />
 
       {props.tempLayouts != null && props.tempLayouts.length > 0 ? (
         <div>
@@ -116,24 +105,6 @@ function GridComp(props) {
                   <HighlightOffIcon />
                 </IconButton>
               </ButtonToolbar>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} md={12}>
-              {
-                props.displayMsg.isSuccess !== null ? (
-                  props.displayMsg.isSuccess === true ? (
-                    <Alert variant="success">
-                      {props.displayMsg.msg}
-                    </Alert>
-                  )
-                    : (
-                      <Alert variant="danger">
-                        {props.displayMsg.msg}
-                      </Alert>
-                    )
-                ) : null
-              }
             </Col>
           </Row>
           <Row>

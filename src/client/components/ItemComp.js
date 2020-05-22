@@ -10,8 +10,7 @@ import {
   IconButton
 } from '@material-ui/core/';
 import {
-  Button, Modal, Row, Col, ButtonToolbar,
-  Spinner, Image, Alert
+  Button, Modal, Row, Col, ButtonToolbar, Image
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
@@ -28,6 +27,7 @@ import Switch from '@material-ui/core/Switch';
 import * as Constants from '../constants/Item';
 import ItemListComp from './ItemListComp';
 import ItemCardComp from './ItemCardComp';
+import BaseUIComp from './BaseUIComp';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -67,39 +67,10 @@ function ItemComp(props) {
 
   return (
     <div>
-      {
-        props.displayMsg.isSuccess !== null ? (
-          props.displayMsg.isSuccess === true ? (
-            <Alert variant="success">
-              {props.displayMsg.msg}
-            </Alert>
-          )
-            : (
-              <Alert variant="danger">
-                {props.displayMsg.msg}
-              </Alert>
-            )
-        ) : null
-      }
-
-      {
-        // page loading mask
-        props.formState.pageLoading === true
-          && (
-          <div className="overlay">
-            <Spinner
-              animation="border"
-              role="status"
-              size="lg"
-              style={{ width: `${10}rem`, height: `${10}rem` }}
-              className="mt-5"
-            >
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-            <h5>Loading...</h5>
-          </div>
-          )
-      }
+      <BaseUIComp
+        displayMsg={props.displayMsg}
+        pageLoading={props.formState.pageLoading}
+      />
 
       <Row>
         <Col xs={2} md={1}>
@@ -146,12 +117,14 @@ function ItemComp(props) {
           {
             !state.isListView ? (
               <ItemCardComp
+                isShowLocation={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
                 handleDelete={props.handleDelete}
               />
             ) : (
               <ItemListComp
+                isShowLocation={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
                 handleDelete={props.handleDelete}

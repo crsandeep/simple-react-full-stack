@@ -22,9 +22,7 @@ import {
   Modal,
   Row,
   Col,
-  Spinner,
   Image,
-  Alert,
   Badge
 } from 'react-bootstrap';
 import {
@@ -43,6 +41,7 @@ import WeekendIcon from '@material-ui/icons/Weekend';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import * as Constants from '../constants/Space';
+import BaseUIComp from './BaseUIComp';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -199,20 +198,10 @@ function SpaceComp(props) {
 
   return (
     <div>
-      {
-        props.displayMsg.isSuccess !== null ? (
-          props.displayMsg.isSuccess === true ? (
-            <Alert variant="success">
-              {props.displayMsg.msg}
-            </Alert>
-          )
-            : (
-              <Alert variant="danger">
-                {props.displayMsg.msg}
-              </Alert>
-            )
-        ) : null
-      }
+      <BaseUIComp
+        displayMsg={props.displayMsg}
+        pageLoading={props.formState.pageLoading}
+      />
 
       {
         // new space button
@@ -230,24 +219,6 @@ function SpaceComp(props) {
       <List className="spaceList-pc" subheader={<li />}>
         {dataList}
       </List>
-
-      {
-        // page loading mask
-        props.formState.pageLoading === true && (
-          <div className="overlay">
-            <Spinner
-              animation="border"
-              role="status"
-              size="lg"
-              style={{ width: `${10}rem`, height: `${10}rem` }}
-              className="mt-5"
-            >
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-            <h5>Loading...</h5>
-          </div>
-        )
-      }
 
       <div>
         <Modal

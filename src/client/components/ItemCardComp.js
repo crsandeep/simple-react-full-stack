@@ -28,7 +28,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import RemindNoteComp from './RemindNoteComp';
 
 // generate item content in card view
-const genCardData = (itemList, handleEdit, handleDelete) => {
+const genCardData = (itemList, isShowLocation, handleEdit, handleDelete) => {
   if (itemList == null) return;
   const displayList = [];
 
@@ -132,26 +132,29 @@ const genCardData = (itemList, handleEdit, handleDelete) => {
           </Row>
 
           {/* //location path */}
-          <Row>
-            <Col xs={12} md={12}>
-              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Link color="inherit" href="/space">
-                  <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
-                  {
+          {isShowLocation === true ? (
+            <Row>
+              <Col xs={12} md={12}>
+                <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                  <Link color="inherit" href="/space">
+                    <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+                    {
                     // show space name
                     `${item.spaceLocation} - ${item.spaceName}`
                   }
-                </Link>
-                <Link color="inherit" href="/grid">
-                  <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
-                  {
+                  </Link>
+                  <Link color="inherit" href="/grid">
+                    <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+                    {
                     // show location with grid ID with 2 digits
                     item.gridId.toString().padStart(2, '0').slice(-3)
                   }
-                </Link>
-              </Breadcrumbs>
-            </Col>
-          </Row>
+                  </Link>
+                </Breadcrumbs>
+              </Col>
+            </Row>
+          ) : null}
+
         </Card.Footer>
       </Card>
     );
@@ -161,7 +164,7 @@ const genCardData = (itemList, handleEdit, handleDelete) => {
 
 function ItemCardComp(props) {
   // generate item data
-  const dataList = genCardData(props.itemList, props.handleEdit, props.handleDelete);
+  const dataList = genCardData(props.itemList, props.isShowLocation, props.handleEdit, props.handleDelete);
 
   return (
     <CardColumns>
@@ -177,7 +180,8 @@ ItemCardComp.defaultProps = {
 ItemCardComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
   handleEdit: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired
+  handleDelete: PropTypes.func.isRequired,
+  isShowLocation: PropTypes.bool.isRequired
 };
 
 export default ItemCardComp;
