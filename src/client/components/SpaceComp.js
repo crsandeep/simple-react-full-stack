@@ -108,7 +108,7 @@ function SpaceComp(props) {
                 <br />
                 {
                   space.itemTags.map(tag => (
-                    <Badge variant="warning">
+                    <Badge key={tag} variant="warning">
                       {tag}
                     </Badge>
                   ))
@@ -293,7 +293,7 @@ function SpaceComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={12}>
-                      <label htmlFor="name">Space Name</label>
+                      <label htmlFor="name" className="required-field">Space Name</label>
                       <Field
                         id="name"
                         name="name"
@@ -312,7 +312,7 @@ function SpaceComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={5}>
-                      <label htmlFor="location">Space Location</label>
+                      <label htmlFor="location" className="required-field">Space Location</label>
                       <Field
                         name="location"
                         as="select"

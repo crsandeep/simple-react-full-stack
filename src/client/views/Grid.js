@@ -139,12 +139,22 @@ export class Grid extends React.Component {
       return;
     }
 
-    if (itemKey > 0) {
-      // delete from db first
-      this.props.sagaDeleteGrid(itemKey);
-    } else {
-      // delete directly (new grid)
-      this.cbDeleteGridInUI(true, itemKey);
+    // convert new grid id (<0) to positive with 'New'
+    let displayId = itemKey;
+    if (itemKey < 0) {
+      displayId = `New ${(Math.abs(itemKey) - 1).toString().padStart(2, '0')}`;
+    }
+
+    const result = confirm(`Confirm to delete (Grid Id: ${displayId})?`);
+    if (result === true) {
+      // confirm
+      if (itemKey > 0) {
+        // delete from db first
+        this.props.sagaDeleteGrid(itemKey);
+      } else {
+        // delete directly (new grid)
+        this.cbDeleteGridInUI(true, itemKey);
+      }
     }
   }
 

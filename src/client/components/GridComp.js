@@ -17,8 +17,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import { Prompt } from 'react-router';
 import * as Constants from '../constants/Grid';
@@ -29,27 +30,21 @@ const ReactGridLayout = WidthProvider(RGL);
 function GridComp(props) {
   const isLargeScreen = (window.innerWidth > UIConstants.UI_SMALL_SCREEN_WIDTH);
 
-  const confirmDelete = (gridId) => {
-    confirmAlert({
-      title: 'Confirm to delete',
-      message: `Are you sure to delete${gridId > 0 ? ` (ID: ${gridId})` : ''}?`,
-      buttons: [
-        {
-          label: 'Confirm',
-          onClick: () => props.handleRemove(gridId)
-        },
-        {
-          label: 'Cancel'
-        }
-      ]
-    });
-  };
-
   const renderTagsTooltip = (prop, text) => (
     <Tooltip id="button-tooltip" {...prop}>
       {text}
     </Tooltip>
   );
+
+  // hook for switch view
+  const [state, setState] = React.useState({
+    isEditMode: false
+  });
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+    props.handleToggleMode(event.target.checked ? Constants.FORM_EDIT_MODE : Constants.FORM_READONLY_MODE);
+  };
+
 
   return (
     <div>
@@ -90,29 +85,26 @@ function GridComp(props) {
             </Col>
           </Row>
           <Row>
-            <Col xs={1} md={1}>
+            <Col xs={6} md={4}>
               <IconButton
                 aria-label="back"
                 onClick={() => props.handleGoBack()}
               >
                 <ArrowBackIosIcon />
               </IconButton>
+              <FormControlLabel
+                control={(
+                  <Switch
+                    checked={state.isListView}
+                    onChange={handleChange}
+                    name="isEditMode"
+                    color="primary"
+                  />
+                )}
+                label="Edit"
+              />
             </Col>
-            <Col xs={5} md={2} className="spaceGrid-changeMode">
-              <div>
-                Mode:
-                <select
-                  value={props.currMode}
-                  onChange={(event) => {
-                    props.handleToggleMode(event.target.value);
-                  }}
-                >
-                  <option value={Constants.FORM_READONLY_MODE}>View</option>
-                  <option value={Constants.FORM_EDIT_MODE}>Edit</option>
-                </select>
-              </div>
-            </Col>
-            <Col xs={6} md={9}>
+            <Col xs={6} md={8}>
               <ButtonToolbar>
                 <IconButton aria-label="New" onClick={props.handleNew}>
                   <AddCircleOutlineIcon />
@@ -258,7 +250,7 @@ function GridComp(props) {
                             ? (
                               <IconButton
                                 aria-label="delete"
-                                onClick={() => confirmDelete(grid.i)}
+                                onClick={() => props.handleRemove(grid.i)}
                               >
                                 <DeleteIcon />
                               </IconButton>

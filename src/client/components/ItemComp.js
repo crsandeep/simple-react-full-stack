@@ -3,15 +3,24 @@ import React from 'react';
 import { useRef } from 'react';
 
 import PropTypes from 'prop-types';
-// import RemindNoteComp from './common/RemindNoteComp';
 
 // ui
 import '../css/Form.css';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import {
+  ListItemSecondaryAction,
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  IconButton,
+  ListItemAvatar,
+  Avatar,
+  Typography
+} from '@material-ui/core/';
 import {
   Button, Modal, Row, Col, Card, ButtonToolbar, CardColumns,
-  Spinner, Image, Badge, Alert, Breadcrumb
+  Spinner, Image, Badge, Alert
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
@@ -19,8 +28,6 @@ import {
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import AddAlertIcon from '@material-ui/icons/AddAlert';
-import { IconButton } from '@material-ui/core';
-import LabelIcon from '@material-ui/icons/Label';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
@@ -37,10 +44,14 @@ import KitchenIcon from '@material-ui/icons/Kitchen';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import * as Constants from '../constants/Item';
+import RemindNoteComp from './RemindNoteComp';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -61,104 +72,285 @@ const validateFormSchema = Yup.object().shape({
     .min(1, 'Please select Category')
 });
 
-// generate item list content
-const genItemData = (item, key, handleEdit, handleDelete) => {
-  let tagsArr = {};
-  if (item.tags != null && item.tags.length > 0) {
-    tagsArr = item.tags.split(',');
+// generate item content in list view
+
+const genListData = (itemList, handleEdit, handleDelete) => {
+  const elementList = [];
+
+  for (const item of itemList) {
+    let tagsArr = [];
+    if (item.tags != null && item.tags.length > 0) {
+      tagsArr = item.tags.split(',');
+    }
+
+    elementList.push(
+      <ListItem
+        key={item.itemId}
+        alignItems="flex-start"
+        button
+      >
+        <ListItemAvatar>
+          {item.imgPath != null ? (
+            <Avatar variant="rounded" alt={item.name} src={item.imgPath} />
+          ) : (
+            <Avatar variant="rounded" alt={item.name}>
+              {
+                item.name.substring(0, 4)
+              }
+            </Avatar>
+          )}
+        </ListItemAvatar>
+        <ListItemText
+          primary={item.name}
+          secondary={(
+            <React.Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                className="spaceList-inline"
+                color="textSecondary"
+              >
+                {item.description}
+                {
+                  item.description != null && tagsArr != null && tagsArr.length > 0
+                    ? (<br />) : null
+                }
+                {
+                  tagsArr.map(tag => (
+                    <Badge key={tag} variant="warning">
+                      {tag}
+                    </Badge>
+                  ))
+                }
+              </Typography>
+              {
+                item.description != null || (tagsArr != null && tagsArr.length > 0)
+                  ? (<br />) : null
+              }
+              {/* //reminder */}
+              <RemindNoteComp remindDtm={item.reminderDtm} />
+              {
+                item.reminderDtm != null
+                  ? (<br />) : null
+              }
+
+              {/* // ignore breadcrumbs as it triger ol cannot appear as a descendant of p tag issue */}
+              <Link color="inherit" href="/space">
+                <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+                {
+                    // show space name
+                    `${item.spaceLocation} - ${item.spaceName}`
+                  }
+              </Link>
+              {' > '}
+              <Link color="inherit" href="/grid">
+                <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+                {
+                    // show location with grid ID with 2 digits
+                    item.gridId.toString().padStart(2, '0').slice(-3)
+                  }
+              </Link>
+            </React.Fragment>
+          )}
+        />
+        <ListItemSecondaryAction>
+          <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
+  }
+  return elementList;
+};
+
+
+const genListView = (itemList, handleEdit, handleDelete) => {
+  const displayList = [];
+  const itemMap = new Map();
+  let tempList = null;
+
+  // prepare Map<category,List<Item>> for further generation
+  for (const item of itemList) {
+    // get corresponding list
+    if (itemMap.get(item.category) != null) {
+      tempList = itemMap.get(item.category);
+    } else {
+      tempList = [];
+    }
+
+    // add to list
+    tempList.push(item);
+
+    // update map with latest list
+    itemMap.set(item.category, tempList);
   }
 
-  return (
-    <Card key={key} bg={item.colorCode.toLowerCase()}>
-      {
-        item.imgPath != null
-          && <Card.Img variant="top" src={item.imgPath} />
-    }
-      <Card.Header>
-        {item.name}
-        <Badge className="float-right" variant="light">
-          {
+  // generate header and related spaces under each location according to Map settings
+  for (const [category, list] of itemMap) {
+    displayList.push(
+      <li key={`section-${category}`}>
+        <ul className="spaceList-ul">
+          <ListSubheader>
             {
-              Favorite: <FavoriteBorderIcon />,
-              Travel: <FlightIcon />,
-              Clothes: <i className="fas fa-tshirt" />,
-              Shoes: <i className="fas fa-shoe-prints" />,
-              Collections: <EmojiEventsIcon />,
-              Baby: <ChildFriendlyIcon />,
-              Books: <MenuBookIcon />,
-              Gifts: <CardGiftcardIcon />,
-              Food: <RestaurantIcon />,
-              Kitchenware: <KitchenIcon />,
-              Tools: <BuildIcon />,
-              Others: <HelpOutlineIcon />
-            }[item.category]
-          }
-          {' '}
-          {' '}
-          {item.category}
-        </Badge>
-      </Card.Header>
-      <Card.Body>
-        {item.description != null ? <Card.Text>item.description </Card.Text> : null}
-
-        <div>
-          <Row>
-            <Col xs={12} md={7}>
               {
-              tagsArr != null && tagsArr.length > 0
-              && tagsArr.map((tags, i) => (
-                <span key={i}>
-                  <Badge variant="warning">
-                    #
-                    {tags}
-                  </Badge>
-                  {' '}
-                </span>
-              ))
+                Favorite: <FavoriteBorderIcon />,
+                Travel: <FlightIcon />,
+                Clothes: <i className="fas fa-tshirt" />,
+                Shoes: <i className="fas fa-shoe-prints" />,
+                Collections: <EmojiEventsIcon />,
+                Baby: <ChildFriendlyIcon />,
+                Books: <MenuBookIcon />,
+                Gifts: <CardGiftcardIcon />,
+                Food: <RestaurantIcon />,
+                Kitchenware: <KitchenIcon />,
+                Tools: <BuildIcon />,
+                Others: <HelpOutlineIcon />
+              }[category]
             }
-            </Col>
-            <Col xs={12} md={5}>
-              <ButtonToolbar>
-                <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
-                  <EditIcon />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
-                  <DeleteIcon />
-                </IconButton>
-              </ButtonToolbar>
+            {' '}
+            {category}
+          </ListSubheader>
+          {genListData(list, handleEdit, handleDelete)}
+        </ul>
+      </li>
+    );
+  }
+  return displayList;
+};
+
+// generate item content in card view
+const genCardData = (itemList, handleEdit, handleDelete) => {
+  const displayList = [];
+
+  for (const item of itemList) {
+    let tagsArr = [];
+    if (item.tags != null && item.tags.length > 0) {
+      tagsArr = item.tags.split(',');
+    }
+
+    displayList.push(
+      <Card key={item.itemId} bg={item.colorCode.toLowerCase()}>
+        {
+          item.imgPath != null
+            && <Card.Img variant="top" src={item.imgPath} />
+        }
+        <Card.Header>
+          {item.name}
+          <Badge className="float-right" variant="light">
+            {
+              {
+                Favorite: <FavoriteBorderIcon />,
+                Travel: <FlightIcon />,
+                Clothes: <i className="fas fa-tshirt" />,
+                Shoes: <i className="fas fa-shoe-prints" />,
+                Collections: <EmojiEventsIcon />,
+                Baby: <ChildFriendlyIcon />,
+                Books: <MenuBookIcon />,
+                Gifts: <CardGiftcardIcon />,
+                Food: <RestaurantIcon />,
+                Kitchenware: <KitchenIcon />,
+                Tools: <BuildIcon />,
+                Others: <HelpOutlineIcon />
+              }[item.category]
+            }
+            {' '}
+            {' '}
+            {item.category}
+          </Badge>
+        </Card.Header>
+
+        {/* //card content, description + tags */}
+        {
+          item.description != null
+            || (tagsArr != null && tagsArr.length > 0) ? (
+              <Card.Body>
+                {/* //description row */}
+                {
+                  item.description != null ? (
+                    <Row>
+                      <Col xs={12} md={12}>
+                        <Card.Text>item.description </Card.Text>
+                      </Col>
+                    </Row>
+                  )
+                    : null
+                }
+
+                {/* //tags row */}
+                {
+                  tagsArr != null && tagsArr.length > 0
+                  && (
+                  <Row>
+                    <Col xs={12} md={12}>
+                      {
+                            tagsArr.map((tags, i) => (
+                              <span key={i}>
+                                <Badge variant="warning">
+                                  #
+                                  {tags}
+                                </Badge>
+                                {' '}
+                              </span>
+                            ))
+                          }
+                    </Col>
+                  </Row>
+                  )
+                }
+              </Card.Body>
+            ) : null
+        }
+
+        <Card.Footer>
+          {/* //reminder + button */}
+          <Row>
+            <Col xs={12} md={12}>
+              {/* //Reminder */}
+              <div>
+                <RemindNoteComp remindDtm={item.reminderDtm} />
+
+                <span style={{ float: 'right' }}>
+                  <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </span>
+              </div>
             </Col>
           </Row>
-        </div>
-      </Card.Body>
-      <Card.Footer>
-        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-          <Link color="inherit" href="/space">
-            <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
-            {
-              // show space name
-              `${item.spaceLocation} - ${item.spaceName}`
-            }
-          </Link>
-          <Link color="inherit" href="/grid">
-            <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
-            {
-              // show location with grid ID with 2 digits
-              item.gridId.toString().padStart(2, '0').slice(-3)
-            }
-          </Link>
-        </Breadcrumbs>
-        {
-          item.reminderDtm != null
-            && (
-            <div>
-              {item.reminderDtm}
-            </div>
-            )
-        // <RemindNoteComp remindDtm={item.reminderDtm}></RemindNoteComp>
-        }
-      </Card.Footer>
-    </Card>
-  );
+
+          {/* //location path */}
+          <Row>
+            <Col xs={12} md={12}>
+              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Link color="inherit" href="/space">
+                  <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+                  {
+                    // show space name
+                    `${item.spaceLocation} - ${item.spaceName}`
+                  }
+                </Link>
+                <Link color="inherit" href="/grid">
+                  <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+                  {
+                    // show location with grid ID with 2 digits
+                    item.gridId.toString().padStart(2, '0').slice(-3)
+                  }
+                </Link>
+              </Breadcrumbs>
+            </Col>
+          </Row>
+        </Card.Footer>
+      </Card>
+    );
+  }
+  return displayList;
 };
 
 function ItemComp(props) {
@@ -169,11 +361,25 @@ function ItemComp(props) {
     }
   };
 
+
+  // hook for switch view
+  const [state, setState] = React.useState({
+    isListView: false
+  });
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+
   // generate item data
-  const displayList = [];
-  if (props.itemList != null) {
-    for (let i = 0; i <= props.itemList.length - 1; i++) {
-      displayList.push(genItemData(props.itemList[i], i, props.handleEdit, props.handleDelete));
+  let dataList = [];
+  if (props.itemList != null && props.itemList.length > 0) {
+    if (!state.isListView) {
+      // card view
+      dataList = genCardData(props.itemList, props.handleEdit, props.handleDelete);
+    } else {
+      // list view
+      dataList = genListView(props.itemList, props.handleEdit, props.handleDelete);
     }
   }
 
@@ -237,14 +443,35 @@ function ItemComp(props) {
             <IconButton aria-label="Cancel" onClick={props.handleReloadList}>
               <RefreshIcon />
             </IconButton>
+
+            <FormControlLabel
+              control={(
+                <Switch
+                  checked={state.isListView}
+                  onChange={handleChange}
+                  name="isListView"
+                  color="primary"
+                />
+              )}
+              label="List View"
+            />
           </ButtonToolbar>
         </Col>
       </Row>
       <Row>
         <Col xs={12} md={12}>
-          <CardColumns>
-            {displayList}
-          </CardColumns>
+
+          {
+            !state.isListView ? (
+              <CardColumns>
+                {dataList}
+              </CardColumns>
+            ) : (
+              <List className="spaceList-pc" subheader={<li />}>
+                {dataList}
+              </List>
+            )
+          }
         </Col>
       </Row>
 
@@ -252,7 +479,6 @@ function ItemComp(props) {
         <Modal
           show={props.formState.formMode === Constants.FORM_EDIT_MODE}
           onHide={props.handleCancel}
-          dialogClassName="modal-90w"
         >
           <Modal.Header closeButton>
             <Modal.Title>Item Details</Modal.Title>

@@ -41,7 +41,7 @@ export default class ItemService {
           attributes: ['gridId']
         }],
         order: [
-          ['itemId', 'ASC']
+          ['updatedOn', 'DESC']
         ]
       });
       return itemRecordList;
