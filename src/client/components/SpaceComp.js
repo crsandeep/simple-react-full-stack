@@ -200,7 +200,7 @@ function SpaceComp(props) {
     <div>
       <BaseUIComp
         displayMsg={props.displayMsg}
-        pageLoading={props.formState.pageLoading}
+        pageLoading={props.pageLoading}
       />
 
       {
@@ -362,6 +362,7 @@ SpaceComp.propTypes = {
   displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceList: PropTypes.arrayOf(PropTypes.object),
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  pageLoading: PropTypes.bool.isRequired,
   handleFormSave: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
   handleNew: PropTypes.func.isRequired,

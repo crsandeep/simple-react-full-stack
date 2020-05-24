@@ -2,7 +2,9 @@ import { Sequelize, Repository } from 'sequelize-typescript';
 import { Service, Inject, Container } from 'typedi';
 import moment from 'moment';
 import winston from 'winston';
+import { Op } from 'sequelize';
 import config from '../config';
+import SearchTrans from '../interfaces/SearchTrans';
 import ItemTrans from '../interfaces/ItemTrans';
 // import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 // import events from '../subscribers/events';
@@ -12,6 +14,7 @@ import * as fileUtil from '../util/fileUtil';
 import Grid from '../models/Grid';
 import Item from '../models/Item';
 import Space from '../models/Space';
+
 
 @Service()
 export default class ItemService {
@@ -245,6 +248,39 @@ export default class ItemService {
       return result;
     } catch (e) {
       this.logger.error('Fail to delete item image, itemId: %o, reason: %o ', itemId, e.message);
+      throw e;
+    }
+  }
+
+  public async searchItem(filters: SearchTrans): Promise<Item[]> {
+    try {
+      const itemRecordList = await this.itemRepo.findAll({
+        where: {
+          [Op.or]: [
+            {
+              name: {
+                [Op.iLike]: `%${filters.keyword}%`
+              }
+            }, {
+              description: {
+                [Op.iLike]: `%${filters.keyword}%`
+              }
+            }
+          ]
+        },
+        include: [{
+          model: this.gridRepo,
+          include: [{ model: this.spaceRepo, attributes: ['name', 'location'] }],
+          as: 'grid',
+          attributes: ['gridId']
+        }],
+        order: [
+          ['updatedOn', 'DESC']
+        ]
+      });
+      return itemRecordList;
+    } catch (e) {
+      this.logger.error('Fail to search item, reason: %o ', e.message);
       throw e;
     }
   }

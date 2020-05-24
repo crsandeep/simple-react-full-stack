@@ -150,7 +150,9 @@ export class Space extends React.Component {
 
   render() {
     const { displayMsg } = this.state;
-    const { spaceList, editStatus, formState } = this.props;
+    const {
+      spaceList, editStatus, formState, pageLoading
+    } = this.props;
     return (
       <div>
         <SpaceComp
@@ -166,6 +168,7 @@ export class Space extends React.Component {
           spaceList={spaceList}
           editStatus={editStatus}
           formState={formState}
+          pageLoading={pageLoading}
         />
       </div>
     );
@@ -176,7 +179,7 @@ const mapStateToProps = (state) => {
   // //TODO: testing
   const userId = 1;
 
-  const { spaceList, editStatus } = state.Space;
+  const { spaceList, editStatus, pageLoading } = state.Space;
 
   const inState = state.Space;
   const formState = {
@@ -191,7 +194,8 @@ const mapStateToProps = (state) => {
     userId,
     spaceList,
     editStatus,
-    formState
+    formState,
+    pageLoading
   };
 };
 
@@ -231,6 +235,7 @@ Space.propTypes = {
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceList: PropTypes.arrayOf(PropTypes.object),
   userId: PropTypes.number.isRequired,
+  pageLoading: PropTypes.bool.isRequired,
 
   sagaGetSpaceList: PropTypes.func.isRequired,
   sagaUpdateSpace: PropTypes.func.isRequired,

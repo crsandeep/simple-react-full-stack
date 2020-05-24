@@ -5,6 +5,7 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import multer from 'multer';
+import SearchTrans from '../../interfaces/SearchTrans';
 import ItemTrans from '../../interfaces/ItemTrans';
 import ItemService from '../../services/ItemService';
 import * as multerOptions from '../../config/multer';
@@ -25,6 +26,12 @@ export default (app: Router) => {
   const logger:winston.Logger = Container.get('logger');
   const itemService = Container.get(ItemService);
 
+
+  function convertSearchPara(input) {
+    if (input === 'NULL') return null;
+
+    return input;
+  }
 
   function formatSuccess(payload:any, message:string = null):object {
     return { isSuccess: true, payload, message };
@@ -142,6 +149,38 @@ export default (app: Router) => {
       try {
         const gridId:number = parseInt(req.params.gridId, 10);
         const itemRecordList:Item[] = await itemService.getItemByGridId(gridId);
+        const result:ItemTrans[] = formatItemList(itemRecordList);
+        return res.status(200).json(formatSuccess(result));
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+    }
+  );
+
+  route.get(
+    '/search/:keyword/:category?/:colorCode?/:location?/:tags?',
+    celebrate({
+      params: Joi.object({
+        keyword: Joi.string().required(),
+        category: Joi.string().required(),
+        colorCode: Joi.string().required(),
+        location: Joi.string().required(),
+        tags: Joi.string().required()
+      })
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      logger.debug('Calling getSearch endpoint');
+
+      try {
+        const filters:SearchTrans = {
+          keyword: req.params.keyword,
+          category: convertSearchPara(req.params.category),
+          colorCode: convertSearchPara(req.params.colorCode),
+          location: convertSearchPara(req.params.location),
+          tags: convertSearchPara(req.params.tags)
+        };
+        const itemRecordList:Item[] = await itemService.searchItem(filters);
         const result:ItemTrans[] = formatItemList(itemRecordList);
         return res.status(200).json(formatSuccess(result));
       } catch (e) {

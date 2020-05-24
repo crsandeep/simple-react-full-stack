@@ -9,7 +9,9 @@ import SideNav, {
 import styled from 'styled-components';
 import allReducers from './reducers';
 import rootSaga from './sagas';
-import { Item, Space, Grid } from './views';
+import {
+  Item, Space, Grid, Search
+} from './views';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(allReducers, applyMiddleware(sagaMiddleware));
@@ -90,6 +92,14 @@ export class App extends React.Component {
                   <NavSubTitle>Welcome Back Peter!</NavSubTitle>
                 </NavHeader>
                 <SideNav.Nav selected={selected}>
+                  <NavItem eventKey="search">
+                    <NavIcon>
+                      <i className="fa fa-fw fa-search" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                    </NavIcon>
+                    <NavText style={{ paddingRight: 32 }} title="Search">
+                      Search
+                    </NavText>
+                  </NavItem>
                   <NavItem eventKey="space">
                     <NavIcon>
                       <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
@@ -127,6 +137,7 @@ export class App extends React.Component {
               </SideNav>
               <Main expanded={expanded}>
                 <Route path="/" exact component={props => <Space />} />
+                <Route path="/search" component={props => <Search />} />
                 <Route path="/space" exact component={props => <Space />} />
                 <Route path="/grid" component={props => <Grid />} />
                 <Route path="/item" component={props => <Item />} />

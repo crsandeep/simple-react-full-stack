@@ -34,7 +34,7 @@ import RemindNoteComp from './RemindNoteComp';
 
 // generate item content in list view
 
-const genListData = (itemList, isShowLocation, handleEdit, handleDelete) => {
+const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
   if (itemList == null) return;
   const elementList = [];
 
@@ -102,7 +102,7 @@ const genListData = (itemList, isShowLocation, handleEdit, handleDelete) => {
                     <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
                     {
                       // show space name
-                      `${item.spaceLocation} - ${item.spaceName}`
+                      `${item.spaceLocation} > ${item.spaceName}`
                     }
                   </Link>
                   <span>{' > '}</span>
@@ -118,14 +118,19 @@ const genListData = (itemList, isShowLocation, handleEdit, handleDelete) => {
             </React.Fragment>
           )}
         />
-        <ListItemSecondaryAction>
-          <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
+        {
+          isReadOnly === true
+            ? null : (
+              <ListItemSecondaryAction>
+                <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            )
+          }
       </ListItem>
     );
   }
@@ -133,7 +138,7 @@ const genListData = (itemList, isShowLocation, handleEdit, handleDelete) => {
 };
 
 
-const genListView = (itemList, isShowLocation, handleEdit, handleDelete) => {
+const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
   const displayList = [];
   const itemMap = new Map();
   let tempList = null;
@@ -179,7 +184,7 @@ const genListView = (itemList, isShowLocation, handleEdit, handleDelete) => {
             {' '}
             {category}
           </ListSubheader>
-          {genListData(list, isShowLocation, handleEdit, handleDelete)}
+          {genListData(list, isShowLocation, isReadOnly, handleEdit, handleDelete)}
         </ul>
       </li>
     );
@@ -189,7 +194,7 @@ const genListView = (itemList, isShowLocation, handleEdit, handleDelete) => {
 
 function ItemListComp(props) {
   // generate item data
-  const dataList = genListView(props.itemList, props.isShowLocation, props.handleEdit, props.handleDelete);
+  const dataList = genListView(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit, props.handleDelete);
 
   return (
     <List className="spaceList-pc" subheader={<li />}>
@@ -199,14 +204,17 @@ function ItemListComp(props) {
 }
 
 ItemListComp.defaultProps = {
-  itemList: []
+  itemList: [],
+  handleEdit(itemId) {},
+  handleDelete(itemId, name, desc) {}
 };
 
 ItemListComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
-  handleEdit: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  isShowLocation: PropTypes.bool.isRequired
+  handleEdit: PropTypes.func,
+  handleDelete: PropTypes.func,
+  isShowLocation: PropTypes.bool.isRequired,
+  isReadOnly: PropTypes.bool.isRequired
 };
 
 export default ItemListComp;

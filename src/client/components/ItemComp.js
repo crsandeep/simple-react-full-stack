@@ -69,7 +69,7 @@ function ItemComp(props) {
     <div>
       <BaseUIComp
         displayMsg={props.displayMsg}
-        pageLoading={props.formState.pageLoading}
+        pageLoading={props.pageLoading}
       />
 
       <Row>
@@ -118,6 +118,7 @@ function ItemComp(props) {
             !state.isListView ? (
               <ItemCardComp
                 isShowLocation={false}
+                isReadOnly={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
                 handleDelete={props.handleDelete}
@@ -125,6 +126,7 @@ function ItemComp(props) {
             ) : (
               <ItemListComp
                 isShowLocation={false}
+                isReadOnly={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
                 handleDelete={props.handleDelete}
@@ -298,6 +300,7 @@ ItemComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
   displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  pageLoading: PropTypes.bool.isRequired,
   handleFormSave: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
   handleNew: PropTypes.func.isRequired,

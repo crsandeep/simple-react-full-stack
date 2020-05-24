@@ -28,7 +28,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import RemindNoteComp from './RemindNoteComp';
 
 // generate item content in card view
-const genCardData = (itemList, isShowLocation, handleEdit, handleDelete) => {
+const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
   if (itemList == null) return;
   const displayList = [];
 
@@ -119,14 +119,19 @@ const genCardData = (itemList, isShowLocation, handleEdit, handleDelete) => {
               <div>
                 <RemindNoteComp remindDtm={item.reminderDtm} />
 
-                <span style={{ float: 'right' }}>
-                  <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
+                {
+                  isReadOnly === true
+                    ? null : (
+                      <span style={{ float: 'right' }}>
+                        <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </span>
+                    )
+                }
               </div>
             </Col>
           </Row>
@@ -140,7 +145,7 @@ const genCardData = (itemList, isShowLocation, handleEdit, handleDelete) => {
                     <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
                     {
                     // show space name
-                    `${item.spaceLocation} - ${item.spaceName}`
+                    `${item.spaceLocation} > ${item.spaceName}`
                   }
                   </Link>
                   <Link color="inherit" href="/grid">
@@ -164,7 +169,7 @@ const genCardData = (itemList, isShowLocation, handleEdit, handleDelete) => {
 
 function ItemCardComp(props) {
   // generate item data
-  const dataList = genCardData(props.itemList, props.isShowLocation, props.handleEdit, props.handleDelete);
+  const dataList = genCardData(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit, props.handleDelete);
 
   return (
     <CardColumns>
@@ -174,14 +179,17 @@ function ItemCardComp(props) {
 }
 
 ItemCardComp.defaultProps = {
-  itemList: []
+  itemList: [],
+  handleEdit(itemId) {},
+  handleDelete(itemId, name, desc) {}
 };
 
 ItemCardComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
-  handleEdit: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  isShowLocation: PropTypes.bool.isRequired
+  handleEdit: PropTypes.func,
+  handleDelete: PropTypes.func,
+  isShowLocation: PropTypes.bool.isRequired,
+  isReadOnly: PropTypes.bool.isRequired
 };
 
 export default ItemCardComp;

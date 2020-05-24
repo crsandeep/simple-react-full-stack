@@ -146,7 +146,9 @@ export class Item extends React.Component {
 
   render() {
     const { displayMsg } = this.state;
-    const { itemList, editStatus, formState } = this.props;
+    const {
+      itemList, editStatus, formState, pageLoading
+    } = this.props;
     return (
       <div>
         <ItemComp
@@ -159,6 +161,7 @@ export class Item extends React.Component {
           handleRemoveItemImg={this.handleRemoveItemImg}
           handleGoBack={this.handleGoBack}
 
+          pageLoading={pageLoading}
           displayMsg={displayMsg}
           itemList={itemList}
           editStatus={editStatus}
@@ -172,7 +175,7 @@ export class Item extends React.Component {
 const mapStateToProps = (state) => {
   const { currentGridId } = state.Grid;
 
-  const { itemList, editStatus } = state.Item;
+  const { itemList, editStatus, pageLoading } = state.Item;
 
   const inState = state.Item;
   const formState = {
@@ -197,7 +200,8 @@ const mapStateToProps = (state) => {
     gridId: currentGridId,
     itemList,
     editStatus,
-    formState
+    formState,
+    pageLoading
   };
 };
 
