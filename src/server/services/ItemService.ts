@@ -254,20 +254,45 @@ export default class ItemService {
 
   public async searchItem(filters: SearchTrans): Promise<Item[]> {
     try {
-      const itemRecordList = await this.itemRepo.findAll({
-        where: {
-          [Op.or]: [
-            {
-              name: {
-                [Op.iLike]: `%${filters.keyword}%`
-              }
-            }, {
-              description: {
-                [Op.iLike]: `%${filters.keyword}%`
-              }
+      console.log(`filters ${JSON.stringify(filters)}`);
+
+      // prepare where cause for optional criterias
+      const andList: any[] = [];
+      if (filters.category != null) {
+        andList.push({ category: filters.category });
+      }
+
+      if (filters.colorCode != null) {
+        andList.push({ colorCode: filters.colorCode });
+      }
+
+      // if (filters.location != null) {
+      //   andList.push({ grid: { space: { location: filters.location } } });
+      // }
+
+      if (filters.tags != null) {
+        andList.push({ tags: { [Op.iLike]: `%${filters.tags}%` } });
+      }
+
+      // prepare keyword in name and description fields
+
+      const whereCause:any = {
+        [Op.and]: andList,
+        [Op.or]: [
+          {
+            name: {
+              [Op.iLike]: `%${filters.keyword}%`
             }
-          ]
-        },
+          }, {
+            description: {
+              [Op.iLike]: `%${filters.keyword}%`
+            }
+          }
+        ]
+      };
+
+      const itemRecordList = await this.itemRepo.findAll({
+        where: whereCause,
         include: [{
           model: this.gridRepo,
           include: [{ model: this.spaceRepo, attributes: ['name', 'location'] }],
@@ -278,6 +303,9 @@ export default class ItemService {
           ['updatedOn', 'DESC']
         ]
       });
+
+      console.log(`itemRecordList ${JSON.stringify(itemRecordList)}`);
+
       return itemRecordList;
     } catch (e) {
       this.logger.error('Fail to search item, reason: %o ', e.message);

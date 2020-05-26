@@ -25,6 +25,7 @@ export class Search extends React.Component {
     // bind handler
     this.handleSearch = this.handleSearch.bind(this);
     this.handleGoBack = this.handleGoBack.bind(this);
+    this.handleClear = this.handleClear.bind(this);
   }
 
   componentDidMount() {
@@ -56,6 +57,10 @@ export class Search extends React.Component {
     this.props.sagaSearchItem(values);
   }
 
+  handleClear() {
+    this.props.clearItemList();
+  }
+
   handleGoBack() {
     this.props.history.push('/space');
   }
@@ -74,6 +79,7 @@ export class Search extends React.Component {
       <div>
         <SearchComp
           handleSearch={this.handleSearch}
+          handleClear={this.handleClear}
           handleGoBack={this.handleGoBack}
 
           displayMsg={displayMsg}
@@ -105,6 +111,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   sagaSearchItem: (values) => {
     dispatch(Actions.sagaSearchItem(values));
+  },
+  clearItemList: () => {
+    dispatch(Actions.clearItemList());
   }
 });
 
@@ -118,7 +127,8 @@ Search.propTypes = {
   userId: PropTypes.number.isRequired,
   pageLoading: PropTypes.bool.isRequired,
   itemList: PropTypes.arrayOf(PropTypes.object),
-  sagaSearchItem: PropTypes.func.isRequired
+  sagaSearchItem: PropTypes.func.isRequired,
+  clearItemList: PropTypes.func.isRequired
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Search));

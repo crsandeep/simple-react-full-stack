@@ -15,3 +15,8 @@ export const searchItem = (data, operation) => ({
   data,
   operation
 });
+
+
+export const clearItemList = () => ({
+  type: ActionTypes.CLEAR_ITEMLIST
+});

@@ -28,7 +28,8 @@ export default (app: Router) => {
     const outputItem:any = {};
 
     const excludeAttr:string[] = ['creationDate',
-      'updatedOn'
+      'updatedOn',
+      'password'
     ];
 
     if (userRecord == null) {

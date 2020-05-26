@@ -22,6 +22,16 @@ export default function Search(state = initialState, action) {
       return {
         ...state,
         pageLoading: true,
+        itemList: null,
+        editStatus: { // clear previous edit status
+          isSuccess: null, data: null, message: null, operation: null
+        }
+      };
+    case ActionTypes.CLEAR_ITEMLIST:
+      return {
+        ...state,
+        pageLoading: false,
+        itemList: null,
         editStatus: { // clear previous edit status
           isSuccess: null, data: null, message: null, operation: null
         }

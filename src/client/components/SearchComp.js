@@ -30,7 +30,7 @@ import BaseUIComp from './BaseUIComp';
 const validateFormSchema = Yup.object().shape({
   keyword: Yup.string()
     .required('Keyword is required')
-    .min(3, 'Keyword must be at least 3 characters')
+    .min(1, 'Keyword must be at least 1 characters')
     .trim(),
   colorCode: Yup.string()
     .min(1, 'Please select Card Color'),
@@ -58,6 +58,8 @@ function SearchComp(props) {
       formRef.current.handleReset();
     }
     setAdvanceMode(false);
+
+    props.handleClear();
   };
 
   // hook for switch view
@@ -234,6 +236,11 @@ function SearchComp(props) {
       </Row>
       <Row>
         <Col xs={12} md={12}>
+          <br />
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} md={12}>
           {
             !state.isListView ? (
               <ItemCardComp
@@ -265,7 +272,8 @@ SearchComp.propTypes = {
   displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   handleSearch: PropTypes.func.isRequired,
-  handleGoBack: PropTypes.func.isRequired
+  handleGoBack: PropTypes.func.isRequired,
+  handleClear: PropTypes.func.isRequired
 };
 
 export default SearchComp;
