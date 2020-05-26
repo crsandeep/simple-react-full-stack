@@ -17,9 +17,15 @@ export default {
   port: parseInt(process.env.PORT, 10),
 
   /**
-   * Your secret sauce
+   * secret sauce
    */
   jwtSecret: process.env.JWT_SECRET,
+
+
+  /**
+   * token expire in minutes
+   */
+  tokenExpireMins: 60 * 60 * 1,
 
   /**
    * Used by winston logger

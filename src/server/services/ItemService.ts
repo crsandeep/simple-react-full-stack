@@ -1,5 +1,5 @@
 import { Sequelize, Repository } from 'sequelize-typescript';
-import { Service, Inject, Container } from 'typedi';
+import { Service, Container } from 'typedi';
 import moment from 'moment';
 import winston from 'winston';
 import { Op } from 'sequelize';
