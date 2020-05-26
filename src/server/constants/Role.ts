@@ -1,5 +1,5 @@
 export default {
-  ROLE_BASIC_USER: 'USER',
-  ROLE_ADMIN_USER: 'ADMIN',
-  ROLE_SUPPORT_USER: 'SUPPORT'
+  ROLE_BASIC_USER: 'user',
+  ROLE_ADMIN_USER: 'admin',
+  ROLE_SUPPORT_USER: 'support'
 };
