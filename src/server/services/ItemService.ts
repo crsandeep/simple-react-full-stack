@@ -14,6 +14,7 @@ import * as fileUtil from '../util/fileUtil';
 import Grid from '../models/Grid';
 import Item from '../models/Item';
 import Space from '../models/Space';
+import grid from '../api/routes/grid';
 
 
 @Service()
@@ -266,12 +267,13 @@ export default class ItemService {
         andList.push({ colorCode: filters.colorCode });
       }
 
-      // if (filters.location != null) {
-      //   andList.push({ grid: { space: { location: filters.location } } });
-      // }
-
       if (filters.tags != null) {
         andList.push({ tags: { [Op.iLike]: `%${filters.tags}%` } });
+      }
+
+      // where in parent parent column (item->grid->space .location)
+      if (filters.location != null) {
+        andList.push({ '$grid.space.location$': filters.location });
       }
 
       // prepare keyword in name and description fields
@@ -289,13 +291,17 @@ export default class ItemService {
             }
           }
         ]
+
       };
 
       const itemRecordList = await this.itemRepo.findAll({
         where: whereCause,
         include: [{
           model: this.gridRepo,
-          include: [{ model: this.spaceRepo, attributes: ['name', 'location'] }],
+          include: [{
+            model: this.spaceRepo,
+            attributes: ['name', 'location']
+          }],
           as: 'grid',
           attributes: ['gridId']
         }],

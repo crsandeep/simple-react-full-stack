@@ -8,9 +8,27 @@ import {
   Spinner, Alert
 } from 'react-bootstrap';
 
+import { makeStyles } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles(theme => ({
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end'
+  }
+}));
 function BaseUIComp(props) {
+  const classes = useStyles();
+
   return (
     <div>
+      {/* // add space for padding app bar */}
+      <div className={classes.drawerHeader} />
+
       { // display message
         props.displayMsg.isSuccess !== null ? (
           props.displayMsg.isSuccess === true ? (
@@ -31,6 +49,7 @@ function BaseUIComp(props) {
         props.pageLoading === true
           && (
           <div className="overlay">
+            <br />
             <Spinner
               animation="border"
               role="status"

@@ -48,7 +48,6 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
       <ListItem
         key={item.itemId}
         alignItems="flex-start"
-        button
       >
         <ListItemAvatar>
           {item.imgPath != null ? (
@@ -97,7 +96,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
 
               {/* // ignore breadcrumbs as it triger ol cannot appear as a descendant of p tag issue */}
               {isShowLocation === true ? (
-                <div>
+                <span>
                   <Link color="inherit" href="/space">
                     <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
                     {
@@ -113,7 +112,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
                         item.gridId.toString().padStart(2, '0').slice(-3)
                       }
                   </Link>
-                </div>
+                </span>
               ) : null}
             </React.Fragment>
           )}
@@ -142,6 +141,8 @@ const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
   const displayList = [];
   const itemMap = new Map();
   let tempList = null;
+
+  if (itemList === null) return displayList;
 
   // prepare Map<category,List<Item>> for further generation
   for (const item of itemList) {
