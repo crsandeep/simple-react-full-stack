@@ -252,6 +252,8 @@ function App() {
               <Route exact path="/" component={Space} />
               <Route path="/login" component={Space} />
               <Route path="/space" component={Space} />
+              <Route path="/grid" component={Grid} />
+              <Route path="/item" component={Item} />
               <Route path="/search" component={Search} />
               <Route path="/reminder" component={Search} />
               <Route path="/logout" component={Space} />
