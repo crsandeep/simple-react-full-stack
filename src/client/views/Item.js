@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { toast } from 'react-toastify';
 import { ItemComp } from '../components';
 import * as Actions from '../actions/Item';
 import * as Constants from '../constants/Item';
+import * as UIConstants from '../constants/Global';
 
 export class Item extends React.Component {
   constructor(props) {
@@ -142,6 +144,15 @@ export class Item extends React.Component {
     this.setState({
       displayMsg: { isSuccess, msg }
     });
+
+    // for toastify
+    if (isSuccess != null && msg != null) {
+      if (isSuccess) {
+        toast(`${msg}`, { autoClose: UIConstants.UI_NOTIFY_DIALOG_SHOW_DURATION });
+      } else {
+        toast.error(`${msg}`);
+      }
+    }
   }
 
   render() {
@@ -174,6 +185,9 @@ export class Item extends React.Component {
 
 const mapStateToProps = (state) => {
   const { currentGridId } = state.Grid;
+
+  // TODO: testing only
+  // if (currentGridId == null) currentGridId = 141;
 
   const { itemList, editStatus, pageLoading } = state.Item;
 

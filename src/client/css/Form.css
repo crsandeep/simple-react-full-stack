@@ -33,3 +33,8 @@
   content: "*";
   color: red;
 }
+
+.modal-lg-image {
+  max-width: 200px;
+  max-height: 200px;
+}

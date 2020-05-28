@@ -4,7 +4,13 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import clsx from 'clsx';
-import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
+import {
+  useTheme, fade, makeStyles
+} from '@material-ui/core/styles';
+import {
+  useMediaQuery, Box
+} from '@material-ui/core/';
+
 import InputBase from '@material-ui/core/InputBase';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -32,6 +38,7 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(allReducers, applyMiddleware(sagaMiddleware));
 sagaMiddleware.run(rootSaga);
 
+// align with item width
 const drawerWidth = 170;
 
 const useStyles = makeStyles(theme => ({
@@ -154,6 +161,8 @@ function App() {
     console.log(event.target.value);
   };
 
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+
   return (
     <Provider store={store}>
       <Router>
@@ -177,10 +186,23 @@ function App() {
                   <MenuIcon />
                 </IconButton>
                 <Typography className={classes.title} variant="h6" noWrap>
-                  SpaceMaster
+                  {/* SpaceMaster */}
+                  {
+                    isLargeDevice === true ? (
+                      // large device
+                      <Box display="flex" justifyContent="flex-end">
+                        L
+                      </Box>
+                    ) : (
+                    // small device
+                      <Box display="flex" justifyContent="flex-end">
+                        S
+                      </Box>
+                    )
+                  }
                 </Typography>
 
-                <div className={classes.search}>
+                {/* <div className={classes.search}>
                   <div className={classes.searchIcon}>
                     <SearchIcon />
                   </div>
@@ -193,7 +215,7 @@ function App() {
                     inputProps={{ 'aria-label': 'search' }}
                     onChange={onSearch}
                   />
-                </div>
+                </div> */}
               </Toolbar>
             </AppBar>
             <Drawer

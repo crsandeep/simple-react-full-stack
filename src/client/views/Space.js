@@ -2,14 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-
-import SplitPane from 'react-split-pane';
-import _ from 'lodash';
-import axios from 'axios';
+import { toast } from 'react-toastify';
 import { SpaceComp } from '../components';
 import * as Actions from '../actions/Space';
 import * as Constants from '../constants/Space';
-
+import * as UIConstants from '../constants/Global';
 
 export class Space extends React.Component {
   constructor(props) {
@@ -142,9 +139,19 @@ export class Space extends React.Component {
 
   // update UI
   updateHeaderMsgInUI(isSuccess, msg) {
+    // for large display header msg
     this.setState({
       displayMsg: { isSuccess, msg }
     });
+
+    // for toastify
+    if (isSuccess != null && msg != null) {
+      if (isSuccess) {
+        toast(`${msg}`, { autoClose: UIConstants.UI_NOTIFY_DIALOG_SHOW_DURATION });
+      } else {
+        toast.error(`${msg}`);
+      }
+    }
   }
 
 

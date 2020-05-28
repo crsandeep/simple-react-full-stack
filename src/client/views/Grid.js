@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import { GridComp } from '../components';
 import * as Actions from '../actions/Grid';
 import * as Constants from '../constants/Grid';
+import * as UIConstants from '../constants/Global';
 
 
 export class Grid extends React.Component {
@@ -184,6 +186,15 @@ export class Grid extends React.Component {
     this.setState({
       displayMsg: { isSuccess, msg }
     });
+
+    // for toastify
+    if (isSuccess != null && msg != null) {
+      if (isSuccess) {
+        toast(`${msg}`, { autoClose: UIConstants.UI_NOTIFY_DIALOG_SHOW_DURATION });
+      } else {
+        toast.error(`${msg}`);
+      }
+    }
   }
 
   // triggered by did update after saga ajax call
@@ -217,20 +228,6 @@ export class Grid extends React.Component {
       for (const grid of grids) {
         // prepare grid layouts
         layouts.push(grid.layout);
-
-        // // prepare unique item tags list
-        // const tagList = [];
-        // for (const tag of grid.itemTags) {
-        //   const tagsArr = tag.split(',');
-        //   for (const el of tagsArr) {
-        //     if (!tagList.includes(el)) {
-        //       tagList.push(el);
-        //     }
-        //   }
-        // }
-
-        // // add tagsList into grid for UI proess
-        // grid.tagList = tagList;
 
         // push in map for component to form UI
         dataMap.set(`${grid.gridId}`, grid);
@@ -313,6 +310,9 @@ export class Grid extends React.Component {
 const mapStateToProps = (state) => {
   const { editStatus, pageLoading } = state.Grid;
   const { currentSpaceId } = state.Space;
+
+  // TODO: testing only
+  // if (currentSpaceId == null) currentSpaceId = 1;
 
   return {
     spaceId: currentSpaceId,

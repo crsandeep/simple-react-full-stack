@@ -6,24 +6,23 @@ import PropTypes from 'prop-types';
 // ui
 import '../css/Form.css';
 import 'react-datepicker/dist/react-datepicker.css';
+
 import {
-  IconButton
+  Cached, Add, ArrowBackIos, AddAlert, Delete
+} from '@material-ui/icons';
+
+import {
+  IconButton, Box, Divider, FormControlLabel, Switch
 } from '@material-ui/core/';
 import {
-  Button, Modal, Row, Col, ButtonToolbar, Image
+  Button, Modal, Row, Col, Image
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
 } from 'formik';
+
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
-import AddAlertIcon from '@material-ui/icons/AddAlert';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import * as Constants from '../constants/Item';
 import ItemListComp from './ItemListComp';
 import ItemCardComp from './ItemCardComp';
@@ -73,30 +72,18 @@ function ItemComp(props) {
       />
 
       <Row>
-        <Col xs={2} md={1}>
-          <IconButton
-            aria-label="back"
-            onClick={() => props.handleGoBack()}
-          >
-            <ArrowBackIosIcon />
-          </IconButton>
-        </Col>
-        <Col xs={10} md={11}>
-          <ButtonToolbar>
-            {
-                // new item button
-                props.formState.formMode === Constants.FORM_READONLY_MODE
-                  && (
-                  <IconButton aria-label="New" onClick={props.handleNew}>
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                  )
-              }
-
-            <IconButton aria-label="Cancel" onClick={props.handleReloadList}>
-              <RefreshIcon />
+        <Col xs={2} md={2}>
+          <Box display="flex" justifyContent="flex-start">
+            <IconButton
+              aria-label="back"
+              onClick={() => props.handleGoBack()}
+            >
+              <ArrowBackIos />
             </IconButton>
-
+          </Box>
+        </Col>
+        <Col xs={10} md={10}>
+          <Box display="flex" justifyContent="flex-end">
             <FormControlLabel
               control={(
                 <Switch
@@ -104,13 +91,24 @@ function ItemComp(props) {
                   onChange={handleChange}
                   name="isListView"
                   color="primary"
+                  size="small"
                 />
-              )}
+                )}
               label="List View"
+              style={{ marginTop: '10px' }}
             />
-          </ButtonToolbar>
+
+            <IconButton aria-label="New" onClick={props.handleNew}>
+              <Add />
+            </IconButton>
+            <IconButton aria-label="Reload" onClick={props.handleReloadList}>
+              <Cached />
+            </IconButton>
+          </Box>
         </Col>
       </Row>
+      <Divider />
+
       <Row>
         <Col xs={12} md={12}>
 
@@ -161,7 +159,7 @@ function ItemComp(props) {
                           field.value != null
                             && (
                             <div>
-                              <Image src={field.value} fluid />
+                              <Image src={field.value} className="modal-lg-image" fluid />
                               {
                                 form.values.imgPath != null
                                 && (
@@ -171,7 +169,7 @@ function ItemComp(props) {
                                   onClick={() => props.handleRemoveItemImg(form.values.itemId)
                                   }
                                 >
-                                  <DeleteIcon />
+                                  <Delete />
                                 </IconButton>
                                 )
                               }
@@ -259,7 +257,7 @@ function ItemComp(props) {
                   <Row>
                     <Col xs={12} md={6}>
                       <label htmlFor="reminderDtm">Reminder</label>
-                      <AddAlertIcon />
+                      <AddAlert />
                       <Field name="reminderDtm">
                         {({ field, form, meta }) => (
                           <DatePicker

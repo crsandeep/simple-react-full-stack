@@ -1,30 +1,26 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
-import '../css/react-grid-layout-styles.css';
-import '../css/react-resizable-styles.css';
-import '../css/SpaceGrid.css';
 import PropTypes from 'prop-types';
-
 import {
-  Row, Col, ButtonToolbar, Alert, Badge, Button, OverlayTrigger, Tooltip
+  Row, Col, ButtonToolbar, Alert, Badge, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
-
-import { IconButton } from '@material-ui/core/';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import SaveIcon from '@material-ui/icons/Save';
-import DeleteIcon from '@material-ui/icons/Delete';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import {
+  IconButton, FormControlLabel, Switch, Box, Divider, Button
+} from '@material-ui/core/';
+import {
+  FormatListBulleted, PostAdd, Delete,
+  Cached, Add, ArrowBackIos, Check, ControlCameraOutlined
+} from '@material-ui/icons';
 
 import { Prompt } from 'react-router';
 import * as Constants from '../constants/Grid';
 import * as UIConstants from '../constants/Global';
 import BaseUIComp from './BaseUIComp';
+
+// css
+import '../css/react-grid-layout-styles.css';
+import '../css/react-resizable-styles.css';
+import '../css/SpaceGrid.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -56,6 +52,46 @@ function GridComp(props) {
         pageLoading={props.pageLoading}
       />
 
+      <Row>
+        <Col xs={2} md={2}>
+          <Box display="flex" justifyContent="flex-start">
+            <IconButton
+              aria-label="back"
+              onClick={() => props.handleGoBack()}
+            >
+              <ArrowBackIos />
+            </IconButton>
+          </Box>
+        </Col>
+        <Col xs={10} md={10}>
+          <Box display="flex" justifyContent="flex-end">
+            <FormControlLabel
+              control={(
+                <Switch
+                  checked={state.isListView}
+                  onChange={handleChange}
+                  name="isEditMode"
+                  color="primary"
+                  size="small"
+                />
+                )}
+              label="Unlock"
+              style={{ marginTop: '10px' }}
+            />
+
+            <IconButton aria-label="New" onClick={props.handleNew}>
+              <Add />
+            </IconButton>
+            <IconButton aria-label="Save" onClick={props.handleSave}>
+              <Check />
+            </IconButton>
+            <IconButton aria-label="Cancel" onClick={props.handleCancel}>
+              <Cached />
+            </IconButton>
+          </Box>
+        </Col>
+      </Row>
+      <Divider />
       {props.tempLayouts != null && props.tempLayouts.length > 0 ? (
         <div>
           <Row>
@@ -66,45 +102,11 @@ function GridComp(props) {
                   {' '}
                   Click
                   {' '}
-                  <AddCircleOutlineIcon />
+                  <Add />
                   {' '}
                   to add a new grid.
                 </Alert>
               )}
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={6} md={4}>
-              <IconButton
-                aria-label="back"
-                onClick={() => props.handleGoBack()}
-              >
-                <ArrowBackIosIcon />
-              </IconButton>
-              <FormControlLabel
-                control={(
-                  <Switch
-                    checked={state.isListView}
-                    onChange={handleChange}
-                    name="isEditMode"
-                    color="primary"
-                  />
-                )}
-                label="Edit"
-              />
-            </Col>
-            <Col xs={6} md={8}>
-              <ButtonToolbar>
-                <IconButton aria-label="New" onClick={props.handleNew}>
-                  <AddCircleOutlineIcon />
-                </IconButton>
-                <IconButton aria-label="Save" onClick={props.handleSave}>
-                  <SaveIcon />
-                </IconButton>
-                <IconButton aria-label="Cancel" onClick={props.handleCancel}>
-                  <HighlightOffIcon />
-                </IconButton>
-              </ButtonToolbar>
             </Col>
           </Row>
           <Row>
@@ -137,43 +139,40 @@ function GridComp(props) {
                         // edit mode - drag item message
                         props.currMode === Constants.FORM_EDIT_MODE // under edit mode
                         && (
-                          <h4 className={isLargeScreen ? 'spaceGrid-dragTips' : 'spaceGrid-dragTips-mobile'}>
-                            Drag & Organise
-
-                          </h4>
+                          <Box textAlign="center" fontSize="h6.fontSize" m={1} color="primary.main">
+                            <ControlCameraOutlined />
+                            Drag & Move
+                          </Box>
                         )
                       }
 
-                      <div className="spaceGrid-manageBtnPanel">
-                        { // go to item page button
+
+                      {
+                        // show go to item button only if read only mode
+                        // and old grid
                           props.currMode === Constants.FORM_READONLY_MODE // under readonly mode
                           && parseInt(grid.i, 10) > 0 // old grid
                             && (
-                            <Button
-                              variant="outline-dark"
-                              className="spaceGrid-manageBtnPanel"
-                              onClick={() => props.handleSelect(parseInt(grid.i, 10))}
-                              {...(isLargeScreen ? { size: 'lg', block: 'block' } : null)}
-                            >
-
-                              {props.dataMap.get(grid.i).itemCount === 0 ? (
-                                <div>
-                                  <PostAddIcon />
-                                  Add
-                                  {isLargeScreen ? ' items' : null}
-                                </div>
-                              ) : (
-                                <div>
-                                  <FormatListBulletedIcon />
-                                  {props.dataMap.get(grid.i).itemCount}
-                                  {isLargeScreen ? ' items' : null}
-                                </div>
-                              )}
-
-                            </Button>
+                              <Box textAlign="center" fontSize="h6.fontSize" fontWeight="fontWeightMedium" color="primary.main" m={1}>
+                                <Button
+                                  onClick={() => props.handleSelect(parseInt(grid.i, 10))}
+                                >
+                                  {props.dataMap.get(grid.i).itemCount === 0 ? (
+                                    <span>
+                                      <PostAdd />
+                                      Add items
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      <FormatListBulleted />
+                                      {props.dataMap.get(grid.i).itemCount}
+                                      {' item(s)'}
+                                    </span>
+                                  )}
+                                </Button>
+                              </Box>
                             )
-                        }
-                      </div>
+                      }
 
                       {
                         // item tags
@@ -207,28 +206,33 @@ function GridComp(props) {
                           )
                         ))
                       }
-                      <ButtonToolbar className="spaceGrid-editPanel">
-                        {
-                          // delete grid button
-                          props.currMode === Constants.FORM_EDIT_MODE // under edit mode
-                          && (
-                            parseInt(grid.i, 10) < 0 // new grid, not yet save
-                            || (
-                              props.dataMap != null && props.dataMap.get(grid.i) != null // old grid, no item in grid
-                              && props.dataMap.get(grid.i).itemCount === 0
-                            )
+                      {
+                        // prevent delete failure when grid contains items inside
+                        // show delete grid button only if read only mode
+                        // and new grid OR old grid without any item inside
+                        props.currMode === Constants.FORM_READONLY_MODE // under edit mode
+                        && (
+                          parseInt(grid.i, 10) < 0 // new grid, not yet save
+                          || (
+                            props.dataMap != null && props.dataMap.get(grid.i) != null // old grid, no item in grid
+                            && props.dataMap.get(grid.i).itemCount === 0
                           )
-                            ? (
+                        )
+                          ? (
+                            <Box
+                              position="absolute"
+                              zIndex="tooltip"
+                            >
                               <IconButton
                                 aria-label="delete"
                                 onClick={() => props.handleRemove(grid.i)}
                               >
-                                <DeleteIcon />
+                                <Delete />
                               </IconButton>
-                            ) : null
-                        }
+                            </Box>
+                          ) : null
+                      }
 
-                      </ButtonToolbar>
                     </div>
                   ))
                 }

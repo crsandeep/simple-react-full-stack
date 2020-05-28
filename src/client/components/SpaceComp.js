@@ -1,47 +1,28 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-
 import {
-  ListItemSecondaryAction,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  IconButton,
-  ListItemAvatar,
-  Avatar,
-  Typography
+  ListItemSecondaryAction, List, ListItem, ListItemText, ListSubheader,
+  IconButton, Box, ListItemIcon, Avatar, Typography, Divider
 } from '@material-ui/core/';
-// ui
-import '../css/Form.css';
-import '../css/Split.css';
-import '../css/SpaceList.css';
-
 import {
-  Button,
-  Modal,
-  Row,
-  Col,
-  Image,
-  Badge
+  Add, Cached, Delete, Edit, SingleBed, KingBed, LocalHotel,
+  Wc, Fastfood, Kitchen, Weekend, HelpOutline
+} from '@material-ui/icons';
+import {
+  Button, Modal, Row, Col, Image, Badge
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
 } from 'formik';
 import * as Yup from 'yup';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import SingleBedIcon from '@material-ui/icons/SingleBed';
-import KingBedIcon from '@material-ui/icons/KingBed';
-import LocalHotelIcon from '@material-ui/icons/LocalHotel';
-import WcIcon from '@material-ui/icons/Wc';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
-import KitchenIcon from '@material-ui/icons/Kitchen';
-import WeekendIcon from '@material-ui/icons/Weekend';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import * as Constants from '../constants/Space';
 import BaseUIComp from './BaseUIComp';
+
+// css
+import '../css/Form.css';
+import '../css/Split.css';
+import '../css/SpaceList.css';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -63,9 +44,7 @@ function SpaceComp(props) {
   };
 
   // generate left side list bar
-  const [selectedSpace, setSelectedSpace] = React.useState();
   const handleSpaceClick = (event, index) => {
-    setSelectedSpace(index);
     props.handleSelect(index);
   };
 
@@ -78,12 +57,12 @@ function SpaceComp(props) {
           key={space.spaceId}
           alignItems="flex-start"
           button
-          selected={selectedSpace === space.spaceId}
+          // selected={selectedSpace === space.spaceId}
           onClick={event => handleSpaceClick(event, space.spaceId)}
         >
-          <ListItemAvatar>
+          <ListItemIcon>
             {space.imgPath != null ? (
-              <Avatar variant="rounded" alt={space.name} src={space.imgPath} />
+              <img src={space.imgPath} alt={space.name} className="spaceList-itemImage" />
             ) : (
               <Avatar variant="rounded" alt={space.name}>
                 {
@@ -91,7 +70,7 @@ function SpaceComp(props) {
                 }
               </Avatar>
             )}
-          </ListItemAvatar>
+          </ListItemIcon>
           <ListItemText
             primary={space.name}
             secondary={(
@@ -120,13 +99,13 @@ function SpaceComp(props) {
               aria-label="edit"
               onClick={() => handleEdit(space.spaceId)}
             >
-              <EditIcon />
+              <Edit />
             </IconButton>
             <IconButton
               aria-label="delete"
               onClick={() => handleDelete(space.spaceId, space.name)}
             >
-              <DeleteIcon />
+              <Delete />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
@@ -164,14 +143,14 @@ function SpaceComp(props) {
             <ListSubheader>
               {
                 {
-                  'Bedroom 1': <SingleBedIcon />,
-                  'Bedroom 2': <LocalHotelIcon />,
-                  'Bedroom 3': <KingBedIcon />,
-                  'Living Room': <WeekendIcon />,
-                  'Dinning Room': <FastfoodIcon />,
-                  Kitechen: <KitchenIcon />,
-                  Bathroom: <WcIcon />,
-                  Others: <HelpOutlineIcon />
+                  'Bedroom 1': <SingleBed />,
+                  'Bedroom 2': <LocalHotel />,
+                  'Bedroom 3': <KingBed />,
+                  'Living Room': <Weekend />,
+                  'Dinning Room': <Fastfood />,
+                  Kitechen: <Kitchen />,
+                  Bathroom: <Wc />,
+                  Others: <HelpOutline />
                 }[location]
               }
               {' '}
@@ -203,18 +182,31 @@ function SpaceComp(props) {
         pageLoading={props.pageLoading}
       />
 
-      {
-        // new space button
-        props.formState.formMode === Constants.FORM_READONLY_MODE && (
-          <Button variant="primary" onClick={props.handleNew}>
-            New Space
-          </Button>
-        )
-      }
+      <Row>
+        <Col xs={12} md={12}>
+          <Box display="flex" justifyContent="flex-end">
+            {
+              // new space button
+              props.formState.formMode === Constants.FORM_READONLY_MODE && (
+                <IconButton
+                  aria-label="Add"
+                  onClick={props.handleNew}
+                >
+                  <Add />
+                </IconButton>
+              )
+            }
 
-      <Button variant="primary" onClick={props.handleReloadList}>
-        Refresh
-      </Button>
+            <IconButton
+              aria-label="refresh"
+              onClick={props.handleReloadList}
+            >
+              <Cached />
+            </IconButton>
+          </Box>
+          <Divider />
+        </Col>
+      </Row>
 
       <List className="spaceList-pc" subheader={<li />}>
         {dataList}
@@ -241,23 +233,24 @@ function SpaceComp(props) {
                   <Row className="justify-content-md-center">
                     <Col xs={12} md={12}>
                       <Field name="imgPath">
-                        {({ field, form }) => field.value != null && (
-                        <div>
-                          <Image src={field.value} fluid />
-                          {form.values.imgPath != null && (
-                          <IconButton
-                            aria-label="delete"
-                            className="align-bottom"
-                            onClick={() => props.handleRemoveSpaceImg(
-                              form.values.spaceId
-                            )
-                                  }
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                          )}
-                        </div>
-                        )
+                        {
+                          ({ field, form }) => field.value != null && (
+                            <div>
+                              <Image src={field.value} className="modal-lg-image" fluid />
+                              {form.values.imgPath != null && (
+                              <IconButton
+                                aria-label="delete"
+                                className="align-bottom"
+                                onClick={() => props.handleRemoveSpaceImg(
+                                  form.values.spaceId
+                                )
+                                      }
+                              >
+                                <Delete />
+                              </IconButton>
+                              )}
+                            </div>
+                          )
                         }
                       </Field>
                     </Col>

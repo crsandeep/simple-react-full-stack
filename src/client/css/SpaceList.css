@@ -11,5 +11,13 @@
 }
 
 .spaceList-ul{
-    padding:0
+    padding:0;
+    list-style-type: none;
+}
+
+.spaceList-itemImage{
+    margin-top: 5px;
+    margin-right: 5px;
+    height: 60px;
+    width: 60px;
 }

@@ -10,6 +10,9 @@ import {
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const useStyles = makeStyles(theme => ({
   drawerHeader: {
@@ -21,6 +24,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'flex-end'
   }
 }));
+
 function BaseUIComp(props) {
   const classes = useStyles();
 
@@ -30,18 +34,18 @@ function BaseUIComp(props) {
       <div className={classes.drawerHeader} />
 
       { // display message
-        props.displayMsg.isSuccess !== null ? (
-          props.displayMsg.isSuccess === true ? (
-            <Alert variant="success">
-              {props.displayMsg.msg}
-            </Alert>
-          )
-            : (
-              <Alert variant="danger">
-                {props.displayMsg.msg}
-              </Alert>
-            )
-        ) : null
+        // props.displayMsg.isSuccess !== null ? (
+        //   props.displayMsg.isSuccess === true ? (
+        //     <Alert variant="success">
+        //       {props.displayMsg.msg}
+        //     </Alert>
+        //   )
+        //     : (
+        //       <Alert variant="danger">
+        //         {props.displayMsg.msg}
+        //       </Alert>
+        //     )
+        // ) : null
       }
 
       {
@@ -63,13 +67,26 @@ function BaseUIComp(props) {
           </div>
           )
       }
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={false}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnVisibilityChange
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }
 
 BaseUIComp.propTypes = {
-  displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  // displayMsg: PropTypes.oneOfType([PropTypes.object]).isRequired,
   pageLoading: PropTypes.bool.isRequired
 };
 
-export default BaseUIComp;
+// use memo to skip unnecessary reload
+export default React.memo(BaseUIComp);

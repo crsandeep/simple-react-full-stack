@@ -11,7 +11,7 @@ import {
   ListItemText,
   ListSubheader,
   IconButton,
-  ListItemAvatar,
+  ListItemIcon,
   Avatar,
   Typography
 } from '@material-ui/core/';
@@ -43,15 +43,14 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
     if (item.tags != null && item.tags.length > 0) {
       tagsArr = item.tags.split(',');
     }
-
     elementList.push(
       <ListItem
         key={item.itemId}
         alignItems="flex-start"
       >
-        <ListItemAvatar>
+        <ListItemIcon>
           {item.imgPath != null ? (
-            <Avatar variant="rounded" alt={item.name} src={item.imgPath} />
+            <img src={item.imgPath} alt={item.name} className="spaceList-itemImage" />
           ) : (
             <Avatar variant="rounded" alt={item.name}>
               {
@@ -59,7 +58,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
               }
             </Avatar>
           )}
-        </ListItemAvatar>
+        </ListItemIcon>
         <ListItemText
           primary={item.name}
           secondary={(

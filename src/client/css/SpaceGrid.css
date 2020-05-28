@@ -1,5 +1,5 @@
 .spaceGrid-grid{
-    background-color: #BFC9CA;
+    /* background-color: rgb(248, 248, 248); */
     background-position: center;
     background-repeat: no-repeat;
     border-style: outset;
@@ -7,41 +7,13 @@
 }
 
 .spaceGrid-grid-static{
-    background-color: #ffffcc;
+    background-color: #f5f5e5;
     background-position: center;
     background-repeat: no-repeat;
     border-style: outset;
     border-radius: 7px;
 }
 
-
-.spaceGrid-editPanel{
-    position: absolute;
-    bottom: 0;
-    /* background-color: white; */
-    background: rgb(255, 255, 255,0.7);
-    border-radius: 25px;
-    border: 1px dashed;
-}
-
-.spaceGrid-manageBtnPanel{
-    text-align:center;
-}
-
-
-.spaceGrid-dragTips{
-    background-color: white;
-    border-radius: 25px;
-    font-size: 20px;
-    text-align: center;
-}
-
-.spaceGrid-dragTips-mobile{
-    background-color: white;
-    border-radius: 25px;
-    font-size: 13px;
-    text-align: center;
-}
 
 .spaceGrid-idPanel{
     background-color: white;
