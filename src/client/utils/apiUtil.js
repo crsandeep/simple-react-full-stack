@@ -1,7 +1,10 @@
 import axios from 'axios';
 import OperationResult from './operationResult';
+import Configs from '../config/index';
 
-export const API_HOST = 'http://localhost:8080/api';
+
+export const API_HOST = `${Configs.BACKEND_SERVER_URL}/api`;
+
 export const API_INVOKE_TYPE_GET = 'GET';
 export const API_INVOKE_TYPE_POST = 'POST';
 export const API_INVOKE_TYPE_PUT = 'PUT';

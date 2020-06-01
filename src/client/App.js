@@ -11,7 +11,10 @@ import {
   useMediaQuery, Box
 } from '@material-ui/core/';
 
-import InputBase from '@material-ui/core/InputBase';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faSignInAlt, faHome, faPowerOff, faBell, faSearch
+} from '@fortawesome/free-solid-svg-icons';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -26,13 +29,11 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import SearchIcon from '@material-ui/icons/Search';
 import {
   Item, Space, Grid, Search
 } from './views';
 import rootSaga from './sagas';
 import allReducers from './reducers';
-
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(allReducers, applyMiddleware(sagaMiddleware));
@@ -243,24 +244,34 @@ function App() {
               <Divider />
               <List>
                 <ListItem button component={Link} to="/login">
-                  <ListItemIcon><i className="fas fa-sign-in-alt" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} /></ListItemIcon>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                  </ListItemIcon>
                   <ListItemText primary="Login" />
                 </ListItem>
                 <ListItem button component={Link} to="/space">
-                  <ListItemIcon><i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} /></ListItemIcon>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faHome} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                  </ListItemIcon>
                   <ListItemText primary="Home" />
                 </ListItem>
                 <ListItem button component={Link} to="/search">
-                  <ListItemIcon><i className="fa fa-fw fa-search" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} /></ListItemIcon>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faSearch} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                  </ListItemIcon>
                   <ListItemText primary="Search" />
                 </ListItem>
                 <ListItem button component={Link} to="/reminder">
-                  <ListItemIcon><i className="fa fa-fw fa-bell" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} /></ListItemIcon>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faBell} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                  </ListItemIcon>
                   <ListItemText primary="Reminder" />
                 </ListItem>
                 <Divider />
                 <ListItem button component={Link} to="/logout">
-                  <ListItemIcon><i className="fa fa-fw fa-power-off" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} /></ListItemIcon>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faPowerOff} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                  </ListItemIcon>
                   <ListItemText primary="Logout" />
                 </ListItem>
               </List>

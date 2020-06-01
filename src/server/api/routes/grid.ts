@@ -24,8 +24,6 @@ export default (app: Router) => {
   }
 
   function formatGrid(gridRecord: Grid): GridTrans {
-    logger.debug('format grid');
-
     const outputGrid:any = {};
 
     const excludeAttr:string[] = ['creationDate',
@@ -94,8 +92,6 @@ export default (app: Router) => {
   }
 
   function formatGridList(gridRecordList: (Grid)[]): GridTrans[] {
-    logger.debug('format grid list');
-
     if (gridRecordList == null) {
       const empty:any = {};
       return empty;

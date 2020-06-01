@@ -39,7 +39,6 @@ export default (app: Router) => {
 
 
   function formatItem(itemRecord: Item): ItemTrans {
-    logger.debug('format item');
     const outputItem:any = {};
 
     const excludeAttr:string[] = ['creationDate',
@@ -89,8 +88,6 @@ export default (app: Router) => {
   }
 
   function formatItemList(itemRecordList: (Item)[]): ItemTrans[] {
-    logger.debug('format item list');
-
     if (itemRecordList == null) {
       const empty:any = {};
       return empty;

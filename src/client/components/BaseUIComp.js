@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // ui
 import '../css/Form.css';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
   Spinner, Alert
 } from 'react-bootstrap';

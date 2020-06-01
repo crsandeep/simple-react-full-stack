@@ -24,7 +24,6 @@ export default (app: Router) => {
   }
 
   function formatUser(userRecord: User): UserTrans {
-    logger.debug('format user');
     const outputItem:any = {};
 
     const excludeAttr:string[] = ['creationDate',

@@ -4,3 +4,4 @@ dist
 *.log
 yarn.lock
 public/upload/images/
+debug

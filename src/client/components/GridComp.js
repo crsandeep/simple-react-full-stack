@@ -17,6 +17,8 @@ import * as Constants from '../constants/Grid';
 import * as UIConstants from '../constants/Global';
 import BaseUIComp from './BaseUIComp';
 
+import Configs from '../config';
+
 // css
 import '../css/react-grid-layout-styles.css';
 import '../css/react-resizable-styles.css';
@@ -124,7 +126,10 @@ function GridComp(props) {
                       className={
                         grid.static ? 'spaceGrid-grid-static' : 'spaceGrid-grid'
                       }
-                      style={props.gridImgPath != null ? { backgroundImage: `url(${props.gridImgPath})` } : ''}
+                      style={props.gridImgPath != null ? {
+                        backgroundImage: `url(
+                        ${Configs.BACKEND_SERVER_URL}/${props.gridImgPath}`
+                      } : ''}
                     >
                       {
                         // generate ID panel

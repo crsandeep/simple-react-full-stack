@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 // ui
 import '../css/Form.css';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
   IconButton
 } from '@material-ui/core/';

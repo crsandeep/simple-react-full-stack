@@ -27,6 +27,7 @@ import * as Constants from '../constants/Item';
 import ItemListComp from './ItemListComp';
 import ItemCardComp from './ItemCardComp';
 import BaseUIComp from './BaseUIComp';
+import Configs from '../config';
 
 const validateFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -159,7 +160,12 @@ function ItemComp(props) {
                           field.value != null
                             && (
                             <div>
-                              <Image src={field.value} className="modal-lg-image" fluid />
+                              <Image
+
+                                src={`${Configs.BACKEND_SERVER_URL}/${field.value}`}
+                                className="modal-lg-image"
+                                fluid
+                              />
                               {
                                 form.values.imgPath != null
                                 && (

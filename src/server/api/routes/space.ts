@@ -30,7 +30,6 @@ export default (app: Router) => {
   }
 
   function formatSpace(spaceRecord: Space): SpaceTrans {
-    logger.debug('format space');
     const outputSpace:any = {};
 
     const excludeAttr:string[] = ['creationDate', 'updatedOn', 'grids'];
@@ -96,8 +95,6 @@ export default (app: Router) => {
   }
 
   function formatSpaceList(spaceRecordList: (Space)[]): SpaceTrans[] {
-    logger.debug('format space list');
-
     if (spaceRecordList == null) {
       const empty:any = {};
       return empty;

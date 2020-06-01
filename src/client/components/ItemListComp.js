@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // ui
 import '../css/Form.css';
-import 'react-datepicker/dist/react-datepicker.css';
 import {
   ListItemSecondaryAction,
   List,
@@ -15,6 +14,11 @@ import {
   Avatar,
   Typography
 } from '@material-ui/core/';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faShoePrints, faTshirt, faHome, faTable
+} from '@fortawesome/free-solid-svg-icons';
 import { Badge } from 'react-bootstrap';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -30,6 +34,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 import Link from '@material-ui/core/Link';
 import RemindNoteComp from './RemindNoteComp';
+import Configs from '../config';
 
 
 // generate item content in list view
@@ -50,7 +55,11 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
       >
         <ListItemIcon>
           {item.imgPath != null ? (
-            <img src={item.imgPath} alt={item.name} className="spaceList-itemImage" />
+            <img
+              src={`${Configs.BACKEND_SERVER_URL}/${item.imgPath}`}
+              alt={item.name}
+              className="spaceList-itemImage"
+            />
           ) : (
             <Avatar variant="rounded" alt={item.name}>
               {
@@ -97,7 +106,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
               {isShowLocation === true ? (
                 <span>
                   <Link color="inherit" href="/space">
-                    <i className="fa fa-fw fa-home" style={{ fontSize: '1.05em' }} />
+                    <FontAwesomeIcon icon={faHome} style={{ fontSize: '1.05em' }} />
                     {
                       // show space name
                       `${item.spaceLocation} > ${item.spaceName}`
@@ -105,7 +114,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
                   </Link>
                   <span>{' > '}</span>
                   <Link color="inherit" href="/grid">
-                    <i className="fa fa-fw fa-table" style={{ fontSize: '1.05em' }} />
+                    <FontAwesomeIcon icon={faTable} style={{ fontSize: '1.05em' }} />
                     {
                         // show location with grid ID with 2 digits
                         item.gridId.toString().padStart(2, '0').slice(-3)
@@ -169,8 +178,8 @@ const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
               {
                 Favorite: <FavoriteBorderIcon />,
                 Travel: <FlightIcon />,
-                Clothes: <i className="fas fa-tshirt" />,
-                Shoes: <i className="fas fa-shoe-prints" />,
+                Clothes: <FontAwesomeIcon icon={faTshirt} />,
+                Shoes: <FontAwesomeIcon icon={faShoePrints} />,
                 Collections: <EmojiEventsIcon />,
                 Baby: <ChildFriendlyIcon />,
                 Books: <MenuBookIcon />,

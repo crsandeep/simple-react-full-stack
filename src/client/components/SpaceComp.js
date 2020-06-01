@@ -18,6 +18,7 @@ import * as Yup from 'yup';
 
 import * as Constants from '../constants/Space';
 import BaseUIComp from './BaseUIComp';
+import Configs from '../config';
 
 // css
 import '../css/Form.css';
@@ -62,7 +63,11 @@ function SpaceComp(props) {
         >
           <ListItemIcon>
             {space.imgPath != null ? (
-              <img src={space.imgPath} alt={space.name} className="spaceList-itemImage" />
+              <img
+                src={`${Configs.BACKEND_SERVER_URL}/${space.imgPath}`}
+                alt={space.name}
+                className="spaceList-itemImage"
+              />
             ) : (
               <Avatar variant="rounded" alt={space.name}>
                 {
@@ -181,7 +186,6 @@ function SpaceComp(props) {
         displayMsg={props.displayMsg}
         pageLoading={props.pageLoading}
       />
-
       <Row>
         <Col xs={12} md={12}>
           <Box display="flex" justifyContent="flex-end">
@@ -236,7 +240,11 @@ function SpaceComp(props) {
                         {
                           ({ field, form }) => field.value != null && (
                             <div>
-                              <Image src={field.value} className="modal-lg-image" fluid />
+                              <Image
+                                src={`${Configs.BACKEND_SERVER_URL}/${field.value}`}
+                                className="modal-lg-image"
+                                fluid
+                              />
                               {form.values.imgPath != null && (
                               <IconButton
                                 aria-label="delete"

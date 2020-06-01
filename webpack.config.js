@@ -1,6 +1,12 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const webpack = require('webpack');
+
+// for react read config
+require('dotenv').config();
+
 
 const outputDirectory = 'dist';
 
@@ -8,7 +14,7 @@ module.exports = {
   entry: ['babel-polyfill', './src/client/index.js'],
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js',
+    filename: 'bundle-front.js',
     publicPath: '/'
   },
   module: {
@@ -35,17 +41,34 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     port: 3000,
-    open: true,
-    proxy: {
-      '/api': 'http://localhost:8080',
-      '/upload': 'http://localhost:8080'
-    }
+    compress: true,
+    open: false
+  },
+  watchOptions: {
+    ignored: ['src/server', 'node_modules/**']
   },
   plugins: [
+    new webpack.EnvironmentPlugin(['REACT_APP_BACKEND_URL', 'REACT_APP_BACKEND_PORT']), // copy .env para for react
     new CleanWebpackPlugin([outputDirectory]),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-      favicon: './public/favicon.ico'
-    })
-  ]
+      template: './public/index.html'
+      // favicon: './public/favicon.ico'
+    }),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn|zh-hk|en/)
+    // new BundleAnalyzerPlugin() // plug-in for analyzer bundle size
+  ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  },
+  stats: {
+    children: false
+  }
 };
