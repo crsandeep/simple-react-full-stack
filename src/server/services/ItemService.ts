@@ -310,8 +310,6 @@ export default class ItemService {
         ]
       });
 
-      console.log(`itemRecordList ${JSON.stringify(itemRecordList)}`);
-
       return itemRecordList;
     } catch (e) {
       this.logger.error('Fail to search item, reason: %o ', e.message);

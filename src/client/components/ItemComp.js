@@ -85,6 +85,19 @@ function ItemComp(props) {
         </Col>
         <Col xs={10} md={10}>
           <Box display="flex" justifyContent="flex-end">
+            <IconButton aria-label="New" onClick={props.handleNew}>
+              <Add />
+            </IconButton>
+            <IconButton aria-label="Reload" onClick={props.handleReloadList}>
+              <Cached />
+            </IconButton>
+          </Box>
+        </Col>
+      </Row>
+      <Divider />
+      <Row>
+        <Col xs={12} md={12}>
+          <Box display="flex" justifyContent="flex-end">
             <FormControlLabel
               control={(
                 <Switch
@@ -98,18 +111,9 @@ function ItemComp(props) {
               label="List View"
               style={{ marginTop: '10px' }}
             />
-
-            <IconButton aria-label="New" onClick={props.handleNew}>
-              <Add />
-            </IconButton>
-            <IconButton aria-label="Reload" onClick={props.handleReloadList}>
-              <Cached />
-            </IconButton>
           </Box>
         </Col>
       </Row>
-      <Divider />
-
       <Row>
         <Col xs={12} md={12}>
 

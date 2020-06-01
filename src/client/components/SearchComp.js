@@ -5,23 +5,22 @@ import PropTypes from 'prop-types';
 
 // ui
 import '../css/Form.css';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
-  IconButton
+  ArrowBackIos, HighlightOff, ExpandMore, ExpandLess, Search
+} from '@material-ui/icons';
+import {
+  IconButton, Box, Divider, FormControlLabel, Switch
 } from '@material-ui/core/';
+
 import {
-  Row, Col, ButtonToolbar, Button
+  Row, Col
 } from 'react-bootstrap';
 import {
   Formik, Field, Form, ErrorMessage
 } from 'formik';
 import * as Yup from 'yup';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import SearchIcon from '@material-ui/icons/Search';
-import Switch from '@material-ui/core/Switch';
 import ItemListComp from './ItemListComp';
 import ItemCardComp from './ItemCardComp';
 import BaseUIComp from './BaseUIComp';
@@ -77,31 +76,6 @@ function SearchComp(props) {
       />
 
       <Row>
-        <Col xs={2} md={1}>
-          <IconButton
-            aria-label="back"
-            onClick={() => props.handleGoBack()}
-          >
-            <ArrowBackIosIcon />
-          </IconButton>
-        </Col>
-        <Col xs={10} md={11}>
-          <ButtonToolbar>
-            <FormControlLabel
-              control={(
-                <Switch
-                  checked={state.isListView}
-                  onChange={handleChange}
-                  name="isListView"
-                  color="primary"
-                />
-              )}
-              label="List View"
-            />
-          </ButtonToolbar>
-        </Col>
-      </Row>
-      <Row>
         <Col xs={12} md={12}>
           <Formik
             enableReinitialize
@@ -113,46 +87,50 @@ function SearchComp(props) {
             {({ values, errors, touched }) => (
               <Form>
                 <Row>
-                  <Col xs={6} md={8}>
+                  <Col xs={1} md={1}>
+                    <Box display="flex" justifyContent="flex-start">
+                      <IconButton
+                        aria-label="back"
+                        onClick={() => props.handleGoBack()}
+                      >
+                        <ArrowBackIos />
+                      </IconButton>
+                    </Box>
+                  </Col>
+                  <Col xs={7} md={7}>
                     <Field name="keyword" type="text" placeholder="Enter keyword" className={`form-control${errors.keyword && touched.keyword ? ' is-invalid' : ''}`} />
                     <ErrorMessage name="keyword" component="div" className="invalid-feedback" />
                   </Col>
-                  <Col xs={6} md={4}>
-                    <IconButton
-                      aria-label="Search"
-                      onClick={handleSubmit}
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                    {isAdvanceMode === false
-                       && (
-                       <IconButton
-                         aria-label="Show"
-                         onClick={() => setAdvanceMode(true)}
-                       >
-                         <ExpandMoreIcon />
-                       </IconButton>
-                       )
-                    }
-                    {isAdvanceMode === true
-                       && (
-                       <IconButton
-                         aria-label="Hide"
-                         onClick={() => setAdvanceMode(false)}
-                       >
-                         <ExpandLessIcon />
-                       </IconButton>
-                       )
-                    }
-
-                    <IconButton
-                      aria-label="Reset"
-                      onClick={handleReset}
-                    >
-                      <HighlightOffIcon />
-                    </IconButton>
+                  <Col xs={4} md={4}>
+                    <Box display="flex" justifyContent="flex-end">
+                      <IconButton aria-label="Search" onClick={handleSubmit}>
+                        <Search />
+                      </IconButton>
+                      {isAdvanceMode === false
+                        ? (
+                          <IconButton
+                            aria-label="Show Advance Mode"
+                            onClick={() => setAdvanceMode(true)}
+                          >
+                            <ExpandMore />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            aria-label="Hide Advance Mode"
+                            onClick={() => setAdvanceMode(false)}
+                          >
+                            <ExpandLess />
+                          </IconButton>
+                        )
+                      }
+                      <IconButton aria-label="Reset" onClick={handleReset}>
+                        <HighlightOff />
+                      </IconButton>
+                    </Box>
                   </Col>
                 </Row>
+
+                {/* Row 2 */}
                 {isAdvanceMode === true ? (
                   <Row>
                     <Col xs={6} md={6}>
@@ -182,6 +160,8 @@ function SearchComp(props) {
                   </Row>
                 ) : null}
 
+
+                {/* Row 3 */}
                 {isAdvanceMode === true ? (
                   <Row>
                     <Col xs={6} md={6}>
@@ -224,18 +204,33 @@ function SearchComp(props) {
                         <option value="Info">Cyan</option>
                       </Field>
                       <ErrorMessage name="colorCode" component="div" className="invalid-feedback" />
+                      <br />
                     </Col>
                   </Row>
                 ) : null}
-
               </Form>
             )}
           </Formik>
         </Col>
       </Row>
+      <Divider />
       <Row>
         <Col xs={12} md={12}>
-          <br />
+          <Box display="flex" justifyContent="flex-end">
+            <FormControlLabel
+              control={(
+                <Switch
+                  checked={state.isListView}
+                  onChange={handleChange}
+                  name="isListView"
+                  color="primary"
+                  size="small"
+                />
+              )}
+              label="List View"
+              style={{ marginTop: '10px' }}
+            />
+          </Box>
         </Col>
       </Row>
       <Row>
