@@ -1,7 +1,8 @@
 .vscode
 node_modules
+build
 dist
 *.log
 yarn.lock
 public/upload/images/
-debug
+bundle

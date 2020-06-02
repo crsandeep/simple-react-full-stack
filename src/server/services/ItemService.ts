@@ -255,8 +255,6 @@ export default class ItemService {
 
   public async searchItem(filters: SearchTrans): Promise<Item[]> {
     try {
-      console.log(`filters ${JSON.stringify(filters)}`);
-
       // prepare where cause for optional criterias
       const andList: any[] = [];
       if (filters.category != null) {

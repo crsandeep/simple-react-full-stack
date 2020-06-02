@@ -1,32 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "lib": [
-      "es2017",
-      "esnext.asynciterable"
-    ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": false,
-    "moduleResolution": "node",
+    "outDir": "./dist/server",
     "module": "commonjs",
-    "pretty": true,
-    "sourceMap": true,
-    "outDir": "debug",
+    "target": "es2019",
+    "lib": ["es2019", "es2020.bigint", "es2020.string", "es2020.symbol.wellknown"],
+    "noImplicitAny": false,
     "allowJs": true,
-    "noEmit": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "pretty": true,
+    "sourceMap": true
   },
   "include": [
-    "./src/**/*"
+    "./src/server/**/*"
   ],
   "exclude": [
     "node_modules",
-    "tests"
+    "__tests__",
+    "jest",
+    "dist_client",
+    "./src/client"
   ]
 }
