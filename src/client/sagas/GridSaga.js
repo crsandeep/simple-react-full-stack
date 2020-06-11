@@ -10,7 +10,7 @@ export function* handleGetGridList({ spaceId }) {
     const operResult = yield call(Service.getGridList, spaceId);
 
     if (operResult.isSuccess) {
-      yield put(Actions.getGridList(operResult.data, Constants.OPERATION_GET));
+      yield put(Actions.getGridList(operResult.payload, Constants.OPERATION_GET));
     } else {
       yield put(Actions.getGridList(null, Constants.OPERATION_GET));
     }
@@ -25,7 +25,7 @@ export function* handleDeleteGrid({ gridId }) {
     const operResult = yield call(Service.deleteGrid, gridId);
 
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_DELETE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_DELETE));
     } else {
       yield put(Actions.failEdit(operResult.message, Constants.OPERATION_DELETE));
     }
@@ -40,7 +40,7 @@ export function* handleSaveGrids({ grids }) {
     const operResult = yield call(Service.saveGrids, grids);
 
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_SAVE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_SAVE));
     } else {
       yield put(Actions.failEdit(operResult.message, Constants.OPERATION_SAVE));
     }

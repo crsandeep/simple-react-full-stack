@@ -220,6 +220,7 @@ function SpaceComp(props) {
         <Modal
           show={props.formState.formMode === Constants.FORM_EDIT_MODE}
           onHide={props.handleCancel}
+          centered
         >
           <Modal.Header closeButton>
             <Modal.Title>Space Details</Modal.Title>

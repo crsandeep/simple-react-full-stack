@@ -9,7 +9,7 @@ export function* handleGetItemList({ gridId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getItemList, gridId);
     if (operResult.isSuccess) {
-      yield put(Actions.getItemList(operResult.data, Constants.OPERATION_GET));
+      yield put(Actions.getItemList(operResult.payload, Constants.OPERATION_GET));
     } else {
       yield put(Actions.getItemList(null, Constants.OPERATION_GET));
     }
@@ -23,7 +23,7 @@ export function* handleGetItem({ itemId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getItem, itemId);
     if (operResult.isSuccess) {
-      yield put(Actions.getItem(operResult.data, Constants.OPERATION_GET));
+      yield put(Actions.getItem(operResult.payload, Constants.OPERATION_GET));
     } else {
       yield put(Actions.getItem(null, Constants.OPERATION_GET));
     }
@@ -37,7 +37,7 @@ export function* handleDeleteItem({ gridId, itemId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.deleteItem, itemId);
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_DELETE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_DELETE));
 
       // trigger reload list
       yield call(handleGetItemList, { gridId });
@@ -55,7 +55,7 @@ export function* handleAddItem({ item, fileMap }) {
     const operResult = yield call(Service.addItem, item, fileMap);
     const { gridId } = item;
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_SAVE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_SAVE));
 
       // trigger reload list
       yield call(handleGetItemList, { gridId });
@@ -73,7 +73,7 @@ export function* handleUpdateItem({ item, fileMap }) {
     const operResult = yield call(Service.updateItem, item, fileMap);
     const { gridId } = item;
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_UPDATE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_UPDATE));
 
       // trigger reload list
       yield call(handleGetItemList, { gridId });
@@ -91,7 +91,7 @@ export function* handleRemoveItemImg({ itemId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.removeItemImg, itemId);
     if (operResult.isSuccess) {
-      yield put(Actions.completeRemoveItemImg(operResult.data, Constants.OPERATION_REMOVE_IMG));
+      yield put(Actions.completeRemoveItemImg(operResult.payload, Constants.OPERATION_REMOVE_IMG));
     } else {
       yield put(Actions.failRemoveItemImg(operResult.message, Constants.OPERATION_REMOVE_IMG));
     }

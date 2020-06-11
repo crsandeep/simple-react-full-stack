@@ -143,6 +143,7 @@ function ItemComp(props) {
         <Modal
           show={props.formState.formMode === Constants.FORM_EDIT_MODE}
           onHide={props.handleCancel}
+          centered
         >
           <Modal.Header closeButton>
             <Modal.Title>Item Details</Modal.Title>

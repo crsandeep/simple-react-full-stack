@@ -6,7 +6,7 @@ export default interface AuthTrans {
 
     userId?: number;
 
-    email?: string;
+    name?: string;
 
     token?: string;
 

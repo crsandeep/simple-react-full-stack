@@ -14,12 +14,13 @@ const ops: StrategyOptions = {
 // validate userId in JWT token is exist in database
 export default new Strategy(ops, async (payload, done) => {
   const logger = Container.get<winston.Logger>('logger');
+
   try {
     logger.debug('Calling passport Strategy to retrieve user from DB by userId');
     const UserRepo:Repository<User> = Container.get<Sequelize>('sequelize').getRepository<User>(User);
 
-    // check email exist
-    const userRecord = await UserRepo.findOne({ where: { userId: payload.userId } });
+    // check user exist in db
+    const userRecord = await UserRepo.findOne({ attributes: ['userId', 'name', 'role'], where: { userId: payload.userId } });
     if (userRecord) {
       return done(null, userRecord);
     }

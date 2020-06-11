@@ -5,11 +5,10 @@ import { Container } from 'typedi';
 import winston from 'winston';
 import { celebrate, Joi } from 'celebrate';
 import passport from 'passport';
-import config from '../../config';
 import User from '../../models/User';
-import AuthTrans from '../../interfaces/AuthTrans';
 import UserTrans from '../../interfaces/UserTrans';
 import UserService from '../../services/UserService';
+import OperationResult from '../../util/operationResult';
 
 const route = Router();
 
@@ -17,11 +16,6 @@ export default (app: Router) => {
   // initial setup
   const logger:winston.Logger = Container.get('logger');
   const userService = Container.get(UserService);
-
-
-  function formatSuccess(payload:any, message:string = null):object {
-    return { isSuccess: true, payload, message };
-  }
 
   function formatUser(userRecord: User): UserTrans {
     const outputItem:any = {};
@@ -56,22 +50,26 @@ export default (app: Router) => {
   app.use('/auth', route);
 
   route.post(
-    '/signUp',
+    '/register',
     celebrate({
       body: Joi.object({
-        email: Joi.string().required(),
+        email: Joi.string().email().required(),
         name: Joi.string().required(),
         password: Joi.string().required()
       })
     }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug('Calling singUp endpoint');
+      logger.debug('Calling register endpoint');
 
       try {
         const input:UserTrans = req.body;
-        const userRecord:User = await userService.signUp(input);
-        const result = formatUser(userRecord);
-        return res.status(200).json(formatSuccess(result));
+        const operResult:OperationResult = await userService.register(input);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatUser(operResult.payload);
+        }
+
+        return res.status(201).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -83,7 +81,7 @@ export default (app: Router) => {
     '/login',
     celebrate({
       body: Joi.object({
-        email: Joi.string().required(),
+        email: Joi.string().email().required(),
         password: Joi.string().required()
       })
     }),
@@ -92,8 +90,8 @@ export default (app: Router) => {
       const input:UserTrans = req.body;
 
       try {
-        const authRecord:AuthTrans = await userService.login(input);
-        return res.status(200).json(formatSuccess(authRecord));
+        const operResult:OperationResult = await userService.login(input);
+        return res.status(201).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -114,10 +112,10 @@ export default (app: Router) => {
     '/restricted',
     passport.authenticate('jwt', { session: false }),
     async (req: Request, res: Response, next: NextFunction) => {
-      logger.debug(`Calling restricted endpoint${JSON.stringify(req.user)}`);
+      logger.debug(`Calling restricted endpoint ${JSON.stringify(req.user)}`);
       const currUser = req.user as User;
 
-      logger.debug(`${currUser.userId} - ${currUser.email}`);
+      logger.debug(`${currUser.userId} - ${currUser.role}`);
 
       res.send('Success');
     }

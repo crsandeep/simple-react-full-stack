@@ -10,6 +10,7 @@ import SpaceService from '../../services/SpaceService';
 import * as multerOptions from '../../config/multer';
 import config from '../../config';
 import Space from '../../models/Space';
+import OperationResult from '../../util/operationResult';
 
 const route = Router();
 
@@ -23,11 +24,6 @@ export default (app: Router) => {
   });
   const logger:winston.Logger = Container.get('logger');
   const spaceService = Container.get(SpaceService);
-
-
-  function formatSuccess(payload:any, message:string = null):object {
-    return { isSuccess: true, payload, message };
-  }
 
   function formatSpace(spaceRecord: Space): SpaceTrans {
     const outputSpace:any = {};
@@ -128,9 +124,13 @@ export default (app: Router) => {
 
       try {
         const spaceId:number = parseInt(req.params.spaceId, 10);
-        const spaceRecord:Space = await spaceService.getSpaceById(spaceId);
-        const result:SpaceTrans = formatSpace(spaceRecord);
-        return res.status(200).json(formatSuccess(result));
+        const operResult:OperationResult = await spaceService.getSpaceById(spaceId);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatSpace(operResult.payload);
+        }
+
+        return res.status(200).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -151,9 +151,13 @@ export default (app: Router) => {
 
       try {
         const userId:number = parseInt(req.params.userId, 10);
-        const spaceRecordList:Space[] = await spaceService.getSpaceByUserId(userId);
-        const result:SpaceTrans[] = formatSpaceList(spaceRecordList);
-        return res.status(200).json(formatSuccess(result));
+        const operResult:OperationResult = await spaceService.getSpaceByUserId(userId);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatSpaceList(operResult.payload);
+        }
+
+        return res.status(200).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -179,9 +183,13 @@ export default (app: Router) => {
       try {
         const input:SpaceTrans = req.body;
         input.imgPath = (req.file != null ? req.file.path : null);
-        const spaceRecord:Space = await spaceService.addSpace(input);
-        const result:SpaceTrans = formatSpace(spaceRecord);
-        return res.status(201).json(formatSuccess(result));
+        const operResult:OperationResult = await spaceService.addSpace(input);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatSpace(operResult.payload);
+        }
+
+        return res.status(201).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -208,9 +216,14 @@ export default (app: Router) => {
         const input:SpaceTrans = req.body;
         input.spaceId = parseInt(req.params.spaceId, 10);
         input.imgPath = (req.file != null ? req.file.path : null);
-        const updResult:Space = await spaceService.updateSpace(input);
-        const result:SpaceTrans = formatSpace(updResult);
-        return res.status(201).json(formatSuccess(result));
+
+        const operResult:OperationResult = await spaceService.updateSpace(input);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatSpace(operResult.payload);
+        }
+
+        return res.status(201).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -231,9 +244,13 @@ export default (app: Router) => {
 
       try {
         const spaceId:number = parseInt(req.params.spaceId, 10);
-        const spaceRecord:Space = await spaceService.deleteSpace(spaceId);
-        const result:SpaceTrans = formatSpace(spaceRecord);
-        return res.status(200).json(formatSuccess(result));
+        const operResult:OperationResult = await spaceService.deleteSpace(spaceId);
+
+        if (operResult.isSuccess) {
+          operResult.payload = formatSpace(operResult.payload);
+        }
+
+        return res.status(200).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -254,8 +271,9 @@ export default (app: Router) => {
 
       try {
         const spaceId:number = parseInt(req.params.spaceId, 10);
-        const result:boolean = await spaceService.deleteSpaceImage(spaceId);
-        return res.status(200).json(formatSuccess(result));
+        const operResult:OperationResult = await spaceService.deleteSpaceImage(spaceId);
+
+        return res.status(200).json(operResult);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);

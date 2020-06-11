@@ -8,6 +8,8 @@ import * as fileUtil from '../util/fileUtil';
 import Grid from '../models/Grid';
 import Item from '../models/Item';
 import Space from '../models/Space';
+import OperationResult from '../util/operationResult';
+import MessageCd from '../Constants/MessageCd';
 
 @Service()
 export default class SpaceService {
@@ -27,8 +29,10 @@ export default class SpaceService {
     this.spaceRepo = Container.get<Sequelize>('sequelize').getRepository<Space>(Space);
   }
 
-  public async getSpaceByUserId(userId: number): Promise<Space[]> {
+  public async getSpaceByUserId(userId: number): Promise<OperationResult> {
     try {
+      this.logger.debug('getSpaceByUserId');
+      const operResult = new OperationResult();
       const spaceRecordList = await this.spaceRepo.findAll({
         where: { userId },
         include: [{
@@ -46,17 +50,21 @@ export default class SpaceService {
         ]
       });
 
-      return spaceRecordList;
+      operResult.setSuccess(spaceRecordList);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to get space list, reason: %o ', e.message);
       throw e;
     }
   }
 
-  public async getSpaceById(spaceId: number): Promise<Space> {
+  public async getSpaceById(spaceId: number): Promise<OperationResult> {
     try {
+      this.logger.debug('getSpaceById');
+      const operResult = new OperationResult();
       const spaceRecord = await this.spaceRepo.findOne({ where: { spaceId } });
-      return spaceRecord;
+      operResult.setSuccess(spaceRecord);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to get space, reason: %o ', e.message);
       throw e;
@@ -64,9 +72,10 @@ export default class SpaceService {
   }
 
 
-  public async addSpace(spaceTrans: SpaceTrans): Promise<Space> {
+  public async addSpace(spaceTrans: SpaceTrans): Promise<OperationResult> {
     try {
-      this.logger.debug('add space record');
+      this.logger.debug('addSpace');
+      const operResult = new OperationResult();
 
       // move file to new path
       if (spaceTrans.imgPath != null) {
@@ -78,18 +87,23 @@ export default class SpaceService {
 
       if (!spaceRecord) {
         this.logger.error('Fail to create space');
-        throw new Error('Space cannot be created');
+        operResult.setFail(MessageCd.SPACE_CREATE_SPACE_FAILED_UNKNOWN, 'Fail to create space');
+        return operResult;
       }
 
-      return spaceRecord;
+      operResult.setSuccess(spaceRecord);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to add space, reason: %o ', e.message);
       throw e;
     }
   }
 
-  public async updateSpace(spaceTrans: SpaceTrans): Promise<Space> {
+  public async updateSpace(spaceTrans: SpaceTrans): Promise<OperationResult> {
     try {
+      this.logger.debug('updateSpace');
+      const operResult = new OperationResult();
+
       const filter = {
         where: { spaceId: spaceTrans.spaceId }
       };
@@ -99,7 +113,8 @@ export default class SpaceService {
 
       if (!spaceRecord) {
         this.logger.error('Fail to find space, spaceId %o ', spaceTrans.spaceId);
-        throw new Error('Space not found');
+        operResult.setFail(MessageCd.SPACE_UPDATE_SPACE_FAILED_NOT_FOUND, 'Fail to find space');
+        return operResult;
       }
 
       // handle image file
@@ -131,35 +146,39 @@ export default class SpaceService {
 
       if (!updResult) {
         this.logger.error('Fail to update space');
-        throw new Error('Space cannot be updated');
+        operResult.setFail(MessageCd.SPACE_UPDATE_SPACE_FAILED_UNKNOWN, 'Fail to update space');
+        return operResult;
       }
 
       // remove images between new and old is different
       if (updResult && spaceTrans.imgPath !== spaceRecord.imgPath) {
         fileUtil.clearUploadFile(spaceRecord.imgPath);
       }
-      return updResult[1];
+      operResult.setSuccess(updResult[1]);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to update space, spaceId: %o, reason: %o ', spaceTrans.spaceId, e.message);
       throw e;
     }
   }
 
-  public async deleteSpace(spaceId: number): Promise<Space> {
+  public async deleteSpace(spaceId: number): Promise<OperationResult> {
     try {
       this.logger.debug('delete space record, spaceId: %o', spaceId);
+
+      const operResult = new OperationResult();
       const spaceRecord = await this.spaceRepo.findOne({ where: { spaceId } });
 
       if (!spaceRecord) {
         this.logger.error('Fail to find space, spaceId %o ', spaceId);
-        throw new Error('Space not found');
+        operResult.setFail(MessageCd.SPACE_DELETE_SPACE_FAILED_NOT_FOUND, 'Fail to find space');
+        return operResult;
       }
 
       const options = {
         where: { spaceId },
         limit: 1
       };
-
 
       const delOper = await this.spaceRepo.destroy(options);
 
@@ -169,9 +188,12 @@ export default class SpaceService {
         }
       } else {
         this.logger.error('Fail to delete space, spaceId %o ', spaceId);
-        throw new Error('Fail to delete space');
+        operResult.setFail(MessageCd.SPACE_DELETE_SPACE_FAILED_UNKNOWN, 'Fail to delete space');
+        return operResult;
       }
-      return spaceRecord;
+
+      operResult.setSuccess(spaceRecord);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to delete space, spaceId: %o, reason: %o ', spaceId, e.message);
       throw e;
@@ -179,9 +201,13 @@ export default class SpaceService {
   }
 
 
-  public async deleteSpaceImage(spaceId: number): Promise<boolean> {
+  public async deleteSpaceImage(spaceId: number): Promise<OperationResult> {
     let result: boolean = false;
     try {
+      this.logger.debug('deleteSpaceImage, spaceId: %o', spaceId);
+
+      const operResult = new OperationResult();
+
       const update = { imgPath: null };
 
       this.logger.debug('delete space image, spaceId %o', spaceId);
@@ -189,12 +215,14 @@ export default class SpaceService {
 
       if (!spaceRecord) {
         this.logger.error('Fail to find space, spaceId %o ', spaceId);
-        throw new Error('Space not found, %o');
+        operResult.setFail(MessageCd.SPACE_UPDATE_SPACE_REMOVE_IMG_FAILED_NOT_FOUND, 'Fail to find space');
+        return operResult;
       }
 
+      // image already null, return directly
       if (spaceRecord.imgPath == null) {
-        this.logger.error('Fail to find space image, spaceId %o ', spaceId);
-        throw new Error('Space image not found');
+        operResult.setSuccess(true);
+        return operResult;
       }
 
       // update record
@@ -206,13 +234,15 @@ export default class SpaceService {
 
       if (!updResult) {
         this.logger.error('Fail to update space image to null');
-        throw new Error('Space image cannot be updated to null');
+        operResult.setFail(MessageCd.SPACE_UPDATE_SPACE_REMOVE_IMG_FAILED, 'Fail to clear space image');
+        return operResult;
       }
 
       // remove old img
       result = fileUtil.clearUploadFile(spaceRecord.imgPath);
 
-      return result;
+      operResult.setSuccess(result);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to delete space image, spaceId: %o, reason: %o ', spaceId, e.message);
       throw e;

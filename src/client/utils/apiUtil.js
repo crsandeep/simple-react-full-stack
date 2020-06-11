@@ -1,6 +1,7 @@
 import axios from 'axios';
 import OperationResult from './operationResult';
 import Configs from '../config/index';
+import * as MessageCd from '../constants/MessageCd';
 
 
 export const API_HOST = `${Configs.BACKEND_SERVER_URL}/api`;
@@ -55,6 +56,15 @@ export const API_REMINDER = {
 };
 
 
+// auth related
+export const API_AUTH_CONTEXT_PATH = '/auth/';
+export const API_AUTH_FULL_PATH = API_HOST + API_AUTH_CONTEXT_PATH;
+export const API_AUTH = {
+  REGISTER: `${API_AUTH_FULL_PATH}register/`,
+  LOGIN: `${API_AUTH_FULL_PATH}login/`
+};
+
+
 export const invokeApi = async (invokeMethod, url, data, fileMap = null) => {
   const operResult = new OperationResult();
 
@@ -103,23 +113,24 @@ export const invokeApi = async (invokeMethod, url, data, fileMap = null) => {
       case API_INVOKE_TYPE_DELETE:
         response = await axios.delete(url);
         break;
+      default: // throw error if not support type
+        throw `Does not support invoke method : ${invokeMethod}`;
     }
 
     if (response.status >= 400 || !response.data.isSuccess) {
-      operResult.setFail(response.message);
+      operResult.setFail(response.data.messageCd, response.data.message);
     } else if (response.data.isSuccess) {
       operResult.setSuccess(response.data.payload);
     } else {
-      operResult.setFail(response.message);
+      operResult.setFail(response.data.messageCd, response.data.message);
     }
   } catch (e) {
-    if (e.response == null) {
-      operResult.setFail(e.message);
-    } else if (e.response.status >= 400) {
-      const { data = {} } = e.response;
-      operResult.setFail(data.error);
+    if (e.response != null) {
+      operResult.setFail(MessageCd.GLOBAL_UNKNOWN_ERROR, e.message);
+    } else {
+      operResult.setFail(MessageCd.GLOBAL_UNKNOWN_ERROR, 'Unknown Error');
     }
-  } finally {
-    return operResult;
   }
+
+  return operResult;
 };

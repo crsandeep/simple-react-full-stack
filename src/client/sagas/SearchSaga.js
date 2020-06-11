@@ -9,7 +9,7 @@ export function* handleSearchItem({ values }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.searchItem, values);
     if (operResult.isSuccess) {
-      yield put(Actions.searchItem(operResult.data, Constants.OPERATION_SEARCH));
+      yield put(Actions.searchItem(operResult.payload, Constants.OPERATION_SEARCH));
     } else {
       yield put(Actions.searchItem(null, Constants.OPERATION_SEARCH));
     }

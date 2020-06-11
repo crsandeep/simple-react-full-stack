@@ -9,6 +9,9 @@ import UserTrans from '../interfaces/UserTrans';
 
 import User from '../models/User';
 import Constants from '../Constants/Role';
+import MessageCd from '../Constants/MessageCd';
+
+import OperationResult from '../util/operationResult';
 
 @Service()
 export default class UserService {
@@ -22,48 +25,60 @@ export default class UserService {
     this.userRepo = Container.get<Sequelize>('sequelize').getRepository<User>(User);
   }
 
-  public async signUp(userTrans: UserTrans): Promise<User> {
+  public async register(userTrans: UserTrans): Promise<OperationResult> {
     try {
+      const operResult = new OperationResult();
       const userRecord = await this.userRepo.findOne({ where: { email: userTrans.email } });
       if (userRecord) {
-        this.logger.error('Fail to create user, email already registered');
-        throw new Error('User cannot be created, user already exist');
+        this.logger.error('Fail to create user, Email already registered');
+        operResult.setFail(MessageCd.USER_EMAIL_ALREADY_EXIST, 'Fail to create user, Email already registered');
+        return operResult;
       }
 
       userTrans.role = Constants.ROLE_BASIC_USER;
       userTrans.password = bcrypt.hashSync(userTrans.password, 8);
       const newUser = await this.userRepo.create(userTrans);
-
-      return newUser;
+      operResult.setSuccess(newUser);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to create user, reason: %o ', e.message);
       throw e;
     }
   }
 
-  public async login(userTrans: UserTrans): Promise<AuthTrans> {
+  public async login(userTrans: UserTrans): Promise<OperationResult> {
     try {
+      const operResult = new OperationResult();
       const userRecord = await this.userRepo.findOne({ where: { email: userTrans.email } });
+
       if (!userRecord) {
         this.logger.error('Email or password incorrect');
-        throw new Error('Email or password incorrect');
+        operResult.setFail(MessageCd.USER_LOGIN_INVALID_CREDENTIAL, 'Fail to login, Email or password incorrect');
+        return operResult;
       }
 
       // check password with hash
       const isPswdValid = bcrypt.compareSync(userTrans.password, userRecord.password);
       if (!isPswdValid) {
         this.logger.error('Email or password incorrect');
-        throw new Error('Email or password incorrect');
+        operResult.setFail(MessageCd.USER_LOGIN_INVALID_CREDENTIAL, 'Fail to login, Email or password incorrect');
+        return operResult;
       }
 
-      // return object
+      // create JWT token
       const authTrans: AuthTrans = {};
       authTrans.isAuthenticated = true;
-      authTrans.email = userRecord.email;
+      authTrans.name = userRecord.name;
       authTrans.userId = userRecord.userId;
-      authTrans.token = jwt.sign({ userId: userRecord.userId, email: userRecord.email }, config.jwtSecret, { expiresIn: config.tokenExpireMins });
 
-      return authTrans;
+      // sign token
+      authTrans.token = jwt.sign(
+        { userId: userRecord.userId, name: userRecord.name },
+        config.jwtSecret, { expiresIn: config.tokenExpireMins }
+      );
+
+      operResult.setSuccess(authTrans);
+      return operResult;
     } catch (e) {
       this.logger.error('Fail to login, reason: %o ', e.message);
       throw e;

@@ -9,7 +9,7 @@ export function* handleGetSpaceList({ userId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getSpaceList, userId);
     if (operResult.isSuccess) {
-      yield put(Actions.getSpaceList(operResult.data, Constants.OPERATION_GET));
+      yield put(Actions.getSpaceList(operResult.payload, Constants.OPERATION_GET));
     } else {
       yield put(Actions.getSpaceList(null, Constants.OPERATION_GET));
     }
@@ -23,7 +23,7 @@ export function* handleGetSpace({ spaceId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.getSpace, spaceId);
     if (operResult.isSuccess) {
-      yield put(Actions.getSpace(operResult.data, Constants.OPERATION_GET));
+      yield put(Actions.getSpace(operResult.payload, Constants.OPERATION_GET));
     } else {
       yield put(Actions.getSpace(null, Constants.OPERATION_GET));
     }
@@ -37,7 +37,7 @@ export function* handleDeleteSpace({ userId, spaceId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.deleteSpace, spaceId);
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_DELETE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_DELETE));
 
       // trigger reload list
       yield call(handleGetSpaceList, { userId });
@@ -55,7 +55,7 @@ export function* handleAddSpace({ space, fileMap }) {
     const operResult = yield call(Service.addSpace, space, fileMap);
     const { userId } = space;
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_SAVE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_SAVE));
 
       // trigger reload list
       yield call(handleGetSpaceList, { userId });
@@ -73,7 +73,7 @@ export function* handleUpdateSpace({ space, fileMap }) {
     const operResult = yield call(Service.updateSpace, space, fileMap);
     const { userId } = space;
     if (operResult.isSuccess) {
-      yield put(Actions.completeEdit(operResult.data, Constants.OPERATION_UPDATE));
+      yield put(Actions.completeEdit(operResult.payload, Constants.OPERATION_UPDATE));
 
       // trigger reload list
       yield call(handleGetSpaceList, { userId });
@@ -91,7 +91,7 @@ export function* handleRemoveSpaceImg({ spaceId }) {
     yield put(Actions.startLoading());
     const operResult = yield call(Service.removeSpaceImg, spaceId);
     if (operResult.isSuccess) {
-      yield put(Actions.completeRemoveSpaceImg(operResult.data, Constants.OPERATION_REMOVE_IMG));
+      yield put(Actions.completeRemoveSpaceImg(operResult.payload, Constants.OPERATION_REMOVE_IMG));
     } else {
       yield put(Actions.failRemoveSpaceImg(operResult.message, Constants.OPERATION_REMOVE_IMG));
     }

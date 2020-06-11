@@ -30,7 +30,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {
-  Item, Space, Grid, Search
+  Item, Space, Grid, Search, Auth
 } from './views';
 import rootSaga from './sagas';
 import allReducers from './reducers';
@@ -150,6 +150,8 @@ function App() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
+  const [openAuth, setOpenAuth] = React.useState(false);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -160,6 +162,14 @@ function App() {
 
   const onSearch = (event) => {
     console.log(event.target.value);
+  };
+
+  const handleCloseAuth = () => {
+    setOpenAuth(false);
+  };
+
+  const handleOpenAuth = () => {
+    setOpenAuth(true);
   };
 
   const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
@@ -227,6 +237,7 @@ function App() {
               classes={{
                 paper: classes.drawerPaper
               }}
+              onClose={handleDrawerClose}
             >
               <div className={classes.drawerHeader}>
                 <IconButton onClick={handleDrawerClose}>
@@ -243,7 +254,10 @@ function App() {
               </div>
               <Divider />
               <List>
-                <ListItem button component={Link} to="/login">
+                <ListItem
+                  button
+                  onClick={handleOpenAuth}
+                >
                   <ListItemIcon>
                     <FontAwesomeIcon icon={faSignInAlt} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
                   </ListItemIcon>
@@ -281,15 +295,23 @@ function App() {
                 [classes.contentShift]: open
               })}
             >
-              {/* // padding space is added in BaseUIComp */}
-              <Route exact path="/" component={Space} />
-              <Route path="/login" component={Space} />
-              <Route path="/space" component={Space} />
-              <Route path="/grid" component={Grid} />
-              <Route path="/item" component={Item} />
-              <Route path="/search" component={Search} />
-              <Route path="/reminder" component={Search} />
-              <Route path="/logout" component={Space} />
+              <div>
+                {/* // padding space is added in BaseUIComp */}
+                <Route exact path="/" component={Space} />
+                {/* <Route path="/login" component={Space} /> */}
+                <Route path="/space" component={Space} />
+                <Route path="/grid" component={Grid} />
+                <Route path="/item" component={Item} />
+                <Route path="/search" component={Search} />
+                <Route path="/reminder" component={Search} />
+                <Route path="/logout" component={Space} />
+
+                {/* // for login popup  */}
+                <Auth
+                  isShow={openAuth}
+                  handleClose={handleCloseAuth}
+                />
+              </div>
             </main>
           </div>
         )}
