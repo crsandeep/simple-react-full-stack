@@ -4,7 +4,8 @@ const initialState = {
   pageLoading: false,
   editStatus: {
     isSuccess: null, data: null, messageCd: null, message: null, operation: null
-  }
+  },
+  currentJwt: null
 };
 
 export default function Auth(state = initialState, action) {
@@ -16,7 +17,8 @@ export default function Auth(state = initialState, action) {
         pageLoading: false,
         editStatus: {
           isSuccess: action.operResult.isSuccess, data: action.operResult.payload, operation: action.operationCd
-        }
+        },
+        currentJwt: action.operResult.payload
       };
     case ActionTypes.REGISTER_FAIL:
     case ActionTypes.LOGIN_FAIL:
@@ -25,7 +27,8 @@ export default function Auth(state = initialState, action) {
         pageLoading: false,
         editStatus: {
           isSuccess: false, messageCd: action.operResult.messageCd, message: action.operResult.message, operation: action.operationCd
-        }
+        },
+        currentJwt: null
       };
     case ActionTypes.PAGE_LOADING:
       return {
@@ -34,6 +37,11 @@ export default function Auth(state = initialState, action) {
         editStatus: { // clear previous edit status
           isSuccess: null, data: null, messageCd: null, message: null, operation: null
         }
+      };
+    case ActionTypes.LOGIN_CLEAR:
+      return {
+        ...state,
+        currentJwt: null
       };
     default:
       return state;

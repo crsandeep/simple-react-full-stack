@@ -12,3 +12,5 @@ export const REGISTER_FAIL = 'AUTH_REGISTER_FAIL';
 export const LOGIN_COMPLETE = 'AUTH_LOGIN_COMPLETE';
 
 export const LOGIN_FAIL = 'AUTH_LOGIN_FAIL';
+
+export const LOGIN_CLEAR = 'AUTH_LOGIN_CLEAR';

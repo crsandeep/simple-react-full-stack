@@ -275,7 +275,7 @@ function App() {
                   </ListItemIcon>
                   <ListItemText primary="Search" />
                 </ListItem>
-                <ListItem button component={Link} to="/reminder">
+                <ListItem button component={Link} to="/grid">
                   <ListItemIcon>
                     <FontAwesomeIcon icon={faBell} style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
                   </ListItemIcon>
@@ -303,7 +303,6 @@ function App() {
                 <Route path="/grid" component={Grid} />
                 <Route path="/item" component={Item} />
                 <Route path="/search" component={Search} />
-                <Route path="/reminder" component={Search} />
                 <Route path="/logout" component={Space} />
 
                 {/* // for login popup  */}

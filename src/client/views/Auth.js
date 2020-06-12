@@ -24,6 +24,7 @@ export class Auth extends React.Component {
   }
 
   componentDidMount() {
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -59,7 +60,6 @@ export class Auth extends React.Component {
             this.notifyMsg(false, 'Failed to login. Please try again.', false);
           }
         } else {
-          localStorage.setItem('currentUser', JSON.stringify(currStatus.data));
           this.props.handleClose();
           this.notifyMsg(true, `Welcome back ${currStatus.data.name}!`);
         }

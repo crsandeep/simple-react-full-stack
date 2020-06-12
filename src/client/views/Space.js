@@ -7,6 +7,7 @@ import { SpaceComp } from '../components';
 import * as Actions from '../actions/Space';
 import * as Constants from '../constants/Space';
 import * as UIConstants from '../constants/Global';
+import * as AuthHelper from '../utils/AuthHelper';
 
 export class Space extends React.Component {
   constructor(props) {
@@ -28,7 +29,9 @@ export class Space extends React.Component {
   }
 
   componentDidMount() {
-    this.getSpaceList();
+    if (AuthHelper.validateUser(this.props.currentJwt, this.props.history)) {
+      this.getSpaceList();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -187,6 +190,7 @@ const mapStateToProps = (state) => {
   const userId = 1;
 
   const { spaceList, editStatus, pageLoading } = state.Space;
+  const { currentJwt } = state.Auth;
 
   const inState = state.Space;
   const formState = {
@@ -202,7 +206,8 @@ const mapStateToProps = (state) => {
     spaceList,
     editStatus,
     formState,
-    pageLoading
+    pageLoading,
+    currentJwt
   };
 };
 
@@ -234,10 +239,12 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Space.defaultProps = {
-  spaceList: []
+  spaceList: [],
+  currentJwt: null
 };
 
 Space.propTypes = {
+  currentJwt: PropTypes.oneOfType([PropTypes.object]),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   formState: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceList: PropTypes.arrayOf(PropTypes.object),

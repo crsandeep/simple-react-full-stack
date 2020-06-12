@@ -8,6 +8,7 @@ import { ItemComp } from '../components';
 import * as Actions from '../actions/Item';
 import * as Constants from '../constants/Item';
 import * as UIConstants from '../constants/Global';
+import * as AuthHelper from '../utils/AuthHelper';
 
 export class Item extends React.Component {
   constructor(props) {
@@ -29,7 +30,9 @@ export class Item extends React.Component {
   }
 
   componentDidMount() {
-    this.getItemList();
+    if (AuthHelper.validateUser(this.props.currentJwt, this.props.history)) {
+      this.getItemList();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -210,12 +213,15 @@ const mapStateToProps = (state) => {
     formState.reminderDtm = new Date(formState.reminderDtm);
   }
 
+  const { currentJwt } = state.Auth;
+
   return {
     gridId: currentGridId,
     itemList,
     editStatus,
     formState,
-    pageLoading
+    pageLoading,
+    currentJwt
   };
 };
 
@@ -244,10 +250,12 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Item.defaultProps = {
-  itemList: []
+  itemList: [],
+  currentJwt: null
 };
 
 Item.propTypes = {
+  currentJwt: PropTypes.oneOfType([PropTypes.object]),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   history: PropTypes.oneOfType([PropTypes.object]).isRequired,
   gridId: PropTypes.number.isRequired,

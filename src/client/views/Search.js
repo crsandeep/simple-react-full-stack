@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { SearchComp } from '../components';
 import * as Actions from '../actions/Search';
 import * as Constants from '../constants/Search';
+import * as AuthHelper from '../utils/AuthHelper';
 
 export class Search extends React.Component {
   constructor(props) {
@@ -29,6 +30,8 @@ export class Search extends React.Component {
   }
 
   componentDidMount() {
+    AuthHelper.validateUser(this.props.currentJwt, this.props.history);
+
     this.props.clearItemList();
   }
 
@@ -99,12 +102,14 @@ const mapStateToProps = (state) => {
   const userId = 1;
 
   const { itemList, editStatus, pageLoading } = state.Search;
+  const { currentJwt } = state.Auth;
 
   return {
     userId,
     itemList,
     editStatus,
-    pageLoading
+    pageLoading,
+    currentJwt
   };
 };
 
@@ -118,10 +123,12 @@ const mapDispatchToProps = dispatch => ({
 });
 
 Search.defaultProps = {
-  itemList: []
+  itemList: [],
+  currentJwt: null
 };
 
 Search.propTypes = {
+  currentJwt: PropTypes.oneOfType([PropTypes.object]),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   history: PropTypes.oneOfType([PropTypes.object]).isRequired,
   userId: PropTypes.number.isRequired,

@@ -7,6 +7,7 @@ import { GridComp } from '../components';
 import * as Actions from '../actions/Grid';
 import * as Constants from '../constants/Grid';
 import * as UIConstants from '../constants/Global';
+import * as AuthHelper from '../utils/AuthHelper';
 
 
 export class Grid extends React.Component {
@@ -36,7 +37,9 @@ export class Grid extends React.Component {
   }
 
   componentDidMount() {
-    this.props.sagaGetGridList(this.props.spaceId);
+    if (AuthHelper.validateUser(this.props.currentJwt, this.props.history)) {
+      this.props.sagaGetGridList(this.props.spaceId);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -309,15 +312,18 @@ export class Grid extends React.Component {
 
 const mapStateToProps = (state) => {
   const { editStatus, pageLoading } = state.Grid;
-  const { currentSpaceId } = state.Space;
+  let { currentSpaceId } = state.Space;
 
   // TODO: testing only
-  // if (currentSpaceId == null) currentSpaceId = 1;
+  if (currentSpaceId == null) currentSpaceId = 1;
+
+  const { currentJwt } = state.Auth;
 
   return {
     spaceId: currentSpaceId,
     editStatus,
-    pageLoading
+    pageLoading,
+    currentJwt
   };
 };
 
@@ -337,7 +343,12 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
+Grid.defaultProps = {
+  currentJwt: null
+};
+
 Grid.propTypes = {
+  currentJwt: PropTypes.oneOfType([PropTypes.object]),
   editStatus: PropTypes.oneOfType([PropTypes.object]).isRequired,
   history: PropTypes.oneOfType([PropTypes.object]).isRequired,
   spaceId: PropTypes.number.isRequired,
