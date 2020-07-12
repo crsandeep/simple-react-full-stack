@@ -88,7 +88,7 @@ function AuthComp(props) {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Welcome to</Modal.Title>
+          <Modal.Title>Welcome to Space Master</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">

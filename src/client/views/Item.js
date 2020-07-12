@@ -187,10 +187,10 @@ export class Item extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { currentGridId } = state.Grid;
+  let { currentGridId } = state.Grid;
 
   // TODO: testing only
-  // if (currentGridId == null) currentGridId = 141;
+  if (currentGridId == null) currentGridId = 37;
 
   const { itemList, editStatus, pageLoading } = state.Item;
 

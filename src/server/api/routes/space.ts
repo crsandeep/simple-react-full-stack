@@ -52,6 +52,7 @@ export default (app: Router) => {
 
       // prepare grids and item tags
       let tagList: string[] = null;
+      let catList: string[] = null;
       let gridCount:number = 0;
       let itemCount:number = 0;
       let tempArr: string[] = null;
@@ -59,6 +60,7 @@ export default (app: Router) => {
         gridCount = spaceRecord.grids.length;
 
         tagList = [];
+        catList = [];
         for (const grid of spaceRecord.grids) {
           // get grid's each item
           if (grid.items != null) {
@@ -75,12 +77,19 @@ export default (app: Router) => {
                   }
                 }
               }
+
+              if (item.category != null) {
+                if (catList.indexOf(item.category) < 0) {
+                  catList.push(item.category);
+                }
+              }
             }
           }
         }
       }
       outputSpace.gridCount = gridCount;
       outputSpace.itemCount = itemCount;
+      outputSpace.itemCats = catList;
       outputSpace.itemTags = tagList;
 
       return outputSpace;

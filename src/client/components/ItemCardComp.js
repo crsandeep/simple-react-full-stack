@@ -4,18 +4,18 @@ import PropTypes from 'prop-types';
 // ui
 import '../css/Form.css';
 import {
-  IconButton
+  IconButton, useMediaQuery
 } from '@material-ui/core/';
 import {
   Row, Col, Card, CardColumns, Badge
 } from 'react-bootstrap';
 
 
+import { useTheme } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faShoePrints, faTshirt, faHome, faTable
 } from '@fortawesome/free-solid-svg-icons';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
@@ -34,7 +34,12 @@ import RemindNoteComp from './RemindNoteComp';
 import Configs from '../config';
 
 // generate item content in card view
-const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
+
+const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit) => {
+  const theme = useTheme();
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+  const displayMaxNoTag = (isLargeDevice === true ? 9 : 3);
+
   if (itemList == null) return;
   const displayList = [];
 
@@ -104,16 +109,23 @@ const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
                   <Row>
                     <Col xs={12} md={12}>
                       {
-                            tagsArr.map((tags, i) => (
-                              <span key={i}>
-                                <Badge variant="warning">
-                                  #
-                                  {tags}
-                                </Badge>
-                                {' '}
-                              </span>
-                            ))
-                          }
+                        tagsArr.map((tag, i) => (
+                          i <= displayMaxNoTag - 1 ? (
+                            <Badge key={tag} variant="warning">
+                              {tag}
+                            </Badge>
+                          ) : null
+                        ))
+                      }
+                      {
+                        tagsArr.length > displayMaxNoTag ? (
+                          <Badge variant="warning">
+                            {tagsArr.length - displayMaxNoTag}
+                            {' '}
+                            {' More'}
+                          </Badge>
+                        ) : null
+                      }
                     </Col>
                   </Row>
                   )
@@ -129,16 +141,12 @@ const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
               {/* //Reminder */}
               <div>
                 <RemindNoteComp remindDtm={item.reminderDtm} />
-
                 {
                   isReadOnly === true
                     ? null : (
                       <span style={{ float: 'right' }}>
-                        <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+                        <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)} size="small">
                           <EditIcon />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
-                          <DeleteIcon />
                         </IconButton>
                       </span>
                     )
@@ -180,7 +188,7 @@ const genCardData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
 
 function ItemCardComp(props) {
   // generate item data
-  const dataList = genCardData(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit, props.handleDelete);
+  const dataList = genCardData(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit);
 
   return (
     <CardColumns>
@@ -191,14 +199,12 @@ function ItemCardComp(props) {
 
 ItemCardComp.defaultProps = {
   itemList: [],
-  handleEdit(itemId) {},
-  handleDelete(itemId, name, desc) {}
+  handleEdit(itemId) {}
 };
 
 ItemCardComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
   handleEdit: PropTypes.func,
-  handleDelete: PropTypes.func,
   isShowLocation: PropTypes.bool.isRequired,
   isReadOnly: PropTypes.bool.isRequired
 };

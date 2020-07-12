@@ -94,7 +94,7 @@ export class Grid extends React.Component {
   }
 
   handleSave() {
-    const allowAttr = ['x', 'y', 'w', 'h', 'i'];
+    const allowAttr = ['x', 'y', 'w', 'h', 'i', 'minW'];
     const data = {};
     const gridsArr = [];
     for (const el of this.state.tempLayouts) {
@@ -122,9 +122,11 @@ export class Grid extends React.Component {
     let nextId = this.state.itemCount;
     nextId -= 1;
 
-    const newGrid = {
-      w: 1, h: 1, x: 0, y: Infinity, i: `${nextId}`
-    };// puts it at the bottom
+    // const newGrid = {
+    //   w: 2, h: 1, x: 0, y: Infinity, i: `${nextId}`, minW: 2
+    // };// puts it at the bottom
+
+    const newGrid = this.getNewGrid(nextId, 99);
 
 
     const tempList = [...this.state.tempLayouts].map(l => ({ ...l, static: false }));
@@ -185,6 +187,12 @@ export class Grid extends React.Component {
 
   // ------------------------------------------
   // update UI
+  getNewGrid(id, coordinateY) {
+    return {
+      w: 2, h: 1, x: 0, y: coordinateY, i: `${id}`, minW: 2
+    };
+  }
+
   updateHeaderMsgInUI(isSuccess, msg) {
     this.setState({
       displayMsg: { isSuccess, msg }
@@ -215,9 +223,10 @@ export class Grid extends React.Component {
 
     // no record from db, prepare default new grid
     if (grids === null || grids.length === 0) {
-      tempLayouts = [{
-        w: 1, h: 1, x: 0, y: 0, i: `${counter}`
-      }]; // puts it at the bottom
+      tempLayouts = [this.getNewGrid(counter, 0)];
+      // [{
+      //   w: 2, h: 1, x: 0, y: 0, i: `${counter}`, minW: 2
+      // }]; // puts it at the bottom
 
       // set as edit mode
       currMode = Constants.FORM_EDIT_MODE;
@@ -315,7 +324,7 @@ const mapStateToProps = (state) => {
   let { currentSpaceId } = state.Space;
 
   // TODO: testing only
-  if (currentSpaceId == null) currentSpaceId = 1;
+  if (currentSpaceId == null) currentSpaceId = 2;
 
   const { currentJwt } = state.Auth;
 

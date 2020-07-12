@@ -56,12 +56,15 @@ export default (app: Router) => {
 
       // prepare items tags list
       let tagList: string[] = null;
+      let catList: string[] = null;
       let itemCount:number = null;
       let tempArr: string[] = null;
 
       if (gridRecord.items != null) {
         itemCount = gridRecord.items.length;
         tagList = [];
+        catList = [];
+
         for (const item of gridRecord.items) {
           // prepare unique tag list
           if (item.tags != null) {
@@ -73,11 +76,18 @@ export default (app: Router) => {
               }
             }
           }
+
+          if (item.category != null) {
+            if (catList.indexOf(item.category) < 0) {
+              catList.push(item.category);
+            }
+          }
         }
       }
 
       // copy other fields
       outputGrid.layout = JSON.parse(gridRecord.layout);
+      outputGrid.itemCats = catList;
       outputGrid.itemTags = tagList;
       outputGrid.itemCount = itemCount;
 
@@ -149,7 +159,8 @@ export default (app: Router) => {
             y: Joi.number().required(),
             w: Joi.number().required(),
             h: Joi.number().required(),
-            i: Joi.string().required()
+            i: Joi.string().required(),
+            minW: Joi.number()
           })
         }))
       })

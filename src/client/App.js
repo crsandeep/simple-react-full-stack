@@ -79,11 +79,11 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-start'
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(1),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -157,7 +157,9 @@ function App() {
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    if (open === true) {
+      setOpen(false);
+    }
   };
 
   const onSearch = (event) => {
@@ -196,9 +198,9 @@ function App() {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography className={classes.title} variant="h6" noWrap>
-                  {/* SpaceMaster */}
-                  {
+                <Typography variant="h6" noWrap>
+                  Space Master
+                  {/* {
                     isLargeDevice === true ? (
                       // large device
                       <Box display="flex" justifyContent="flex-end">
@@ -210,7 +212,7 @@ function App() {
                         S
                       </Box>
                     )
-                  }
+                  } */}
                 </Typography>
 
                 {/* <div className={classes.search}>
@@ -253,7 +255,10 @@ function App() {
                 </Typography>
               </div>
               <Divider />
-              <List>
+              <List
+                role="presentation"
+                onClick={handleDrawerClose}
+              >
                 <ListItem
                   button
                   onClick={handleOpenAuth}
@@ -294,10 +299,12 @@ function App() {
               className={clsx(classes.content, {
                 [classes.contentShift]: open
               })}
+              role="presentation"
+              onClick={handleDrawerClose}
             >
               <div>
                 {/* // padding space is added in BaseUIComp */}
-                <Route exact path="/" component={Space} />
+                <Route exact path="/" component={Item} />
                 {/* <Route path="/login" component={Space} /> */}
                 <Route path="/space" component={Space} />
                 <Route path="/grid" component={Grid} />

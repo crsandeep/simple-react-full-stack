@@ -7,7 +7,7 @@
     "build-client": "webpack --mode production --config ./webpack.react.config.js",
     "build-server": "tsc",
     "start": "npm run build && tsc && node src/server/index.ts",
-    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot --config ./webpack.react.config.js",
+    "client": "webpack-dev-server --mode development --devtool inline-source-map --hot --config ./webpack.react.config.js --host 0.0.0.0",
     "server": "nodemon src/server/index.ts",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "jest",

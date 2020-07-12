@@ -42,7 +42,7 @@ export default class SpaceService {
           include: [{
             model: this.itemRepo,
             as: 'items',
-            attributes: ['itemId', 'tags']
+            attributes: ['itemId', 'tags', 'category']
           }]
         }],
         order: [

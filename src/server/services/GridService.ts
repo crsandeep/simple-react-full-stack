@@ -37,7 +37,7 @@ export default class GridService {
         include: [{
           model: this.itemRepo,
           as: 'items',
-          attributes: ['itemId', 'tags']
+          attributes: ['itemId', 'tags', 'category']
         }, {
           model: this.spaceRepo,
           as: 'space',

@@ -11,8 +11,10 @@ import {
   ArrowBackIos, HighlightOff, ExpandMore, ExpandLess, Search
 } from '@material-ui/icons';
 import {
-  IconButton, Box, Divider, FormControlLabel, Switch
+  IconButton, Box, Divider, FormControlLabel, Switch,
+  Typography, useMediaQuery
 } from '@material-ui/core/';
+import { useTheme } from '@material-ui/core/styles';
 
 import {
   Row, Col
@@ -49,6 +51,7 @@ function SearchComp(props) {
   const handleSubmit = () => {
     if (formRef.current) {
       formRef.current.handleSubmit();
+      setAdvanceMode(false);
     }
   };
   const handleReset = () => {
@@ -67,6 +70,10 @@ function SearchComp(props) {
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
+
+  const theme = useTheme();
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+  const displayMaxSearchCol = (isLargeDevice === true ? 9 : 6);
 
   return (
     <div>
@@ -87,50 +94,57 @@ function SearchComp(props) {
             {({ values, errors, touched }) => (
               <Form>
                 <Row>
-                  <Col xs={1} md={1}>
-                    <Box display="flex" justifyContent="flex-start">
-                      <IconButton
-                        aria-label="back"
-                        onClick={() => props.handleGoBack()}
-                      >
-                        <ArrowBackIos />
-                      </IconButton>
-                    </Box>
-                  </Col>
-                  <Col xs={7} md={7}>
+                  <Col xs={displayMaxSearchCol} md={displayMaxSearchCol}>
                     <Field name="keyword" type="text" placeholder="Enter keyword" className={`form-control${errors.keyword && touched.keyword ? ' is-invalid' : ''}`} />
                     <ErrorMessage name="keyword" component="div" className="invalid-feedback" />
                   </Col>
-                  <Col xs={4} md={4}>
+
+                  <Col xs={12 - displayMaxSearchCol} md={12 - displayMaxSearchCol}>
                     <Box display="flex" justifyContent="flex-end">
-                      <IconButton aria-label="Search" onClick={handleSubmit}>
+                      <IconButton aria-label="Search" onClick={handleSubmit} size="small">
                         <Search />
                       </IconButton>
-                      {isAdvanceMode === false
-                        ? (
+                      {
+                        isAdvanceMode === false ? (
                           <IconButton
                             aria-label="Show Advance Mode"
                             onClick={() => setAdvanceMode(true)}
+                            size="small"
                           >
+                            {/* <Search /> */}
                             <ExpandMore />
                           </IconButton>
                         ) : (
                           <IconButton
                             aria-label="Hide Advance Mode"
                             onClick={() => setAdvanceMode(false)}
+                            size="small"
                           >
                             <ExpandLess />
                           </IconButton>
                         )
                       }
-                      <IconButton aria-label="Reset" onClick={handleReset}>
+                      <IconButton aria-label="Reset" onClick={handleReset} size="small">
                         <HighlightOff />
                       </IconButton>
+                      <FormControlLabel
+                        control={(
+                          <Switch
+                            checked={state.isListView}
+                            onChange={handleChange}
+                            name="isListView"
+                            color="primary"
+                            size="small"
+                          />
+                        )}
+                        label="List"
+                        style={{ marginTop: '10px', marginLeft: '5px' }}
+                      />
                     </Box>
                   </Col>
                 </Row>
 
-                {/* Row 2 */}
+                {/* Row 3 */}
                 {isAdvanceMode === true ? (
                   <Row>
                     <Col xs={6} md={6}>
@@ -152,18 +166,7 @@ function SearchComp(props) {
                       </Field>
                       <ErrorMessage name="category" component="div" className="invalid-feedback" />
                     </Col>
-                    <Col xs={6} md={6}>
-                      <label htmlFor="tags">#Tags</label>
-                      <Field name="tags" type="text" placeholder="" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
-                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
-                    </Col>
-                  </Row>
-                ) : null}
 
-
-                {/* Row 3 */}
-                {isAdvanceMode === true ? (
-                  <Row>
                     <Col xs={6} md={6}>
                       <label htmlFor="location">Space Location</label>
                       <Field
@@ -192,8 +195,14 @@ function SearchComp(props) {
                         className="invalid-feedback"
                       />
                     </Col>
+                  </Row>
+                ) : null}
+
+                {/* Row 4 */}
+                {isAdvanceMode === true ? (
+                  <Row>
                     <Col xs={6} md={6}>
-                      <label htmlFor="colorCode">Card Color</label>
+                      <label htmlFor="colorCode">Color</label>
                       <Field name="colorCode" as="select" placeholder="Color" className={`form-control${errors.colorCode && touched.colorCode ? ' is-invalid' : ''}`}>
                         <option value="">Please select...</option>
                         <option value="Light" default>Light</option>
@@ -206,6 +215,11 @@ function SearchComp(props) {
                       <ErrorMessage name="colorCode" component="div" className="invalid-feedback" />
                       <br />
                     </Col>
+                    <Col xs={6} md={6}>
+                      <label htmlFor="tags">Labels</label>
+                      <Field name="tags" type="text" placeholder="" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
+                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
+                    </Col>
                   </Row>
                 ) : null}
               </Form>
@@ -216,38 +230,31 @@ function SearchComp(props) {
       <Divider />
       <Row>
         <Col xs={12} md={12}>
-          <Box display="flex" justifyContent="flex-end">
-            <FormControlLabel
-              control={(
-                <Switch
-                  checked={state.isListView}
-                  onChange={handleChange}
-                  name="isListView"
-                  color="primary"
-                  size="small"
-                />
-              )}
-              label="List View"
-              style={{ marginTop: '10px' }}
-            />
-          </Box>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12} md={12}>
           {
-            !state.isListView ? (
-              <ItemCardComp
-                isShowLocation
-                isReadOnly
-                itemList={props.itemList}
-              />
+            props.itemList != null && props.itemList.length > 0 ? (
+              !state.isListView ? (
+                <ItemCardComp
+                  isShowLocation
+                  isReadOnly
+                  itemList={props.itemList}
+                />
+              ) : (
+                <ItemListComp
+                  isShowLocation
+                  isReadOnly
+                  itemList={props.itemList}
+                />
+              )
             ) : (
-              <ItemListComp
-                isShowLocation
-                isReadOnly
-                itemList={props.itemList}
-              />
+              <Typography
+                component="span"
+                variant="h6"
+                color="textSecondary"
+                display="block"
+                align="center"
+              >
+                Search Your Item
+              </Typography>
             )
           }
         </Col>

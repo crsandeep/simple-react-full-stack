@@ -7,19 +7,23 @@ import {
   Spinner, Alert
 } from 'react-bootstrap';
 
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  useMediaQuery
+} from '@material-ui/core/';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 const useStyles = makeStyles(theme => ({
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+
+    // adding sapce between header and content
+    minHeight: '55px',
+    // ...theme.mixins.toolbar, // by using this setting, it cause too large gap  between two parts
     justifyContent: 'flex-end'
   }
 }));
@@ -31,21 +35,6 @@ function BaseUIComp(props) {
     <div>
       {/* // add space for padding app bar */}
       <div className={classes.drawerHeader} />
-
-      { // display message
-        // props.displayMsg.isSuccess !== null ? (
-        //   props.displayMsg.isSuccess === true ? (
-        //     <Alert variant="success">
-        //       {props.displayMsg.msg}
-        //     </Alert>
-        //   )
-        //     : (
-        //       <Alert variant="danger">
-        //         {props.displayMsg.msg}
-        //       </Alert>
-        //     )
-        // ) : null
-      }
 
       {
         // page loading mask

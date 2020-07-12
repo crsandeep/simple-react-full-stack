@@ -44,7 +44,7 @@ export function validateJwt(currentJwt) {
 
 
 export function handleExpire(history) {
-  history.push('/login');
+  // history.push('/login');
 }
 
 export function validateUser(currentJwt, history) {

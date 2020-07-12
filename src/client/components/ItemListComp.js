@@ -12,15 +12,17 @@ import {
   IconButton,
   ListItemIcon,
   Avatar,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@material-ui/core/';
 
+
+import { useTheme } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faShoePrints, faTshirt, faHome, faTable
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge } from 'react-bootstrap';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
@@ -39,9 +41,13 @@ import Configs from '../config';
 
 // generate item content in list view
 
-const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
+const genListData = (itemList, isShowLocation, isReadOnly, handleEdit) => {
   if (itemList == null) return;
   const elementList = [];
+
+  const theme = useTheme();
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+  const displayMaxNoTag = (isLargeDevice === true ? 9 : 3);
 
   for (const item of itemList) {
     let tagsArr = [];
@@ -84,11 +90,22 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
                     ? (<br />) : null
                 }
                 {
-                  tagsArr.map(tag => (
-                    <Badge key={tag} variant="warning">
-                      {tag}
-                    </Badge>
+                  tagsArr.map((tag, i) => (
+                    i <= displayMaxNoTag - 1 ? (
+                      <Badge key={tag} variant="warning">
+                        {tag}
+                      </Badge>
+                    ) : null
                   ))
+                }
+                {
+                  tagsArr.length > displayMaxNoTag ? (
+                    <Badge variant="warning">
+                      {tagsArr.length - displayMaxNoTag}
+                      {' '}
+                      {' More'}
+                    </Badge>
+                  ) : null
                 }
               </Typography>
               {
@@ -129,11 +146,8 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
           isReadOnly === true
             ? null : (
               <ListItemSecondaryAction>
-                <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)}>
+                <IconButton aria-label="edit" onClick={() => handleEdit(item.itemId)} size="small">
                   <EditIcon />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(item.itemId, item.name, item.description)}>
-                  <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>
             )
@@ -145,7 +159,7 @@ const genListData = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
 };
 
 
-const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDelete) => {
+const genListView = (itemList, isShowLocation, isReadOnly, handleEdit) => {
   const displayList = [];
   const itemMap = new Map();
   let tempList = null;
@@ -193,7 +207,7 @@ const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
             {' '}
             {category}
           </ListSubheader>
-          {genListData(list, isShowLocation, isReadOnly, handleEdit, handleDelete)}
+          {genListData(list, isShowLocation, isReadOnly, handleEdit)}
         </ul>
       </li>
     );
@@ -203,7 +217,7 @@ const genListView = (itemList, isShowLocation, isReadOnly, handleEdit, handleDel
 
 function ItemListComp(props) {
   // generate item data
-  const dataList = genListView(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit, props.handleDelete);
+  const dataList = genListView(props.itemList, props.isShowLocation, props.isReadOnly, props.handleEdit);
 
   return (
     <List className="spaceList-pc" subheader={<li />}>
@@ -214,14 +228,12 @@ function ItemListComp(props) {
 
 ItemListComp.defaultProps = {
   itemList: [],
-  handleEdit(itemId) {},
-  handleDelete(itemId, name, desc) {}
+  handleEdit(itemId) {}
 };
 
 ItemListComp.propTypes = {
   itemList: PropTypes.arrayOf(PropTypes.object),
   handleEdit: PropTypes.func,
-  handleDelete: PropTypes.func,
   isShowLocation: PropTypes.bool.isRequired,
   isReadOnly: PropTypes.bool.isRequired
 };

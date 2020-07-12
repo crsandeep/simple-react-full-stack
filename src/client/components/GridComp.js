@@ -5,14 +5,31 @@ import {
   Row, Col, ButtonToolbar, Alert, Badge, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
 import {
-  IconButton, FormControlLabel, Switch, Box, Divider, Button
+  IconButton, FormControlLabel, Switch, Box, Divider, Button, useMediaQuery
 } from '@material-ui/core/';
 import {
   FormatListBulleted, PostAdd, Delete,
   Cached, Add, ArrowBackIos, Check, ControlCameraOutlined
 } from '@material-ui/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faShoePrints, faTshirt, faHome, faTable
+} from '@fortawesome/free-solid-svg-icons';
+import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import BuildIcon from '@material-ui/icons/Build';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FlightIcon from '@material-ui/icons/Flight';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 
 import { Prompt } from 'react-router';
+import {
+  useTheme
+} from '@material-ui/core/styles';
 import * as Constants from '../constants/Grid';
 import * as UIConstants from '../constants/Global';
 import BaseUIComp from './BaseUIComp';
@@ -27,13 +44,13 @@ import '../css/SpaceGrid.css';
 const ReactGridLayout = WidthProvider(RGL);
 
 function GridComp(props) {
-  const isLargeScreen = (window.innerWidth > UIConstants.UI_SMALL_SCREEN_WIDTH);
+  // const isLargeScreen = (window.innerWidth > UIConstants.UI_SMALL_SCREEN_WIDTH);
 
-  const renderTagsTooltip = (prop, text) => (
-    <Tooltip id="button-tooltip" {...prop}>
-      {text}
-    </Tooltip>
-  );
+  // const renderTagsTooltip = (prop, text) => (
+  //   <Tooltip id="button-tooltip" {...prop}>
+  //     {text}
+  //   </Tooltip>
+  // );
 
   // hook for switch view
   const [state, setState] = React.useState({
@@ -44,6 +61,40 @@ function GridComp(props) {
     props.handleToggleMode(event.target.checked ? Constants.FORM_EDIT_MODE : Constants.FORM_READONLY_MODE);
   };
 
+  const handleReset = () => {
+    state.isEditMode = false; // reset edit switch
+    props.handleCancel();
+  };
+
+
+  const handleSave = () => {
+    state.isEditMode = false; // reset edit switch
+    props.handleSave();
+  };
+
+  const handleNew = () => {
+    state.isEditMode = true; // reset edit switch
+    props.handleNew();
+  };
+
+  const theme = useTheme();
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+  const displayMaxNoCat = (isLargeDevice === true ? 9 : 3);
+
+  const catIconList = {
+    Favorite: <FavoriteBorderIcon />,
+    Travel: <FlightIcon />,
+    Clothes: <FontAwesomeIcon icon={faTshirt} />,
+    Shoes: <FontAwesomeIcon icon={faShoePrints} />,
+    Collections: <EmojiEventsIcon />,
+    Baby: <ChildFriendlyIcon />,
+    Books: <MenuBookIcon />,
+    Gifts: <CardGiftcardIcon />,
+    Food: <RestaurantIcon />,
+    Kitchenware: <KitchenIcon />,
+    Tools: <BuildIcon />,
+    Others: <HelpOutlineIcon />
+  };
 
   return (
     <div>
@@ -60,6 +111,7 @@ function GridComp(props) {
             <IconButton
               aria-label="back"
               onClick={() => props.handleGoBack()}
+              size="small"
             >
               <ArrowBackIos />
             </IconButton>
@@ -67,29 +119,34 @@ function GridComp(props) {
         </Col>
         <Col xs={10} md={10}>
           <Box display="flex" justifyContent="flex-end">
+            <IconButton aria-label="New" onClick={handleNew} size="small">
+              <Add />
+            </IconButton>
+            {
+              props.currMode === Constants.FORM_EDIT_MODE // under edit mode
+              && (
+                <IconButton aria-label="Save" onClick={handleSave} size="small">
+                  <Check />
+                </IconButton>
+              )
+            }
+
+            <IconButton aria-label="Cancel" onClick={handleReset} size="small">
+              <Cached />
+            </IconButton>
             <FormControlLabel
               control={(
                 <Switch
-                  checked={state.isListView}
+                  checked={state.isEditMode}
                   onChange={handleChange}
                   name="isEditMode"
                   color="primary"
                   size="small"
                 />
                 )}
-              label="Unlock"
-              style={{ marginTop: '10px' }}
+              label="Edit"
+              style={{ marginTop: '10px', marginLeft: '5px' }}
             />
-
-            <IconButton aria-label="New" onClick={props.handleNew}>
-              <Add />
-            </IconButton>
-            <IconButton aria-label="Save" onClick={props.handleSave}>
-              <Check />
-            </IconButton>
-            <IconButton aria-label="Cancel" onClick={props.handleCancel}>
-              <Cached />
-            </IconButton>
           </Box>
         </Col>
       </Row>
@@ -114,7 +171,7 @@ function GridComp(props) {
           <Row>
             <Col xs={12} md={12}>
               <ReactGridLayout
-                cols={4}
+                cols={6}
                 rowHeight={120}
                 layout={props.tempLayouts}
                 onLayoutChange={props.handleUpdateLayout}
@@ -126,17 +183,20 @@ function GridComp(props) {
                       className={
                         grid.static ? 'spaceGrid-grid-static' : 'spaceGrid-grid'
                       }
-                      style={props.gridImgPath != null ? {
-                        backgroundImage: `url(
-                        ${Configs.BACKEND_SERVER_URL}/${props.gridImgPath}`
-                      } : ''}
+                      // disable background image
+                      // style={props.gridImgPath != null ? {
+                      //   backgroundImage: `url(
+                      //   ${Configs.BACKEND_SERVER_URL}/${props.gridImgPath}`
+                      // } : ''}
                     >
                       {
                         // generate ID panel
                         parseInt(grid.i, 10) > 0 ? (
                           <h3 className="spaceGrid-idPanel">{grid.i.padStart(2, '0').slice(-3)}</h3>
                         ) : (
-                          <h3 className="spaceGrid-newIdPanel">{`New ${(Math.abs(grid.i) - 1).toString().padStart(2, '0')}`}</h3>
+                          // disable new id panel
+                          // <h3 className="spaceGrid-newIdPanel">{`New ${(Math.abs(grid.i) - 1).toString().padStart(2, '0')}`}</h3>
+                          null
                         )
                       }
 
@@ -146,7 +206,7 @@ function GridComp(props) {
                         && (
                           <Box textAlign="center" fontSize="h6.fontSize" m={1} color="primary.main">
                             <ControlCameraOutlined />
-                            Drag & Move
+                            Move
                           </Box>
                         )
                       }
@@ -158,14 +218,14 @@ function GridComp(props) {
                           props.currMode === Constants.FORM_READONLY_MODE // under readonly mode
                           && parseInt(grid.i, 10) > 0 // old grid
                             && (
-                              <Box textAlign="center" fontSize="h6.fontSize" fontWeight="fontWeightMedium" color="primary.main" m={1}>
+                              <Box textAlign="center" fontWeight="fontWeightMedium" color="primary.main" m={1}>
                                 <Button
                                   onClick={() => props.handleSelect(parseInt(grid.i, 10))}
                                 >
                                   {props.dataMap.get(grid.i).itemCount === 0 ? (
                                     <span>
                                       <PostAdd />
-                                      Add items
+                                      Add
                                     </span>
                                   ) : (
                                     <span>
@@ -183,33 +243,51 @@ function GridComp(props) {
                         // item tags
                         props.dataMap != null
                         && props.dataMap.get(grid.i) != null
-                        && props.dataMap.get(grid.i).itemTags.map((tag, i) => (
-                          i === grid.w * (isLargeScreen ? 3 : 1) - 1 ? (
-                            // small screen and last displayable tags
-                            <span key={`${grid.i}-${tag}`}>
-                              <OverlayTrigger
-                                placement="right"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={prop => renderTagsTooltip(prop, `#${props.dataMap.get(grid.i).itemTags.slice(i).join(', #')}`)}
-                              >
-                                <Badge variant="success">
-                                  {props.dataMap.get(grid.i).itemTags.length - i}
-                                  + tags
-                                </Badge>
-                              </OverlayTrigger>
+                        && props.dataMap.get(grid.i).itemCats.map((cat, i) => (
+                          i <= displayMaxNoCat - 1 ? (
+                            <Badge key={cat} variant="light">
+                              {catIconList[cat]}
+                              {cat}
+                            </Badge>
+                          ) : null
 
-                            </span>
-                          ) : i >= grid.w * (isLargeScreen ? 3 : 1) ? null : (
-                            // large screen + small screen < grid width
-                            <span key={`${grid.i}-${tag}`}>
-                              <Badge variant="warning">
-                                #
-                                {tag}
-                              </Badge>
-                              {' '}
-                            </span>
-                          )
+                          // i === grid.w * (isLargeScreen ? 3 : 1) - 1 ? (
+                          //   // small screen and last displayable tags
+                          //   <span key={`${grid.i}-${tag}`}>
+                          //     <OverlayTrigger
+                          //       placement="right"
+                          //       delay={{ show: 250, hide: 400 }}
+                          //       overlay={prop => renderTagsTooltip(prop, `#${props.dataMap.get(grid.i).itemTags.slice(i).join(', #')}`)}
+                          //     >
+                          //       <Badge variant="success">
+                          //         {props.dataMap.get(grid.i).itemTags.length - i}
+                          //         + tags
+                          //       </Badge>
+                          //     </OverlayTrigger>
+
+                          //   </span>
+                          // ) : i >= grid.w * (isLargeScreen ? 3 : 1) ? null : (
+                          //   // large screen + small screen < grid width
+                          //   <span key={`${grid.i}-${tag}`}>
+                          //     <Badge variant="warning">
+                          //       #
+                          //       {tag}
+                          //     </Badge>
+                          //     {' '}
+                          //   </span>
+                          // )
                         ))
+                      }
+                      {
+                        props.dataMap != null
+                        && props.dataMap.get(grid.i) != null
+                        && props.dataMap.get(grid.i).itemCats.length > displayMaxNoCat ? (
+                          <Badge variant="light">
+                            {props.dataMap.get(grid.i).itemCats.length - displayMaxNoCat}
+                            {' '}
+                            {' More'}
+                          </Badge>
+                          ) : null
                       }
                       {
                         // prevent delete failure when grid contains items inside
@@ -231,6 +309,7 @@ function GridComp(props) {
                               <IconButton
                                 aria-label="delete"
                                 onClick={() => props.handleRemove(grid.i)}
+                                size="small"
                               >
                                 <Delete />
                               </IconButton>

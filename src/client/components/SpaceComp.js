@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   ListItemSecondaryAction, List, ListItem, ListItemText, ListSubheader,
-  IconButton, Box, ListItemIcon, Avatar, Typography, Divider
+  IconButton, Box, ListItemIcon, Avatar, Divider, useMediaQuery
 } from '@material-ui/core/';
 import {
   Add, Cached, Delete, Edit, SingleBed, KingBed, LocalHotel,
@@ -15,10 +15,24 @@ import {
   Formik, Field, Form, ErrorMessage
 } from 'formik';
 import * as Yup from 'yup';
-
-import * as Constants from '../constants/Space';
-import BaseUIComp from './BaseUIComp';
+import { useTheme } from '@material-ui/core/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faShoePrints, faTshirt, faHome, faTable
+} from '@fortawesome/free-solid-svg-icons';
+import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import BuildIcon from '@material-ui/icons/Build';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FlightIcon from '@material-ui/icons/Flight';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import KitchenIcon from '@material-ui/icons/Kitchen';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 import Configs from '../config';
+import BaseUIComp from './BaseUIComp';
+import * as Constants from '../constants/Space';
 
 // css
 import '../css/Form.css';
@@ -49,7 +63,26 @@ function SpaceComp(props) {
     props.handleSelect(index);
   };
 
-  const getSpaceItem = (spaceList, handleEdit, handleSelect, handleDelete) => {
+  const catIconList = {
+    Favorite: <FavoriteBorderIcon />,
+    Travel: <FlightIcon />,
+    Clothes: <FontAwesomeIcon icon={faTshirt} />,
+    Shoes: <FontAwesomeIcon icon={faShoePrints} />,
+    Collections: <EmojiEventsIcon />,
+    Baby: <ChildFriendlyIcon />,
+    Books: <MenuBookIcon />,
+    Gifts: <CardGiftcardIcon />,
+    Food: <RestaurantIcon />,
+    Kitchenware: <KitchenIcon />,
+    Tools: <BuildIcon />,
+    Others: <HelpOutlineIcon />
+  };
+
+  const theme = useTheme();
+  const isLargeDevice = useMediaQuery(theme.breakpoints.up('sm'));
+  const displayMaxNoCat = (isLargeDevice === true ? 9 : 3);
+
+  const getSpaceItem = (spaceList, handleEdit) => {
     const itemList = [];
 
     for (const space of spaceList) {
@@ -60,6 +93,7 @@ function SpaceComp(props) {
           button
           // selected={selectedSpace === space.spaceId}
           onClick={event => handleSpaceClick(event, space.spaceId)}
+          disableGutters
         >
           <ListItemIcon>
             {space.imgPath != null ? (
@@ -80,21 +114,25 @@ function SpaceComp(props) {
             primary={space.name}
             secondary={(
               <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  className="spaceList-inline"
-                  color="textSecondary"
-                >
-                  {`Grids: ${space.gridCount} - Items: ${space.itemCount}`}
-                </Typography>
-                <br />
                 {
-                  space.itemTags.map(tag => (
-                    <Badge key={tag} variant="warning">
-                      {tag}
+                  // display item category
+                    space.itemCats.map((cat, i) => (
+                      i <= displayMaxNoCat - 1 ? (
+                        <Badge key={cat} variant="light">
+                          {catIconList[cat]}
+                          {cat}
+                        </Badge>
+                      ) : null
+                    ))
+                  }
+                {
+                  space.itemCats.length > displayMaxNoCat ? (
+                    <Badge variant="light">
+                      {space.itemCats.length - displayMaxNoCat}
+                      {' '}
+                      {' More'}
                     </Badge>
-                  ))
+                  ) : null
                 }
               </React.Fragment>
             )}
@@ -103,14 +141,9 @@ function SpaceComp(props) {
             <IconButton
               aria-label="edit"
               onClick={() => handleEdit(space.spaceId)}
+              size="small"
             >
               <Edit />
-            </IconButton>
-            <IconButton
-              aria-label="delete"
-              onClick={() => handleDelete(space.spaceId, space.name)}
-            >
-              <Delete />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
@@ -119,7 +152,7 @@ function SpaceComp(props) {
     return itemList;
   };
 
-  const genSpaceList = (spaceList, handleEdit, handleSelect, handleDelete) => {
+  const genSpaceList = (spaceList, handleEdit) => {
     const displayList = [];
     const spaceMap = new Map();
     let tempList = null;
@@ -133,7 +166,6 @@ function SpaceComp(props) {
         tempList = [];
       }
 
-      // // add to list
       tempList.push(space);
 
       // update map with latest list
@@ -145,7 +177,7 @@ function SpaceComp(props) {
       displayList.push(
         <li key={`section-${location}`}>
           <ul className="spaceList-ul">
-            <ListSubheader>
+            <ListSubheader disableGutters>
               {
                 {
                   'Bedroom 1': <SingleBed />,
@@ -161,7 +193,7 @@ function SpaceComp(props) {
               {' '}
               {location}
             </ListSubheader>
-            {getSpaceItem(list, handleEdit, handleSelect, handleDelete)}
+            {getSpaceItem(list, handleEdit)}
           </ul>
         </li>
       );
@@ -195,6 +227,7 @@ function SpaceComp(props) {
                 <IconButton
                   aria-label="Add"
                   onClick={props.handleNew}
+                  size="small"
                 >
                   <Add />
                 </IconButton>
@@ -204,6 +237,7 @@ function SpaceComp(props) {
             <IconButton
               aria-label="refresh"
               onClick={props.handleReloadList}
+              size="small"
             >
               <Cached />
             </IconButton>
@@ -252,8 +286,8 @@ function SpaceComp(props) {
                                 className="align-bottom"
                                 onClick={() => props.handleRemoveSpaceImg(
                                   form.values.spaceId
-                                )
-                                      }
+                                )}
+                                size="small"
                               >
                                 <Delete />
                               </IconButton>
@@ -344,11 +378,11 @@ function SpaceComp(props) {
             </Formik>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleCancel}>
-              Close
+            <Button variant="danger" onClick={() => (props.handleDelete(props.formState.spaceId, props.formState.name))}>
+              Delete
             </Button>
             <Button id="btnSave" variant="primary" onClick={handleSubmit}>
-              Save changes
+              Save
             </Button>
           </Modal.Footer>
         </Modal>

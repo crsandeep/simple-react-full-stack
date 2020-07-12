@@ -21,6 +21,7 @@ import {
   Formik, Field, Form, ErrorMessage
 } from 'formik';
 
+
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import * as Constants from '../constants/Item';
@@ -65,6 +66,7 @@ function ItemComp(props) {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
+
   return (
     <div>
       <BaseUIComp
@@ -78,6 +80,7 @@ function ItemComp(props) {
             <IconButton
               aria-label="back"
               onClick={() => props.handleGoBack()}
+              size="small"
             >
               <ArrowBackIos />
             </IconButton>
@@ -85,19 +88,12 @@ function ItemComp(props) {
         </Col>
         <Col xs={10} md={10}>
           <Box display="flex" justifyContent="flex-end">
-            <IconButton aria-label="New" onClick={props.handleNew}>
+            <IconButton aria-label="New" onClick={props.handleNew} size="small">
               <Add />
             </IconButton>
-            <IconButton aria-label="Reload" onClick={props.handleReloadList}>
+            <IconButton aria-label="Reload" onClick={props.handleReloadList} size="small">
               <Cached />
             </IconButton>
-          </Box>
-        </Col>
-      </Row>
-      <Divider />
-      <Row>
-        <Col xs={12} md={12}>
-          <Box display="flex" justifyContent="flex-end">
             <FormControlLabel
               control={(
                 <Switch
@@ -108,12 +104,13 @@ function ItemComp(props) {
                   size="small"
                 />
                 )}
-              label="List View"
-              style={{ marginTop: '10px' }}
+              label="List"
+              style={{ marginTop: '10px', marginLeft: '5px' }}
             />
           </Box>
         </Col>
       </Row>
+      <Divider />
       <Row>
         <Col xs={12} md={12}>
 
@@ -124,7 +121,6 @@ function ItemComp(props) {
                 isReadOnly={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
-                handleDelete={props.handleDelete}
               />
             ) : (
               <ItemListComp
@@ -132,7 +128,6 @@ function ItemComp(props) {
                 isReadOnly={false}
                 itemList={props.itemList}
                 handleEdit={props.handleEdit}
-                handleDelete={props.handleDelete}
               />
             )
           }
@@ -146,7 +141,7 @@ function ItemComp(props) {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Item Details</Modal.Title>
+            <Modal.Title>Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Formik
@@ -177,8 +172,8 @@ function ItemComp(props) {
                                 <IconButton
                                   aria-label="delete"
                                   className="align-bottom"
-                                  onClick={() => props.handleRemoveItemImg(form.values.itemId)
-                                  }
+                                  onClick={() => props.handleRemoveItemImg(form.values.itemId)}
+                                  size="small"
                                 >
                                   <Delete />
                                 </IconButton>
@@ -198,7 +193,7 @@ function ItemComp(props) {
                     </Col>
                   </Row>
                   <Row>
-                    <Col xs={12} md={6}>
+                    <Col xs={7} md={6}>
                       <label htmlFor="category" className="required-field">Category</label>
                       <Field name="category" as="select" placeholder="Category" className={`form-control${errors.category && touched.category ? ' is-invalid' : ''}`}>
                         <option value="">Please select...</option>
@@ -217,27 +212,27 @@ function ItemComp(props) {
                       </Field>
                       <ErrorMessage name="category" component="div" className="invalid-feedback" />
                     </Col>
-                    <Col xs={12} md={6}>
-                      <label htmlFor="tags">#Tags</label>
-                      <Field name="tags" type="text" placeholder="Use commas to separate" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
-                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col xs={12} md={6}>
-                      <label htmlFor="colorCode" className="required-field">Card Color</label>
+                    <Col xs={5} md={6}>
+                      <label htmlFor="colorCode" className="required-field">Color</label>
                       <Field name="colorCode" as="select" placeholder="Color" className={`form-control${errors.colorCode && touched.colorCode ? ' is-invalid' : ''}`}>
                         <option value="">Please select...</option>
                         <option value="Light" default>Light</option>
                         <option value="Primary">Blue</option>
-                        <option value="Secondary">Grey</option>
+                        {/* <option value="Secondary">Grey</option> */}
                         <option value="Success">Green</option>
                         <option value="Danger">Red</option>
                         <option value="Info">Cyan</option>
                       </Field>
                       <ErrorMessage name="colorCode" component="div" className="invalid-feedback" />
                     </Col>
-                    <Col xs={12} md={6}>
+                  </Row>
+                  <Row>
+                    <Col xs={7} md={6}>
+                      <label htmlFor="tags">Custom Labels</label>
+                      <Field name="tags" type="text" placeholder="Use commas to separate" className={`form-control${errors.tags && touched.tags ? ' is-invalid' : ''}`} />
+                      <ErrorMessage name="tags" component="div" className="invalid-feedback" />
+                    </Col>
+                    <Col xs={5} md={6}>
                       <label htmlFor="imgFile">Photo</label>
                       <Field name="imgFile">
                         {({ field, form, meta }) => (
@@ -267,8 +262,8 @@ function ItemComp(props) {
                   </Row>
                   <Row>
                     <Col xs={12} md={6}>
-                      <label htmlFor="reminderDtm">Reminder</label>
                       <AddAlert />
+                      {/* <label htmlFor="reminderDtm">Reminder</label> */}
                       <Field name="reminderDtm">
                         {({ field, form, meta }) => (
                           <DatePicker
@@ -284,7 +279,7 @@ function ItemComp(props) {
                           />
                         )}
                       </Field>
-                      <ErrorMessage name="reminderDtm" component="div" className="invalid-feedback" />
+                      {/* <ErrorMessage name="reminderDtm" component="div" className="invalid-feedback" /> */}
                     </Col>
                   </Row>
                 </Form>
@@ -292,8 +287,13 @@ function ItemComp(props) {
             </Formik>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={props.handleCancel}>Close</Button>
-            <Button id="btnSave" variant="primary" onClick={handleSubmit}>Save changes</Button>
+            <Button
+              variant="danger"
+              onClick={() => (props.handleDelete(props.formState.itemId, props.formState.name, props.formState.description))}
+            >
+              Delete
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>Save</Button>
           </Modal.Footer>
         </Modal>
       </div>

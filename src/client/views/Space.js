@@ -100,7 +100,7 @@ export class Space extends React.Component {
   }
 
   handleDelete(spaceId, spaceName) {
-    const result = confirm(`Confirm to delete (Space: ${spaceName})?`);
+    const result = confirm(`Confirm to delete (${spaceName})?`);
     if (result === true) {
       // confirm
       this.props.sagaDeleteSpace(this.props.userId, spaceId);

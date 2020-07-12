@@ -1,5 +1,5 @@
 .spaceGrid-grid{
-    /* background-color: rgb(248, 248, 248); */
+    background-color: rgb(246, 245, 189);
     background-position: center;
     background-repeat: no-repeat;
     border-style: outset;
@@ -16,18 +16,18 @@
 
 
 .spaceGrid-idPanel{
-    background-color: white;
-    border: 1px dashed blue;
+    /* background-color: white; */
+    /* border: 1px dashed blue; */
     border-radius: 25px;
-    font-size: 20px;
+    font-size: 10px;
     text-align: center;
     width: 40px;
 }
 
 .spaceGrid-newIdPanel{
     background-color: white;
-    border: 1px dashed red;
-    color: red;
+    /* border: 1px dashed red; */
+    /* color: red; */
     border-radius: 25px;
     font-size: 20px;
     text-align: center;
