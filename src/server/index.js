@@ -1,6 +1,4 @@
 const express = require('express');
-const os = require('os');
-// const http = require('http');
 const proxy = require('express-http-proxy');
 
 const app = express();
