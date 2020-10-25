@@ -3,6 +3,6 @@ h1 {
 }
 
 body {
-  text-align: center;
-  margin: auto;
+  text-align: left;
+  margin: auto auto auto 20px;
 }
