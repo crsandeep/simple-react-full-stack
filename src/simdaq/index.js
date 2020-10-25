@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 
-const initialTickers = {
+const oldTickers = {
     aapl: 115.60,
     sbux: 88.40,
     tsla: 453.81,
@@ -20,11 +20,23 @@ function recalculateUnitPrice(oldPrice) {
     return newPrice;
 }
 
+function calculatePercentChange(oldPrice, newPrice) {
+    return Math.round((newPrice - oldPrice) * 10000 / oldPrice) /  100;
+}
+
 app.use(express.static('dist'));
 app.get('/', (req, res) => {
-    let newTickers = {};
-    for (var company in initialTickers) {
-        newTickers[company] = recalculateUnitPrice(initialTickers[company]);
+    let newTickers = [];
+    for (let company in oldTickers) {
+        let obj = {}
+        obj['name'] = company;
+        const newPrice = recalculateUnitPrice(oldTickers[company]);
+        const percentDifference =
+        obj['price'] = newPrice;
+        obj['percentChange'] = calculatePercentChange(oldTickers[company], newPrice);
+        obj['timestamp'] = new Date();
+        newTickers.push(obj);
+        oldTickers[company] = newPrice;
     }
 
     res.send({ tickers: newTickers });

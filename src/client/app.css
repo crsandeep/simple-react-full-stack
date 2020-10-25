@@ -1,8 +1,36 @@
 h1 {
-  color: green;
+  color: #03C805;
 }
 
 body {
   text-align: left;
   margin: auto auto auto 20px;
+}
+
+.table-container {
+    width: 300px !important;
+}
+
+.company-name {
+    font-weight: bold !important;
+}
+
+.header-row {
+    font-weight: bold !important;
+    font-style: italic;
+}
+
+.table-row:hover {
+    background-color: #d1d1d1;
+    cursor: pointer;
+}
+
+.increase {
+    color:  #03C805;
+    padding-left: 20px;
+}
+
+.decrease {
+    color:  #FF5000;
+    padding-left: 20px;
 }

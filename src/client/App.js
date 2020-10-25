@@ -1,23 +1,69 @@
 import React, { Component, useEffect } from 'react';
 import './app.css';
 import ReactImage from './react.png';
+import PriceTable from './components/PriceTable';
+import PriceGraph from './components/PriceGraph';
+
+function padPriceString(price) {
+    let priceString = price.toString();
+    if (!priceString.split('.')[1]) {
+        priceString += '00';
+    } else if (priceString.split('.')[1].length === 1) {
+        priceString += '0';
+    }
+
+    return priceString;
+}
+
+function processForGraphs(json, history) {
+    let newHistory = history;
+
+    console.log('newHistory:', newHistory);
+
+    for (let company in json.tickers) {
+
+        console.log('company:', company);
+        let obj = {};
+        obj['price'] = json.tickers[company].price;
+        obj['timestamp'] = json.tickers[company].timestamp;
+
+        newHistory[json.tickers[company].name].push(obj);
+    }
+    return newHistory;
+}
+
+function processForTable(json) {
+    const tickerData = [];
+    for (let company in json.tickers) {
+        let obj = {};
+        obj['name'] = json.tickers[company].name;
+        obj['price'] = padPriceString(json.tickers[company].price);
+        obj['direction'] = json.tickers[company].percentChange > 0;
+        tickerData.push(obj);
+    }
+
+    return tickerData;
+}
 
 export default class App extends Component {
-  state = { tickers: [] };
+  state = {
+      tickers: [],
+      selected: null,
+      history: {
+          aapl: [],
+          sbux: [],
+          tsla: [],
+          pypl: [],
+          ba: []
+      }
+   };
 
     componentDidMount() {
         fetch('/api/getTickers')
             .then(res => res.json())
             .then(data => {
-                const tickerData = [];
-                for (let company in data.tickers) {
-                    let obj = {};
-                    obj['name'] = company;
-                    obj['value'] = data.tickers[company];
-                    tickerData.push(obj);
-                }
-
-                this.setState({ tickers: tickerData });
+                this.setState({ tickers: processForTable(data) });
+                // this.setState({ history: processForGraphs(data, this.state.history) });
             });
     }
 
@@ -26,16 +72,11 @@ export default class App extends Component {
             fetch('/api/getTickers')
                 .then(res => res.json())
                 .then(data => {
-                    const tickerData = [];
-                    for (let company in data.tickers) {
-                        let obj = {};
-                        obj['name'] = company;
-                        obj['value'] = data.tickers[company];
-                        tickerData.push(obj);
-                    }
-
-                    this.setState({ tickers: tickerData });
+                    this.setState({ tickers: processForTable(data) });
+                    // this.setState({ history: processForGraphs(data, this.state.history) });
+                    console.log('State:', this.state);
                 });
+
         }, 1000);
     }
 
@@ -43,8 +84,9 @@ export default class App extends Component {
         const { tickers } = this.state;
         return (
             <div>
-                { tickers ? <h1>Today's stocks!</h1> : <h1>oops! something isn't working</h1> }
-                { tickers.map(ticker => <h2>{ticker.name.toUpperCase()}: ${ticker.value}</h2>) }
+                { tickers ? <h1>Simple Robinhood!</h1> : <h1>oops! something isn't working</h1> }
+                <PriceTable tickers={tickers}/>
+                <PriceGraph />
             </div>
         );
     }
