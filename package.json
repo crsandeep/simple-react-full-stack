@@ -14,7 +14,9 @@
   "author": "Sandeep Raveesh",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "babel-polyfill": "^6.26.0",
+    "d3": "^6.2.0",
     "express": "^4.16.3",
     "express-http-proxy": "^1.6.2",
     "react": "^16.8.6",
