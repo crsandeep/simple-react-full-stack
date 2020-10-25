@@ -5,14 +5,6 @@ const proxy = require('express-http-proxy');
 
 const app = express();
 
-const tickers = {
-    aapl: 115.60,
-    sbux: 88.40,
-    tsla: 453.81,
-    pypl: 203.59,
-    ba: 167.42
-}
-
 app.use(express.static('dist'));
 
 app.use('/api/getTickers', proxy('localhost:8020', {
