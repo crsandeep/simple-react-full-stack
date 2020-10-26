@@ -10,7 +10,6 @@ const oldTickers = {
     ba: 167.42
 }
 
-
 function recalculateUnitPrice(oldPrice) {
     const direction = Math.round(Math.random()) === 1 ? 1 : -1;
     const magnitude = Math.random() / 20;

@@ -1,10 +1,18 @@
-h1 {
-  color: #03C805;
-}
-
 body {
   text-align: left;
   margin: auto auto auto 20px;
+}
+
+.app-container {
+    width: 300px;
+}
+
+.page-header {
+    text-align: center;
+    font-family: Arial;
+    font-size: 18px;
+    font-weight: bold;
+    color: #03C805;
 }
 
 .table-container {

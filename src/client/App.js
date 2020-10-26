@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import './app.css';
 import ReactImage from './react.png';
 import PriceTable from './components/PriceTable';
@@ -34,7 +34,6 @@ export default class App extends Component {
       this.state = {
           tickers: []
       };
-    }
 
     componentDidMount() {
         fetch('/api/getTickers')
@@ -58,8 +57,8 @@ export default class App extends Component {
     render() {
         const { tickers } = this.state;
         return (
-            <div>
-                { tickers ? <h1>Simple Robinhood!</h1> : <h1>oops! something isn't working</h1> }
+            <div className="app-container">
+                { tickers ? <p className="page-header">Simple Robinhood</p> : <p className="page-header">oops! something isn't working</p> }
                 <PriceTable tickers={tickers} />
             </div>
         );

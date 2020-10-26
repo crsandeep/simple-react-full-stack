@@ -1,7 +1,7 @@
 {
-  "name": "simple-react-full-stack",
+  "name": "simple-robinhood",
   "version": "1.0.0",
-  "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
+  "description": "Simple Robinhood app for Gatsby, built using a boilerplate with React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -11,7 +11,7 @@
     "simdaq": "nodemon src/simdaq/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run simdaq\""
   },
-  "author": "Sandeep Raveesh",
+  "author": "Jordan Bishop",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
