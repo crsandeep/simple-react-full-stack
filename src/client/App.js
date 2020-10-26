@@ -17,18 +17,14 @@ function padPriceString(price) {
 
 function processForGraphs(json, history) {
     let newHistory = history;
-
-    console.log('newHistory:', newHistory);
-
     for (let company in json.tickers) {
-
-        console.log('company:', company);
         let obj = {};
         obj['price'] = json.tickers[company].price;
         obj['timestamp'] = json.tickers[company].timestamp;
 
         newHistory[json.tickers[company].name].push(obj);
     }
+
     return newHistory;
 }
 
