@@ -31,7 +31,6 @@ app.get('/', (req, res) => {
         let obj = {}
         obj['name'] = company;
         const newPrice = recalculateUnitPrice(oldTickers[company]);
-        const percentDifference =
         obj['price'] = newPrice;
         obj['percentChange'] = calculatePercentChange(oldTickers[company], newPrice);
         obj['timestamp'] = new Date();

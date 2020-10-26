@@ -15,19 +15,6 @@ function padPriceString(price) {
     return priceString;
 }
 
-function processForGraphs(json, history) {
-    let newHistory = history;
-    for (let company in json.tickers) {
-        let obj = {};
-        obj['price'] = json.tickers[company].price;
-        obj['timestamp'] = json.tickers[company].timestamp;
-
-        newHistory[json.tickers[company].name].push(obj);
-    }
-
-    return newHistory;
-}
-
 function processForTable(json) {
     const tickerData = [];
     for (let company in json.tickers) {
@@ -42,24 +29,18 @@ function processForTable(json) {
 }
 
 export default class App extends Component {
-  state = {
-      tickers: [],
-      selected: null,
-      history: {
-          aapl: [],
-          sbux: [],
-          tsla: [],
-          pypl: [],
-          ba: []
-      }
-   };
+    constructor(props) {
+      super();
+      this.state = {
+          tickers: []
+      };
+    }
 
     componentDidMount() {
         fetch('/api/getTickers')
             .then(res => res.json())
             .then(data => {
                 this.setState({ tickers: processForTable(data) });
-                // this.setState({ history: processForGraphs(data, this.state.history) });
             });
     }
 
@@ -69,8 +50,6 @@ export default class App extends Component {
                 .then(res => res.json())
                 .then(data => {
                     this.setState({ tickers: processForTable(data) });
-                    // this.setState({ history: processForGraphs(data, this.state.history) });
-                    console.log('State:', this.state);
                 });
 
         }, 1000);
@@ -81,11 +60,8 @@ export default class App extends Component {
         return (
             <div>
                 { tickers ? <h1>Simple Robinhood!</h1> : <h1>oops! something isn't working</h1> }
-                <PriceTable tickers={tickers}/>
-                <PriceGraph />
+                <PriceTable tickers={tickers} />
             </div>
         );
     }
 }
-
-// <img src={ReactImage} alt="react" />
