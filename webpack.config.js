@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const outputDirectory = 'dist';
 
@@ -21,11 +21,18 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        loader: 'url-loader?limit=100000'
-      }
+			},
+			{
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+				],
+			}
     ]
   },
   resolve: {
@@ -40,7 +47,11 @@ module.exports = {
     }
   },
   plugins: [
-    new CleanWebpackPlugin([outputDirectory]),
+    new CleanWebpackPlugin({
+			output: {
+				path: outputDirectory
+			},
+		}),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       favicon: './public/favicon.ico'
