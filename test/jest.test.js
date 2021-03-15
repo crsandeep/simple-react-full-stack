@@ -1,4 +1,5 @@
-const user = require('./jest.js');
+/* eslint-disable no-undef */
+const user = require('./jest.js').default;
 
 // toEqual
 test('User should be John Sangalang object', () => {
