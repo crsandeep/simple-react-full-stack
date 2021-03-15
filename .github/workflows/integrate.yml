@@ -27,4 +27,8 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - run: npm run lint 
+      - name: Lint Action
+        uses: wearerequired/lint-action@v1.9.0
+        with:
+          eslint: true
+
