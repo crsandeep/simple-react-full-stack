@@ -27,4 +27,4 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
-      - run: npm run lint
+      - run: npm run eslint:github-action
