@@ -31,4 +31,5 @@ jobs:
         uses: wearerequired/lint-action@v1.9.0
         with:
           eslint: true
-          eslint_extensions: js, jsx, json
+          auto-fix: true
+          continue-on-error: true
