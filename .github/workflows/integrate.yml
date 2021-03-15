@@ -33,3 +33,7 @@ jobs:
           eslint: true
           auto-fix: true
           continue-on-error: true
+          
+      - name: Merge pull requests
+        uses: pascalgn/automerge-action@v0.13.1
+
