@@ -21,12 +21,10 @@ module.exports = {
     'react',
   ],
   rules: {
-    "indent": ["warn", 4],
     "no-console": "off",
-    "react/jsx-indent": ["warn", 4, { "checkAttributes": true}],
     "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
     "linebreak-style": 0 ,
     "no-multiple-empty-lines": [2, {"max": 99999, "maxEOF": 0}],
-    'react/state-in-constructor': 1,
+    'react/state-in-constructor': 0,
   },
 };

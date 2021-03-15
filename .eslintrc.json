@@ -1,6 +1,6 @@
 {
-  "parser": "babel-eslint",
   "extends": ["airbnb"],
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "node": true
@@ -54,6 +54,12 @@
   "rules": {
     "no-console": "off",
     "comma-dangle": "off",
-    "react/jsx-filename-extension": "off"
+    "react/jsx-filename-extension": "off",
+    "indent": ["warn", 4],
+    "react/jsx-indent": ["warn", 4, { "checkAttributes": true}],
+    "react/react-in-jsx-scope": "off",
+    "react/destructuring-assignment": "off",
+    "no-nested-ternary": "warn",
+    "react/prop-types": "warn"
   }
 }
