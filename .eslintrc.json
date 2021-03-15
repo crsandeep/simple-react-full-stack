@@ -1,5 +1,10 @@
 {
   "parser": "babel-eslint",
+  "extends": ["airbnb"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "globalReturn": true,
@@ -46,4 +51,9 @@
       "Object.freeze"
     ]
   },
+  "rules": {
+    "no-console": "off",
+    "comma-dangle": "off",
+    "react/jsx-filename-extension": "off"
+  }
 }
