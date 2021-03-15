@@ -31,4 +31,7 @@ jobs:
         uses: wearerequired/lint-action@v1.9.0
         with:
           eslint: true
+          github_token: ${{ secrets.github_token }}
+          auto_fix: ${{ github.event_name == 'pull_request' }}
+
 
