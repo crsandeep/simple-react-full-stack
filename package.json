@@ -10,7 +10,7 @@
     "server": "nodemon src/server/index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "jest",
-    "lint": "eslint ./ --max-warnings 0"
+    "lint": "eslint ./"
   },
   "author": "Sandeep Raveesh",
   "license": "ISC",
