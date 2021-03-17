@@ -8,15 +8,6 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-    types:
-      - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
   pull_request_review:
     types:
       - submitted
