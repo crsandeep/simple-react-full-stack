@@ -8,6 +8,7 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+    types: [labeled]
   pull_request_review:
     types:
       - submitted
@@ -42,8 +43,10 @@ jobs:
           auto-fix: true
           continue-on-error: true
           
-      - name: Merge pull requests
-        uses: pascalgn/automerge-action@v0.13.1
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Merge branch
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          label_name: 'merge to master' 
+          github_token: ${{ github.token}}
+
 
