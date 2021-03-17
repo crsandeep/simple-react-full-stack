@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "Boilerplate to build a full stack web application using React, Node.js, Express and Webpack.",
   "main": "src/server/index.js",
-  
   "engines": {
     "node": "14.15.4",
     "npm": "7.6.0"
   },
-
   "scripts": {
     "build": "webpack --mode production",
     "start": "npm run build && node src/server/index.js",
