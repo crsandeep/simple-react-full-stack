@@ -7,15 +7,18 @@ app.use(express.static('dist'));
 app.get('/api/profile_browser', (req, res) => {
 	// grab headers from the request object
 	const headerStrings = req.rawHeaders
-	const headers = {}
 
-	// save headers in an object
+	// save headers and user_agent in an object
+	const data = {}
+	data.headers = {}
+
 	for (i=0; i<headerStrings.length; i+=2){
-		headers[headerStrings[i].toLowerCase()] = headerStrings[i+1]
+		data.headers[headerStrings[i].toLowerCase()] = headerStrings[i+1]
 	}
+	data.user_agent = data.headers["user-agent"]
 
-	// write a JSONified string of the headers to a file
-	const formattedHeaders = JSON.stringify(headers)
+	// write a JSONified string of the data to a file
+	const formattedHeaders = JSON.stringify(data)
 	fs.writeFile('output.json', formattedHeaders, 'utf8', (err) => {
 
 		if (err) {
@@ -27,7 +30,7 @@ app.get('/api/profile_browser', (req, res) => {
 			rawFileData = fs.readFileSync('output.json')
 			fileData = JSON.parse(rawFileData)
 
-			console.log("User-Agent", fileData["user-agent"])
+			console.log("User-Agent", fileData["user_agent"])
 			console.log("Headers Saved Succesfully!")
 		}
 	})
