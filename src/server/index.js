@@ -2,6 +2,8 @@ const express = require('express');
 const os = require('os');
 const fs = require('fs');
 const app = express();
+// TODO: import file name generator
+// const { nameFile } = require('./nameFile')
 
 app.use(express.static('dist'));
 app.get('/api/profile_browser', (req, res) => {
@@ -19,6 +21,9 @@ app.get('/api/profile_browser', (req, res) => {
 
 	// write a JSONified string of the data to a file
 	const formattedHeaders = JSON.stringify(data)
+
+	// TODO: create file name and save to variable
+	// nameFile()
 	fs.writeFile('output.json', formattedHeaders, 'utf8', (err) => {
 
 		if (err) {
