@@ -6,7 +6,7 @@ export default class App extends Component {
   state = { username: null };
 
   componentDidMount() {
-    fetch('/api/sendHeader')
+    fetch('/api/profile_browser')
       .then(res => res.json())
       .then(user => this.setState({ username: user.username }));
   }

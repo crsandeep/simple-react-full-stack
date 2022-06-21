@@ -1,10 +1,10 @@
 const express = require('express');
 const os = require('os');
-const fs = require('fs')
+const fs = require('fs');
 const app = express();
 
 app.use(express.static('dist'));
-app.get('/api/sendHeader', (req, res) => {
+app.get('/api/profile_browser', (req, res) => {
 	// grab headers from the request object
 	const headerStrings = req.rawHeaders
 	const headers = {}
@@ -17,7 +17,7 @@ app.get('/api/sendHeader', (req, res) => {
 	// write a JSONified string of the headers to a file
 	const formattedHeaders = JSON.stringify(headers)
 	fs.writeFile('output.json', formattedHeaders, 'utf8', (err) => {
-		
+
 		if (err) {
 			console.log("An error occured saving the headers")
 			console.error(err)
