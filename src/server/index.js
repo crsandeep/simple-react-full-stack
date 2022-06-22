@@ -3,7 +3,7 @@ const os = require('os');
 const fs = require('fs');
 const app = express();
 // TODO: import file name generator
-// const { nameFile } = require('./nameFile')
+// const { rulesEngineWrapper } = require('.utils/rulesEngineWrapper')
 
 app.use(express.static('dist'));
 app.get('/api/profile_browser', (req, res) => {
