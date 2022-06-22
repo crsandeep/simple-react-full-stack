@@ -1,9 +1,11 @@
 const express = require('express');
 const os = require('os');
 const fs = require('fs');
+const test = require('./utils/test');
 const app = express();
-// TODO: import parser
-// const rulesEngineWrapper = require('./utils/rulesEngineWrapper.js')
+// variables and requirements for rules engine
+const path = require('path')
+const PATH_TO_RULES_ENGINE = path.resolve('./rules-engine-2.jar')
 
 app.use(express.static('dist'));
 app.get('/api/profile_browser', (req, res) => {
@@ -31,9 +33,39 @@ app.get('/api/profile_browser', (req, res) => {
 	// write a JSONified string of the data to a file
 	const formattedHeaders = JSON.stringify(data)
 
-	// TODO: create file name and save to variable
-	// rulesEngineWrapper()
+	// create file name and save to variable
+	// TODO: resarch how to get absolute paths in Node
+	let inputPath = path.resolve('./input')
+	let outputPath = ('./engineOutput.json')
+	// function from rulesEngineWrapper
+	const passInputFileToRulesEngine = function () {
+		return new Promise(function (resolve, reject) {
+			var exec = require('child_process').exec;
 
+			//syntax and how to use rules engine cli: https://confluence.integralads.com/pages/viewpage.action?spaceKey=EN&title=Running+Rules+Engine+CLI
+
+			var javaCommandStr = 'java -cp ' + PATH_TO_RULES_ENGINE + ' com.beehive.analytics.App ' +
+
+				// '-c ' + getConfigFolder() +
+				// ' ' +
+				'-i ' + inputPath +
+				' ' +
+				'-o ' + outputPath;
+
+			exec(javaCommandStr, function (err, a, b) {
+				if (err) {
+					console.log('error passInputFileToRulesEngine()', err);
+					reject();
+				} else {
+
+					resolve()
+				}
+			});
+		})
+	};
+
+	const testOutput = passInputFileToRulesEngine()
+	console.log("test engine output", testOutput)
 	// write data to json file
 	fs.writeFile('./src/server/output.json', formattedHeaders, 'utf8', function (err) {
 
