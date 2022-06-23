@@ -1,11 +1,11 @@
 const express = require('express');
 const os = require('os');
 const fs = require('fs');
-const test = require('./utils/test');
+// const test = require('./utils/test');
 const app = express();
 // variables and requirements for rules engine
-const path = require('path')
-const PATH_TO_RULES_ENGINE = path.resolve('./rules-engine-2.jar')
+let inputPath = '/Users/kmantinaos/Documents/GitHub/simple-react-full-stack/src/server/input.csv'
+let outputPath = '/Users/kmantinaos/Documents/GitHub/simple-react-full-stack/src/server/engineOutput.json'
 
 app.use(express.static('dist'));
 app.get('/api/profile_browser', (req, res) => {
@@ -22,7 +22,7 @@ app.get('/api/profile_browser', (req, res) => {
 	data.user_agent = data.headers["user-agent"]
 	
 	// write the user agent to a file
-	fs.writeFile('./src/server/input', data.user_agent, 'utf8', function (err) {
+	fs.writeFile('./src/server/input.csv', data.user_agent, 'utf8', function (err) {
 		if (err) {
 			console.log("An error occured writing user-agent to a file\n", err)
 		} else {
@@ -34,9 +34,7 @@ app.get('/api/profile_browser', (req, res) => {
 	const formattedHeaders = JSON.stringify(data)
 
 	// create file name and save to variable
-	// TODO: resarch how to get absolute paths in Node
-	let inputPath = path.resolve('./input')
-	let outputPath = ('./engineOutput.json')
+	
 	// function from rulesEngineWrapper
 	const passInputFileToRulesEngine = function () {
 		return new Promise(function (resolve, reject) {
@@ -44,15 +42,12 @@ app.get('/api/profile_browser', (req, res) => {
 
 			//syntax and how to use rules engine cli: https://confluence.integralads.com/pages/viewpage.action?spaceKey=EN&title=Running+Rules+Engine+CLI
 
-			var javaCommandStr = 'java -cp ' + PATH_TO_RULES_ENGINE + ' com.beehive.analytics.App ' +
+			var javaCommandStr = 'java -cp rules-engine-2.jar com.beehive.analytics.App ' + 
+			'-inputFileName ' + inputPath + 
+			' -outputFileName ' + outputPath + 
+			' -parseUserAgent true'
 
-				// '-c ' + getConfigFolder() +
-				// ' ' +
-				'-i ' + inputPath +
-				' ' +
-				'-o ' + outputPath;
-
-			exec(javaCommandStr, function (err, a, b) {
+			exec(javaCommandStr, {cwd: '/Users/kmantinaos/Documents/GitHub/simple-react-full-stack/src/server'}, function (err, a, b) {
 				if (err) {
 					console.log('error passInputFileToRulesEngine()', err);
 					reject();
@@ -64,17 +59,17 @@ app.get('/api/profile_browser', (req, res) => {
 		})
 	};
 
-	const testOutput = passInputFileToRulesEngine()
-	console.log("test engine output", testOutput)
+ 	passInputFileToRulesEngine()
+
 	// write data to json file
-	fs.writeFile('./src/server/output.json', formattedHeaders, 'utf8', function (err) {
+	fs.writeFile('./src/server/olderOutput.json', formattedHeaders, 'utf8', function (err) {
 
 		if (err) {
 			console.log("An error occured saving the headers\n", err)
 
 		// return user-agent from JSON file to verify success
 		} else {
-			rawFileData = fs.readFileSync('./src/server/output.json')
+			rawFileData = fs.readFileSync('./src/server/olderOutput.json')
 			fileData = JSON.parse(rawFileData)
 
 			console.log("User-Agent", fileData["user_agent"])
@@ -86,3 +81,12 @@ app.get('/api/profile_browser', (req, res) => {
 });
 
 app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
+
+/*
+Chrome: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36
+
+Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15
+
+Firefox: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:101.0) Gecko/20100101 Firefox/101.0
+
+*/
