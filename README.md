@@ -38,11 +38,13 @@ In the production mode, we will have only 1 server running. All the client side 
 ## Quick Start
 
 ```bash
+# Make sure you have node installed version 16.13 or newer.
+
 # Clone the repository
-git clone https://github.com/crsandeep/simple-react-full-stack
+git clone git@github.com:erezcohen/easy-ssh.git
 
 # Go inside the directory
-cd simple-react-full-stack
+cd easy-ssh
 
 # Install dependencies
 yarn (or npm install)
