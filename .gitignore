@@ -1,5 +1,7 @@
 .vscode
+.idea
 node_modules
 dist
 *.log
 yarn.lock
+/easy-ssh.iml
