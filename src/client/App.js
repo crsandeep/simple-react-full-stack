@@ -5,7 +5,6 @@ import ReactImage from './react.png';
 const App = () => {
   const [userName, setUserName] = useState('');
   const [ip, setIp] = useState('');
-//  const [port, setPort] = useState('');
 
   useEffect(() => {
     fetch('/api/getUsername')
@@ -15,6 +14,19 @@ const App = () => {
 
   const onIpChange = (event) =>
     setIp(event.target.value);
+
+  const connect = () =>
+    fetch('/api/connect', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ip })
+    })
+      .then(res => res.json())
+      .then(data => window.location.href = 'https://__________________:' + data.port);
+
 
   return (
     <div>
@@ -31,7 +43,11 @@ const App = () => {
           value={ip}
         />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <button>Connect</button>
+        <button
+          onClick={connect}
+        >
+          Connect
+        </button>
       </div>
 
       <p/>
