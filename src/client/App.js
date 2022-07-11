@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './app.css';
 import ReactImage from './react.png';
 
 const App = () => {
-  const [userName, setUserName] = useState('');
   const [ip, setIp] = useState('');
-
-  useEffect(() => {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => setUserName(user.username));
-  }, [])
 
   const onIpChange = (event) =>
     setIp(event.target.value);
@@ -25,14 +18,13 @@ const App = () => {
       body: JSON.stringify({ ip })
     })
       .then(res => res.json())
-      .then(data => window.location.href = 'https://__________________:' + data.port);
+      .then(data => window.location.href = `http://localhost:${data.port}/wetty`);
 
 
   return (
     <div>
-      {userName
-        ? <h1>{`Hello ${userName}`}</h1>
-        : <h1>Loading.. please wait!</h1>}
+      <h1>Easy SSH: Open a web-based terminal in just one click!</h1>
+
 
       <div>
         <input

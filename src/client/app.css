@@ -5,8 +5,10 @@ body {
 
 input {
   font-size: 3vh;
+  width: 300px;
 }
 
 button {
   font-size: 3vh;
+  margin-left: 150px;
 }
