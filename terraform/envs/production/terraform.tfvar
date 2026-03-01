@@ -1,0 +1,2 @@
+env        = "production"
+app_image  = "bshivanya/img3:latest"

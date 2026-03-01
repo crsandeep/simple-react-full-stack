@@ -1,0 +1,23 @@
+name: Stage 4 - Manual Approval and Deploy to Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  approve-production:
+    runs-on: ubuntu-latest
+    needs: []
+    environment:
+      name: production
+      url: https://img3-production.onrender.com  # change this to your actual prod URL
+    steps:
+      - name: Awaiting manual approval
+        run: echo "✅ Manual approval received. Proceeding to deploy production."
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: approve-production
+    steps:
+      - name: Deploy to Production Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_PROD_DEPLOY_HOOK }}

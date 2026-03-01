@@ -1,9 +1,20 @@
 const express = require('express');
-const os = require('os');
+const path = require('path');
 
 const app = express();
 
-app.use(express.static('dist'));
-app.get('/api/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
+// Serve static React build
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(process.env.PORT || 8080, () => console.log(`Listening on port ${process.env.PORT || 8080}!`));
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

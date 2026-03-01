@@ -1,0 +1,10 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'dummy-receiver'
+
+receivers:
+  - name: 'dummy-receiver'
+    webhook_configs:
+      - url: 'http://example.com/webhook'

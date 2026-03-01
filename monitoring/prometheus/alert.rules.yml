@@ -1,0 +1,10 @@
+groups:
+  - name: DummyAlerts
+    rules:
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes > 100000000
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Dummy alert: Memory usage too high"
